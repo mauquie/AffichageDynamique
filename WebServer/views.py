@@ -7,4 +7,4 @@ GROUPE = "ADMIN"
 # Create your views here.
 
 def index(request):
-    return render(request, 'WebServer/index.html')
+    return render(request, 'WebServer/index.html', {"group": GROUPE})
