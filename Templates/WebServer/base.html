@@ -10,66 +10,13 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'CSS/cropper.css' %}">
-    <style>
-        .verticalAlignNavBar {
-            position: fixed;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .clickable {
-            color: rgb(255, 147, 47)
-        }
-
-        .clickable:hover {
-            color: rgb(255, 133, 19)
-        }
-
-        .article-row {
-            cursor: pointer;
-        }
-
-        #imagePreview {
-            width: 100%;
-            height: 100%;
-            background-position: center center;
-            background-size: cover;
-            background-repeat: no-repeat;
-        }
-
-        #imagePreview:hover {
-            width: 90%;
-            height: 90%;
-        }
-
-        .imageUploadBox{
-            width:420px; 
-            height: 236px; 
-            cursor: pointer;
-        }
-
-        .imageUploadBox:hover{
-            background-color: rgba(0, 0, 0, 0.2);
-            
-        }
-
-        .cropImage {
-            width: 100%;
-            max-width: 100%;
-            max-height: 60vmin;
-            height: 60vmin;
-        }
-
-        [hidden]{
-            display: none !important;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'CSS/WebServer.css' %}">
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
             <div id="NavDiv" class="col-1 ">
-                <img src="https://s1.qwant.com/thumbr/0x0/3/6/41f2fb008d88db5625b2000524c03a5ab114952d79664ccf041e627bf06317/Logo_lyc%C3%A9e_Bourdelle.jpg?u=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Ffr%2Fe%2Fe7%2FLogo_lyc%25C3%25A9e_Bourdelle.jpg&q=0&b=1&p=0&a=0" alt="Logo lycée Bourdelle" class="rounded" width="100%">
+                <img src="{% static 'IMG/Logo_lycée_Bourdelle.jpg'%}" alt="Logo lycée Bourdelle" class="rounded" width="100%">
                 <div class="verticalAlignNavBar">
                     <div class="navbar navbar-light">
                         <ul class="navbar-nav">
