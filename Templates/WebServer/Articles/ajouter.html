@@ -1,5 +1,7 @@
 {% extends '../base.html' %}
 
+{% load static %}
+
 {% block title %}{{pageTitle}}{% endblock title %}
 
 {% block content %}
@@ -7,18 +9,18 @@
     <p class="fs-1 align-middle">Ajout d'un article</p>
 </div>
 <div class="border rounded-3 m-3 mb-5 p-4 ">
-    <form action="#" method="post">
+    <form id="formulaire" action="#" method="post">
         {% csrf_token %}
         <div class="form-group my-3">
             <label for="image" class="form-label">Image de l'article</label>
-            <div class="border rounded-3 d-flex align-items-center justify-content-center imageUploadBox" id="imageUploadBox" data-bs-toggle="" data-bs-target="#staticBackdrop" onclick="montrerImageInput(cropper)">
+            <div class="border rounded-3 d-flex align-items-center justify-content-center imageUploadBox" id="imageUploadBox" data-bs-toggle="" data-bs-target="#staticBackdrop">
                 <svg id="svgImage" xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
                     <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                     <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
                 </svg>
-                <div id="imagePreview" class="rounded-3" hidden></div>
+                <div id="imagePreview" class="rounded-3" data-bs-toggle="tooltip" data-bs-html="true" title="Modifier l'image" hidden></div>
+                <input name="image" type="file" accept="image/*" class="form-control" id="imageInput" hidden>
             </div>
-            <input type="file" accept="image/*" class="form-control" id="imageInput" hidden>
         </div>
         <div class="form-group my-3">
             <label for="titre" class="form-label">Titre</label>
@@ -61,41 +63,18 @@
         </div>
     </form>
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Modifier l'image</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Annuler"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Découpage de l'image</p> 
-                        <div id="cropper" class="cropImage border rounded-3">
-                            <img id="cropImage" src="" class="cropImage rounded-3" alt="image de l'article">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <button type="button" class="btn btn-primary">Enregister</button>
-                    </div>
-                </div>
-            </div>
-      </div>
+    {% include "../decoupeur.html" %}
 </div>
+<script src="{% static 'JS/Cropper.js' %}"></script>
+<script src="{% static 'JS/imageDecoupeur.js' %}"></script>
 <script>
     (window.addEventListener("DOMContentLoaded",() => {
         //On defini les aides pour les boutons d'actions
-        let sendShow = document.getElementById("sendShow")
-        var tooltip = new bootstrap.Tooltip(sendShow)
-
-        let sendHide = document.getElementById("sendHide")
-        tooltip = new bootstrap.Tooltip(sendHide)
-
-        let deleteForm = document.getElementById("delete")
-        tooltip = new bootstrap.Tooltip(deleteForm)
-
-        let dateExpiration = document.getElementById("dateExpiration")
-        tooltip = new bootstrap.Tooltip(dateExpiration)
+        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        let tooltips = []
+        for(let i = 0; i < tooltipsDOM.length; i++){
+            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
+        }
 
         //On défini les compteurs de caractères 
         let title = document.getElementById("titleLength")
@@ -108,84 +87,14 @@
         let articleContent = document.getElementById("articleContent")
         articleContent.addEventListener("input", () => {
             compteurCaractere.innerHTML = articleContent.value.length + " / 700"
-        })
+        })  
 
-        //On défini les actions à faire quand on veut upload une image
-        let imageInput = document.getElementById("imageInput")
-        let imagePreview = document.getElementById("imagePreview")
-        let svgImage = document.getElementById("svgImage")
-
-        imageInput.addEventListener("change", (e) => {
-            //On recupère les images depuis l'input
-            let image = imageInput.files
-
-            //Si il n'y a pas d'image ou que le FileReader n'est pas disponible
-            if (!image.length || !window.FileReader) return;
-
-            //On prépare le reader pour lire l'image
-            var reader = new FileReader();
-            reader.readAsDataURL(image[0]);
-
-            //On défini la prévisualisation avec les données du FileReader
-            reader.onloadend = function(e) {
-                let cropImage = document.getElementById("cropImage")
-                cropImage.src = e.target.result
-
-                isImageLoaded = true
-                imagePreview.style.backgroundImage = "url(" + this.result + ")"
-
-                let imageUploadBox = document.getElementById("imageUploadBox")
-                imageUploadBox.dataset.bsToggle = "modal"
-            }
-
-            //On cache le logo et on affiche l'image
-            svgImage.setAttribute("hidden", "true")
-            imagePreview.hidden = false
-
-
-        })
-
-       
+        let image = new imageDecoupeur(document.getElementById("imageInput"), 
+            document.getElementById("imageUploadBox"),
+            document.getElementById("imagePreview"),
+            document.getElementById("svgImage"),
+        )
     }))
-
-    var isImageLoaded = false
-
-    var cropper;
-
-    function montrerImageInput(cropper){
-        /*
-        *   Fonction appelé quand on appuie sur l'espace pour choisir une image
-        */
-        if(!isImageLoaded){
-            let imageInput = document.getElementById("imageInput")
-            imageInput.click()
-
-        } else {
-            setTimeout(() => {
-                let cropperDiv = document.getElementById("cropper")
-                let cropImage = document.getElementById("cropImage")
-                let width = cropperDiv.offsetWidth;
-                let height = cropperDiv.offsetHeight;
-
-                cropper = new Cropper(cropImage, {
-                    minContainerWidth: width,
-                    minContainerHeight: width * 9 /16,
-                    aspectRatio: 16 / 9,
-                    crop(event) {
-                        console.log(event.detail.x);
-                        console.log(event.detail.y);
-                        console.log(event.detail.width);
-                        console.log(event.detail.height);
-                        console.log(event.detail.rotate);
-                        console.log(event.detail.scaleX);
-                        console.log(event.detail.scaleY);
-                    },
-                })
-            }, 1000)
-            
-        }
-        
-    }
     
 </script>
 {% endblock content %}

@@ -25,3 +25,40 @@ Pour acceder aux différentes applications (via un navigateur), les urls sont fo
 1) API : localhost:8000/api/
 2) Affichage : localhost:8000/ecran/
 3) Web : localhost:8000/
+
+## Utiliser le découpeur d'image
+Pour utiliser des images dans les articles, on a du créer un système pour les rogner, les tourner, les bouger etc, en bref les modifier. Pour l'utiliser, il faut quelques prérequis :
+1) Un input qui ne peut prendre qu'une image
+2) Un DIV sur lequel on cliquera pour obtenir la fenêtre de modification
+3) (Optiennel) Un IMG pour afficher une prévisualisation de l'image hors de la fenêtre de modification
+4) (Optionnel) Un SVG que l'on veut cacher/afficher en fonction de si l'utilisateur à selectionné une nouvelle image (comme une image par défaut)
+
+Ensuite, du coté HTML, on devra avoir le code formé comme ceci :
+```html
+<div id="imageUploadBox" data-bs-toggle="" data-bs-target="#staticBackdrop">
+    <svg id="svgImage"></svg>
+    <div id="imagePreview" hidden></div>
+    <input name="image" id="imageInput" type="file" accept="image/*" hidden>
+</div>
+```
+Les données `data-bs-toggle` et `data-bs-target` sont utilisées pour afficher la fenêtre Modal de bootstrap(celle de modification). Il y a deux champs `hidden`, le premier est car on ne veut pas afficher de prévisualisation avant d'avoir une image à afficher, et le second est car on ne veut pas avoir de champ visible pour la sélection de l'image. C'est grâce à notre code qu'on l'affiche la fenêtre de sélection.
+
+Pour que le code fonctionne, il faudra cependant importer d'autres choses. Nous devons d'abord faire un 
+```django
+{% decoupeur.html %}
+``` 
+(le lien symbolique peut changer, il se trouve dans Templates/WebServer/), ensuite, nous devrons importer les fichiers javascript :
+```html
+<script src="{% static 'JS/Cropper.js' %}"></script>
+<script src="{% static 'JS/imageDecoupeur.js' %}"></script>
+```
+Et enfin écrire le code suivant :
+```javascript
+let decoupeur = new imageDecoupeur(document.getElementById("imageInput"), 
+    document.getElementById("imageUploadBox"),
+    document.getElementById("imagePreview"),
+    document.getElementById("svgImage"),
+)
+```
+
+Maintenant, grâce à cela, nous pouvons utiliser le decoupeur partout dans l'application.

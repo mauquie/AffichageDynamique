@@ -125,5 +125,3 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'Static/',
 ]
-
-print(STATICFILES_DIRS)
