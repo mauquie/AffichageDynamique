@@ -1,9 +1,9 @@
-from django.http.response import Http404, HttpResponseNotFound
+from django.http.response import Http404
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
 
 #Variable de debug
-GROUPE = "STUDENT"
+GROUPE = "ADMIN"
 
 def index(request, message=""):
     ''' 
@@ -12,6 +12,13 @@ def index(request, message=""):
     '''
     return render(request, 'WebServer/index.html', exInfos("Accueil", {"user_group": GROUPE}, message))
 
+
+
+
+"""
+    Section gérant tout ce qui touche aux articles 
+
+"""
 def articles(request, message=""):
     '''
         Fonction appelée quand on veut intéragir d'une quelconque façon avec les articles (ajouter, modifier, supprimer)
@@ -43,15 +50,66 @@ def supprimerArticle(request, message=""):
     message = "Supprimé avec succès !"
     return articles(request, message)
 
-def exInfos(pageTitle, user, message="", errorExplanation="", informations={}):
+
+
+"""
+    Section gérant tout ce qui touche à la gestion de l'affichage
+"""
+def gestionAffichage(request):
+    if GROUPE != "STUDENT":
+        return render(request, 'WebServer/Gestion Affichage/index.html', exInfos("Gestion de l'affichage", {"user_group": GROUPE}))
+    
+    else: 
+        raise PermissionDenied()
+
+
+
+
+"""
+    Section gérant tout ce qui touche aux sondages
+"""
+def sondages(request):
+    if GROUPE != "STUDENT":
+        return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", {"user_group": GROUPE}))
+    
+    else:
+        raise PermissionDenied()
+
+def ajouterSondage(request):
+    if GROUPE != "STUDENT":
+        return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Sondages", {"user_group": GROUPE}))
+    
+    else:
+        raise PermissionDenied()
+
+def modifierSondage(request):
+    #To-do : Un check du groupe pour savoir si il est au même niveau ou au dessus pour avoir le droit de modifier me sondage
+    if GROUPE != "STUDENT":
+        return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Sondages", {"user_group": GROUPE}))
+    
+    else:
+        raise PermissionDenied()
+
+def supprimerSondage(request, message=""):
+    '''
+        Fonction appelé quand on veut supprimer un article
+    '''
+    message = "Supprimé avec succès !"
+    return articles(request, message)
+
+
+
+
+def exInfos(pageTitle, user, message="", informations={}):
     '''
         Fonction appelé quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
         de l'utilisateur ou un message d'information sur une action effectuée
 
         @Params :
-            pageTitle : (string) Nom de la page
-            user : (dict) Dictionnaire d'infos sur l'utilisateur
-            ?message : (string) Message à transmettre à l'utilisateur sur la page
+            pageTitle {string}     - Nom de la page
+            user {dict}            - Dictionnaire d'infos sur l'utilisateur
+            ?message {string}      - Message à transmettre à l'utilisateur sur la page
+            ?informations {dict}   - Informations complètes à passer à la page (du genre les données d'un article)
 
         @Return :
             dict : Informations complémentaires
@@ -60,6 +118,5 @@ def exInfos(pageTitle, user, message="", errorExplanation="", informations={}):
         "pageTitle": pageTitle,
         "user": user,
         "message": message,
-        "errorExplanation": errorExplanation, 
         "informations": informations,
     }

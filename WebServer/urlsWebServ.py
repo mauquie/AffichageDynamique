@@ -8,4 +8,10 @@ urlpatterns = [
     path("articles/ajouter", urls.ajouterArticle),
     path("articles/modifier", urls.modifierArticle),
     path("articles/supprimer", urls.supprimerArticle),
+    path("parametres", urls.gestionAffichage),
+    path("parametres/sondages", urls.sondages),
+    path("parametres/sondages/ajouter", urls.ajouterSondage),
+    path("parametres/sondages/modifier", urls.modifierSondage),
+    path("parametres/sondages/supprimer", urls.supprimerSondage),
+
 ]

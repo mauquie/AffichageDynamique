@@ -1,0 +1,87 @@
+{% extends "../base.html" %}
+
+{% block title %}
+{{ pageTitle }}
+{% endblock title %}
+
+{% block content %}
+<div class="row p-3">
+    <p class="fs-1 align-middle">Gestion de l'affichage</p>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-11 m-3">
+        <div class="p-4 border rounded-3">
+            <div class="row">
+                <h2>Informations :</h2>
+            </div>
+            <div class="row g-2">
+                <div class="col-lg-6 col-12">
+                    <a href="#" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Modifier le message affiché sur les écrans</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a href="#" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Cacher/Afficher le message</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 mt-5 border rounded-3">
+            <div class="row">
+                <h2>Sondages :</h2>
+            </div>
+            <div class="row g-2">
+                <div class="col-lg-6 col-12">
+                    <a href="parametres/sondages/ajouter" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Créer un nouveau sondage</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a href="parametres/sondages" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Voir tout les sondages</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 col-11 m-3">
+        <div class="p-4 border rounded-3">
+            <div class="row">
+                <h2>Ecrans :</h2>
+            </div>
+            <div class="row g-2">
+                <div class="col-lg-6 col-12">
+                    <a href="#" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Modifier les pages attribuées aux écrans</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a href="#" class="clickable">
+                        <div class="p-3 border rounded-1">
+                            <h5>Ajouter un écran</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a href="#" class="clickable">
+                        <div class="p-3 border rounded-1">
+                            <h5>Ajouter une page</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>  
+        </div>
+    </div>  
+</div>
+{% endblock content %}

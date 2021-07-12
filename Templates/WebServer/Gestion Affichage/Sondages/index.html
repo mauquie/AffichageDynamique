@@ -1,0 +1,130 @@
+{%extends '../../base.html'%}
+
+{%block title%}{{pageTitle}}{%endblock title%}
+
+{%block content%}
+<div class="row p-3">
+    <p class="fs-1 align-middle">Sondages</p>
+</div>
+<div class="row">
+    <div class="col-8">
+        <div class="p-4 m-3 border rounded-3">
+            <p class="fs-4">Sondages mis en ligne :</p>
+            <table class="table table-hover">
+                <thead class="">
+                    <tr>
+                        <th scope="col">Titre</th>
+                        <th scope="col">Auteur</th>
+                        <th scope="col">Date de fin</th>
+                        <th scope="col">Est affiché</th>
+                        <th scope="col">Nombre de réponse</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="sondage-row table-warning" id="id_sondage">
+                        <td scope="row">Un nouveau jeu</td>
+                        <td>MDL</td>
+                        <td>12 juillet 2021</td>
+                        <td>Oui</td>
+                        <td>503</td>
+                    </tr>
+                    <tr class="sondage-row">
+                        <td scope="row">Les repas</td>
+                        <td>Administration</td>
+                        <td>15 décembre 2021</td>
+                        <td>Non</td>
+                        <td>1294</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-4">
+        <div id="actions" class="border rounded-3 p-4 m-3">
+            <p class="fs-4">Actions disponibles :</p>
+            <button type="button" id="add" class="btn btn-primary mb-4" onclick="window.location = '/parametres/sondages/ajouter'">
+                + Ajouter un sondage
+            </button>
+            <h5>Sondage : <strong id="sondage-name">Aucun sondage sélectionné</strong></h5>
+            <div id="actions-btn">
+                <button type="button" id="edit" class="btn btn-outline-primary" onclick="window.location = '/parametres/sondages/modifier?id=1'" disabled>Modifier</button>
+                <button type="button" id="hide" class="btn btn-outline-warning" disabled>Cacher</button>
+                <button type="button" id="delete" class="btn btn-danger" disabled>Supprimer</button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+        //Récupération des éléments DOM nécessaires
+        var sondages = document.getElementsByClassName("sondage-row")
+        
+
+        const Sondages = new Sondage(sondages)
+        Sondages.associateSondagesFunctions()
+    })
+    
+    function toggleActions(selected) {
+        /*
+        *   Fonction affichant les boutons quand l'utilisateur selectionne un article
+        *   et qui modifie le bouton "Cacher/Afficher" en fonction de si le sondage est actuellement
+        *   à l'écran ou non
+        */
+        let sondageName = document.getElementById("sondage-name")
+        let buttons = document.getElementById("actions-btn").children
+        
+        //Modification du texte affichant le nom du sondage selectionné
+        sondageName.innerText = selected.children[0].innerText
+
+        //Boucle s'executant à chaque fois que l'utilisateur sélectionne un sondage
+        //Elle s'éxécute une fois pour chaque bouton d'action
+        for(let i = 0; i < buttons.length; i++){
+            buttons[i].disabled = false
+
+            //Changement du texte du bouton affichant (ou non) le sondage à l'écran et son style
+            if(buttons[i].id == "hide" && selected.className.indexOf("table-warning") != -1){
+                buttons[i].innerHTML = "Afficher"
+                buttons[i].className = "btn btn-outline-success"
+
+            } else if (buttons[i].id == "hide") {
+                buttons[i].innerHTML = "Cacher"
+                buttons[i].className = "btn btn-outline-warning"
+            }
+        }   
+    }
+
+    class Sondage {
+        constructor(sondages){
+            this.sondages = sondages
+            this.selected = undefined
+        }
+
+        associateSondagesFunctions(){
+            /*
+            *   Association de chaque ligne du tableau contenant les sondages aux fonctions
+            *   gérant les boutons et les lignes ditent "active" (sélectionné)
+            */
+            //Affectation de l'évenement "click" à chaque ligne du tableau contenant les sondages
+            for(let i = 0; i < this.sondages.length ; i++){
+                this.sondages[i].addEventListener("click", () => {
+                    this._toggleSondageActive(this.sondages[i])
+                    toggleActions(this.selected)
+                })
+            }
+        }
+
+        _toggleSondageActive(sondage){
+            if(this.selected !== undefined){
+                let classList = this.selected.classList.value.split(" ")
+                classList.pop()
+                this.selected.classList.value = classList.join(" ")
+                        
+            }
+                    
+            this.selected = sondage
+            this.selected.classList.value += " table-active"
+        }
+    }
+</script>
+{%endblock content%}

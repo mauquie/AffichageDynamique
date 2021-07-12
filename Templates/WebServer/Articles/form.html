@@ -81,18 +81,25 @@
 
     {% include "../decoupeur.html" %}
 </div>
-<script src="{% static 'JS/Cropper.js' %}"></script>
+<script src="{% static 'JS/cropper.js' %}"></script>
 <script src="{% static 'JS/imageDecoupeur.js' %}"></script>
 <script>
     (window.addEventListener("DOMContentLoaded",() => {
-        //On defini les aides pour les boutons d'actions
+        //Définition de la valeur par défaut du selectionneur de date (par defaut un article reste en ligne 7 jours)
+        if(document.getElementById('dateExpiration').defaultValue == ""){
+            let date = new Date() 
+            date.setDate(date.getDate() + 7)
+            document.getElementById('dateExpiration').valueAsDate = date;
+        }
+
+        //Définition les aides pour les boutons d'actions
         let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
         let tooltips = []
         for(let i = 0; i < tooltipsDOM.length; i++){
             tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
         }
 
-        //On défini les compteurs de caractères 
+        //Définition les compteurs de caractères 
         let title = document.getElementById("titleLength")
         let titleInput = document.getElementById("titleInput")
         titleInput.addEventListener("input", () => {

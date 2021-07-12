@@ -29,9 +29,12 @@
     height: 90%;
 }
 
+
 .imageUploadBox{
-    width:420px; 
-    height: 236px; 
+    max-width: 420px;
+    width: auto; 
+    max-height: 236px; 
+    height: calc(100vw * 9 / 16);
     cursor: pointer;
 }
 

@@ -9,12 +9,12 @@
     <p class="fs-1 align-middle">Administration des écrans du lycée Antoine Bourdelle</p>
 </div>
 <div class="row">
-    <div class="col-6 p-4 m-3 border rounded-3">
+    <div class="col-lg-6 col-11 p-4 m-3 border rounded-3">
         <div class="row">
             <h2>Actions rapides :</h2>
         </div>
         <div class="row g-2">
-            <div class="col-6">
+            <div class="col-lg-6 col-12">
                 <a href="articles" class="clickable" >
                     <div class="p-3 border rounded-1">
                         <h5>Voir les derniers articles en ligne</h5>
@@ -22,14 +22,14 @@
                 </a>
             </div>
             {% ifequal user.user_group "ADMIN" %}
-            <div class="col-6">
+            <div class="col-lg-6 col-12">
                 <a href="#" class="clickable" >
                     <div class="p-3 border rounded-1">
                         <h5>Modifier le message affiché sur les écrans</h5>
                     </div>
                 </a>
             </div>
-            <div class="col-6">
+            <div class="col-lg-6 col-12">
                 <a href="#" class="clickable" >
                     <div class="p-3 border rounded-1">
                         <h5>Créer un nouvel utilisateur</h5>
@@ -37,7 +37,7 @@
                 </a>
             </div>
             {% endifequal %}
-            <div class="col-6">
+            <div class="col-lg-6 col-12">
                 <a href="articles/ajouter" class="clickable" >
                     <div class="p-3 border rounded-1">
                         <h5>Poster un article</h5>
@@ -46,19 +46,19 @@
             </div>
         </div>
     </div>
-    <div class="col-5 p-4 m-3 border rounded-3">
+    <div class="col-lg-5 col-11 p-4 m-3 border rounded-3">
         <div class="row">
             <h2>Mon compte :</h2>
         </div>
         <div class="row g-2">
-            <div class="col-6">
+            <div class="col-lg-6 col-12">
                 <a href="#" class="clickable" >
                     <div class="p-3 border rounded-1">
                         <h5>Modifier ma photo de profil</h5>
                     </div>
                 </a>
             </div>
-            <div class="col-6">
+            <div class="col-lg-6 col-12">
                 <a href="#" class="clickable">
                     <div class="p-3 border rounded-1">
                         <h5>Modifier mon mot de passe</h5>
