@@ -14,14 +14,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http.response import HttpResponse
 from django.urls import path, include
 from django.conf import settings
+from django.shortcuts import render
 from django.conf.urls.static import static
+
+
+def response404(request, exception, template_name="error.html"):
+    response = HttpResponse(b(template_name))
+    return response
+
 
 urlpatterns = [
     path('adminDjango/', admin.site.urls),
     path('api/', include("ApiServer.urlsApiServer")),
     path('', include("WebServer.urlsWebServ")),
     path('ecran/', include("Affichage.urlsAffichage"))
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    

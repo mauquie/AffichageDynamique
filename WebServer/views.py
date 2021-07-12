@@ -1,3 +1,4 @@
+from django.http.response import Http404, HttpResponseNotFound
 from django.shortcuts import render
 from django.http import JsonResponse
 
@@ -29,7 +30,11 @@ def modifierArticle(request, message=""):
     '''
         Fonction appelé quand on veut modifier un article.
     '''
-    return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", {'user_group': GROUPE}, message))
+    if request.GET.get('id', '') != '':
+        return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", {'user_group': GROUPE}, informations={"title": "Les militaires", "date": "2021-07-10", "articleContent": "ils sont gentils", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
+
+    else:
+        raise Http404()
 
 def supprimerArticle(request, message=""):
     '''
@@ -38,8 +43,7 @@ def supprimerArticle(request, message=""):
     message = "Supprimé avec succès !"
     return articles(request, message)
 
-
-def exInfos(pageTitle, user, message=""):
+def exInfos(pageTitle, user, message="", errorExplanation="", informations={}):
     '''
         Fonction appelé quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
         de l'utilisateur ou un message d'information sur une action effectuée
@@ -56,4 +60,6 @@ def exInfos(pageTitle, user, message=""):
         "pageTitle": pageTitle,
         "user": user,
         "message": message,
+        "errorExplanation": errorExplanation, 
+        "informations": informations,
     }
