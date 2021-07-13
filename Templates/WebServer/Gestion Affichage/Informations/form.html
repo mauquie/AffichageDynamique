@@ -1,0 +1,100 @@
+{%block content%}
+<div class="border rounded-3 m-3 mb-5 p-4 ">
+    <form id="formulaire" action="#" method="post">
+        {% csrf_token %}
+        <div class="form-group my-3">
+            <label for="titre" class="form-label">Titre</label>
+            <div class="input-group">
+                <input 
+                    id="titleInput"
+                    name="title"
+                    type="text" 
+                    class="form-control" 
+                    aria-describedby="AideTitre" 
+                    placeholder="Entrer le titre (il doit être court et concis)" 
+                    maxlength="65"
+                    value="{{informations.title}}"
+                >
+            </div>
+            <small id="titleLength" class="form-text text-muted" style="display: block;">0 / 65</small>
+        </div>
+        <div class="form-group my-3">
+            <label for="typeInformation">Type de l'information</label>
+            <select class="form-select my-2" aria-label="select information">
+                <option value="1" {%ifequal informations.type "1"%}selected{%endifequal%}>Information lambda</option>
+                <option value="2" {%ifequal informations.type "2"%}selected{%endifequal%}>Information importante</option>
+                <option value="3" {%ifequal informations.type "3"%}selected{%endifequal%}>Information urgente</option>
+            </select>
+        </div>
+        <div class="form-group my-3">
+            <label for="informationContent" class="form-label">Contenu de l'information</label>
+            <textarea
+                name="informationContent" 
+                id="informationContent" 
+                class="form-control" 
+                data-provide="markdown" 
+                maxlength="150" 
+                placeholder="Entrer le contenu de l'information"
+            >{{informations.informationContent}}</textarea>
+            <small id="compteurCaractereInformationContenu" class="form-text text-muted">0/150</small>
+        </div>
+        <div class="form-group my-3">
+            <label for="dateExpiration">Date d'expiration de l'information : </label>
+            <input 
+                type="date" 
+                name="dateExpiration"
+                id="dateExpiration"
+                data-bs-toggle="tooltip" 
+                data-bs-html="true" 
+                title="Date du dernier jour où l'information sera affiché sur les écrans"
+                value="{{informations.date}}"
+            > 
+        </div>
+        <div class="form-group mt-3">
+            <div class="row">
+                <div class="col-lg-4 btn-group"> 
+                    <button id="sendShow" type="submit" class="btn btn-primary"
+                        data-bs-toggle="tooltip" data-bs-html="true" title="Enregistre l'information dans la base de données et l'affiche sur les écrans.">
+                        Mettre en ligne maintenant !
+                    </button>
+                    <button id="sendHide" type="submit" class="btn clickable"
+                        data-bs-toggle="tooltip" data-bs-html="true" title="Enregistre l'information dans la base de données mais ne l'affiche pas sur les écrans.">
+                        Mettre en ligne mais cacher
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    (window.addEventListener("DOMContentLoaded",() => {
+        //Définition de la valeur par défaut du selectionneur de date (par defaut un article reste en ligne 7 jours)
+        if(document.getElementById('dateExpiration').defaultValue == ""){
+            let date = new Date() 
+            date.setDate(date.getDate() + 7)
+            document.getElementById('dateExpiration').valueAsDate = date;
+        }
+
+        //Définition les aides pour les boutons d'actions
+        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        let tooltips = []
+        for(let i = 0; i < tooltipsDOM.length; i++){
+            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
+        }
+
+        //Définition les compteurs de caractères 
+        let title = document.getElementById("titleLength")
+        let titleInput = document.getElementById("titleInput")
+        titleInput.addEventListener("input", () => {
+            title.innerHTML = titleInput.value.length + " / 65"
+        })
+
+        let compteurCaractere = document.getElementById("compteurCaractereInformationContenu")
+        let informationContent = document.getElementById("informationContent")
+        informationContent.addEventListener("input", () => {
+            compteurCaractere.innerHTML = informationContent.value.length + " / 150"
+        })  
+    }))
+</script>
+{%endblock content%}

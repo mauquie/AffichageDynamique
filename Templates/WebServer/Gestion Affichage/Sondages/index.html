@@ -7,7 +7,7 @@
     <p class="fs-1 align-middle">Sondages</p>
 </div>
 <div class="row">
-    <div class="col-8">
+    <div class="col-lg-8">
         <div class="p-4 m-3 border rounded-3">
             <p class="fs-4">Sondages mis en ligne :</p>
             <table class="table table-hover">
@@ -15,31 +15,28 @@
                     <tr>
                         <th scope="col">Titre</th>
                         <th scope="col">Auteur</th>
-                        <th scope="col">Date de fin</th>
-                        <th scope="col">Est affiché</th>
                         <th scope="col">Nombre de réponse</th>
+                        <th scope="col" class="d-none d-lg-block">Est affiché</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="sondage-row table-warning" id="id_sondage">
                         <td scope="row">Un nouveau jeu</td>
                         <td>MDL</td>
-                        <td>12 juillet 2021</td>
-                        <td>Oui</td>
                         <td>503</td>
+                        <td class="d-none d-lg-block">Oui</td>
                     </tr>
                     <tr class="sondage-row">
                         <td scope="row">Les repas</td>
                         <td>Administration</td>
-                        <td>15 décembre 2021</td>
-                        <td>Non</td>
                         <td>1294</td>
+                        <td class="d-none d-lg-block">Non</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-lg-4">
         <div id="actions" class="border rounded-3 p-4 m-3">
             <p class="fs-4">Actions disponibles :</p>
             <button type="button" id="add" class="btn btn-primary mb-4" onclick="window.location = '/parametres/sondages/ajouter'">
@@ -60,7 +57,7 @@ window.addEventListener("DOMContentLoaded", () => {
         //Récupération des éléments DOM nécessaires
         var sondages = document.getElementsByClassName("sondage-row")
         
-
+        //Association des lignes du tableau avec les différentes fonctions
         const Sondages = new Sondage(sondages)
         Sondages.associateSondagesFunctions()
     })

@@ -1,0 +1,12 @@
+{% extends '../../base.html' %}
+
+{% block title %}{{pageTitle}}{% endblock title %}
+
+{% block content %}
+<div class="row p-3">
+    <p class="fs-1 align-middle">Ajouter une information</p>
+</div>
+<div class="row">
+    {% include './form.html'%}
+</div>
+{% endblock content %}

@@ -7,16 +7,17 @@
     <p class="fs-1 align-middle">Gestion des articles</p>
 </div>
 <div class="row">
-    <div class="col-8">
+    <div class="col-lg-8">
         <div class="p-4 m-3 border rounded-3">
             <p class="fs-4">Articles mis en ligne :</p>
             <table class="table table-hover">
-                <thead class="">
+                <thead>
                     <tr>
                         <th scope="col">Titre</th>
                         <th scope="col">Temps avant de se cacher</th>
-                        <th scope="col">Contient des images</th>
                         <th scope="col">Affiché sur les écrans</th>
+                        <th scope="col" class="d-none d-lg-block">Contient des images</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -24,19 +25,19 @@
                         <td scope="row">Les militaires</td>
                         <td>2 jours</td>
                         <td>Oui</td>
-                        <td>Oui</td>
+                        <td class="d-none d-lg-block">Oui</td>
                     </tr>
                     <tr class="article-row table-warning">
                         <td scope="row">Les surveillants</td>
                         <td>4 jours</td>
                         <td>Non</td>
-                        <td>Non</td>
+                        <td class="d-none d-lg-block">Non</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="col-4">
+    <div class="col-lg-4">
         <div id="actions" class="border rounded-3 p-4 m-3">
             <p class="fs-4">Actions disponibles :</p>
             <button type="button" id="add" class="btn btn-primary mb-4" onclick="window.location = 'articles/ajouter'">
@@ -56,8 +57,8 @@
     window.addEventListener("DOMContentLoaded", () => {
         //Récupération des éléments DOM nécessaires
         var articles = document.getElementsByClassName("article-row")
-        
 
+        //Association des lignes du tableau avec les différentes fonctions
         const Articles = new Article(articles)
         Articles.associateArticlesFunctions()
     })

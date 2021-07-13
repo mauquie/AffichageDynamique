@@ -13,5 +13,8 @@ urlpatterns = [
     path("parametres/sondages/ajouter", urls.ajouterSondage),
     path("parametres/sondages/modifier", urls.modifierSondage),
     path("parametres/sondages/supprimer", urls.supprimerSondage),
+    path("parametres/informations", urls.informations),
+    path("parametres/informations/ajouter", urls.ajouterInformation),
+    path("parametres/informations/modifier", urls.modifierInformation),
 
 ]

@@ -77,7 +77,7 @@ def sondages(request):
 
 def ajouterSondage(request):
     if GROUPE != "STUDENT":
-        return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Sondages", {"user_group": GROUPE}))
+        return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Ajouter un sondage", {"user_group": GROUPE}))
     
     else:
         raise PermissionDenied()
@@ -85,7 +85,7 @@ def ajouterSondage(request):
 def modifierSondage(request):
     #To-do : Un check du groupe pour savoir si il est au même niveau ou au dessus pour avoir le droit de modifier me sondage
     if GROUPE != "STUDENT":
-        return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Sondages", {"user_group": GROUPE}))
+        return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Modifier un sondage", {"user_group": GROUPE}))
     
     else:
         raise PermissionDenied()
@@ -100,6 +100,40 @@ def supprimerSondage(request, message=""):
 
 
 
+"""
+    Section gérant tout ce qui touche aux informations
+"""
+def informations(request):
+    if GROUPE != "STUDENT":
+        return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", {"user_group": GROUPE}))
+    
+    else:
+        raise PermissionDenied()
+
+def ajouterInformation(request):
+    if GROUPE != "STUDENT":
+        return render(request, 'WebServer/Gestion Affichage/Informations/ajouter.html', exInfos("Modifier l'information", {"user_group": GROUPE}))
+    
+    else:
+        raise PermissionDenied()
+
+def modifierInformation(request):
+    if GROUPE != "STUDENT":
+        if(request.GET.get("id", "") != ""):
+            return render(request, 'WebServer/Gestion Affichage/Informations/modifier.html', exInfos("Modifier l'information", {"user_group": GROUPE}, informations={"title": "Le nouveaujeu", "informationContent": "je suis le contenu", "date": "2021-08-12", "type": "2"} ))
+
+        else:
+            raise Http404()
+
+    else:
+        raise PermissionDenied()
+
+
+
+
+"""
+    Section contenant les fonctions qui servent pour les views mais que n'en retourne pas
+"""
 def exInfos(pageTitle, user, message="", informations={}):
     '''
         Fonction appelé quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
