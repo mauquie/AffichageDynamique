@@ -49,7 +49,7 @@ Pour que le code fonctionne, il faudra cependant importer d'autres choses. Nous 
 ``` 
 (le lien symbolique peut changer, il se trouve dans Templates/WebServer/), ensuite, nous devrons importer les fichiers javascript :
 ```html
-<script src="{% static 'JS/Cropper.js' %}"></script>
+<script src="{% static 'JS/cropper.js' %}"></script>
 <script src="{% static 'JS/imageDecoupeur.js' %}"></script>
 ```
 Et enfin écrire le code suivant :
