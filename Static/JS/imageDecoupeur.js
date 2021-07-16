@@ -7,14 +7,15 @@ class imageDecoupeur{
     *   @param {HTMLDivElement} imageUploadBox - Groupe contenant le SVG et la prévisualisation de l'image que l'utilisateur a choisi
     *   @param {HTMLImageElement} [imagePreview = null] - Element IMG où sera affiché la prévisualisation de l'image
     *   @param {SVGSVGElement} [svgImage = null] - Element affiché quand l'utilisateur n'a pas encore choisi de nouvelle valeur
-    *   
+    *   @param {dict} [ratio = {lon: 16, lar: 9}] - Ratio selon lequel la photo sera découpée 
     */
-    constructor(imageInput, imageUploadBox, imagePreview = document.createElement("img"), svgImage = document.createElement("svg")){
+    constructor(imageInput, imageUploadBox, imagePreview = document.createElement("img"), svgImage = document.createElement("svg"), ratio = {lon: 16, lar: 9}){
         //Attribution et initialisations des éléments HTML utilisés 
         this.imageInput = imageInput
         this.imageUploadBox = imageUploadBox
         this.svgImage = svgImage
         this.imagePreview = imagePreview
+        this.ratio = ratio
         
         this.cropImagePreview = document.getElementById("cropImagePreview")
         this.cropperDiv = document.getElementById("cropper")
@@ -133,9 +134,9 @@ class imageDecoupeur{
         this.cropper = new Cropper(this.cropImagePreview, { //Options du découpeur
             dragMode: 'move',
             minContainerWidth: width,
-            minContainerHeight: width * 9 /16, //Toujours le même ratio 16:9
-            aspectRatio: 16 / 9,
-            initialAspectRatio: 16 / 9,
+            minContainerHeight: width * 9 / 16, //Garde toujours le même ratio
+            aspectRatio: this.ratio.lon / this.ratio.lar,
+            initialAspectRatio: this.ratio.lon / this.ratio.lar,
             autoCropArea: 1,
             toggleDragModeOnDblclick: false,
 
