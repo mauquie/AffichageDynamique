@@ -1,0 +1,86 @@
+{%extends '../base.html'%}
+
+{%block title%}{{pageTitle}}{%endblock title%}
+
+{%block content%}
+<div class="row p-3">
+    <p class="fs-1 align-middle">Ajouter un compte</p>
+</div>
+<div class="row p-3 ">
+    <div class="border rounded-3 m-3 mb-5 px-3">
+        <form id="formulaire" action="#" method="post">
+            {% csrf_token %}
+            <div class="form-group my-3">
+                <div class="input-group">
+                    <input 
+                        id="nomInput"
+                        name="nom"
+                        type="text" 
+                        placeholder="Nom"
+                        class="form-control mx-2" 
+                        aria-describedby="AideNom" 
+                        maxlength="30"
+                        value="{{informations.nom}}"
+                        required
+                    >
+                    <input 
+                        id="prenomInput"
+                        name="prenom"
+                        type="text" 
+                        placeholder="Prenom"
+                        class="form-control mx-2" 
+                        aria-describedby="AidePrenom" 
+                        maxlength="30"
+                        value="{{informations.prenom}}"
+                        required
+                    >
+                </div>
+            </div>
+            <div class="form-group my-3">
+                <label for="typeInformation">Type de compte</label>
+                <select class="form-select my-2" aria-label="select information">
+                    <option value="1" selected>Etudiant</option>
+                    <option value="2">Surveillant</option>
+                    <option value="3">Administrateur</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <small id="identifiant" class="form-text text-muted">L'identifiant du compte est : prenom.nom</small>
+            </div>
+            <div class="form-group my-3">
+                <div class="row">
+                    <div class="col-lg-2 btn-group"> 
+                        <button id="sendShow" type="submit" class="btn btn-primary"
+                            data-bs-toggle="tooltip" data-bs-html="true" title="En créant l'utilisateur, aucune information n'est encore connue. Pour rentrer ses informations, dont son mot de passe, l'utilisateur doit se connecter une première fois sur ce site avec l'identifiant donné.">
+                            Créer l'utilisateur !
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    (window.addEventListener("DOMContentLoaded",() => {
+        //Définition les aides pour les boutons d'actions
+        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        let tooltips = []
+        for(let i = 0; i < tooltipsDOM.length; i++){
+            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
+        }
+
+        document.getElementById('nomInput').addEventListener('input', () => {createID()})
+        document.getElementById('prenomInput').addEventListener('input', () => {createID()})
+    }))
+
+    function createID(){
+        let nom = document.getElementById('nomInput').value.toLowerCase()
+        let prenom = document.getElementById('prenomInput').value.toLowerCase()
+        let id = prenom + "." + nom
+
+        id = id.split(" ").join("_")
+
+        document.getElementById('identifiant').innerText = "L'identifiant du compte est : " + id
+    }
+</script>
+{%endblock content%}

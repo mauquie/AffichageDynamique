@@ -12,7 +12,7 @@
     color: rgb(255, 133, 19)
 }
 
-.article-row {
+.tbody-pointer {
     cursor: pointer;
 }
 
@@ -46,10 +46,29 @@
 .cropImage {
     width: 100%;
     max-width: 100%;
-    max-height: 60vmin;
-    height: 60vmin;
+    max-height: calc(width * 9 / 16);
+    height: calc(width * 9 / 16);
 }
 
 [hidden]{
     display: none !important;
+}
+
+.accordion-button:not(collapsed){
+    color: black !important;
+    background-color: rgba(255, 255, 255, 0) !important;
+}
+
+.profilePic{
+    height: 100px;
+    width:100px; 
+    transform: translateX(-50%) translateY(-50%); 
+    margin-left: 50%; 
+    margin-top: 50%;
+    cursor: pointer
+}
+
+.profilePic:hover{
+    background-color: rgba(0, 0, 0, 0.2);
+    
 }

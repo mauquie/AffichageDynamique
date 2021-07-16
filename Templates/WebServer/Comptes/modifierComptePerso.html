@@ -1,0 +1,214 @@
+{%extends '../base.html'%}
+
+{%load static%}
+
+{%block title%}{{pageTitle}}{%endblock title%}
+
+{%block content%}
+<div class="row p-3">
+    <p class="fs-1 align-middle">Modifier mon compte</p>
+</div>
+<div class="row p-3">
+    <div class="border rounded-3 m-3 mb-1 px-3 mx-2">
+        <form id="formulaire" action="#" method="post">
+            {% csrf_token %}
+            <div class="form-group my-3">
+                <div class="row">
+                    <div class="col-lg-2 mb-3 mb-lg-0">
+                        <div class="border rounded-circle d-flex align-items-center justify-content-center profilePic" id="imageUploadBox" data-bs-toggle="" data-bs-target="#staticBackdrop">
+                            <svg id="svgImage" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
+                                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+                            </svg>
+                            <div id="imagePreview" class="rounded-circle" data-bs-toggle="tooltip" data-bs-html="true" title="Modifier l'image" hidden></div>
+                            <input 
+                                name="image" 
+                                type="file" 
+                                accept="image/*"
+                                class="form-control" 
+                                id="imageInput" 
+                                hidden
+                                value="{{informations.image}}"
+                            >
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <div class="input-group">
+                            <input 
+                                id="nomInput"
+                                name="nom"
+                                type="text" 
+                                placeholder="Nom"
+                                class="form-control mx-2" 
+                                aria-describedby="AideNom" 
+                                maxlength="30"
+                                value="{{informations.nom}}"
+                                disabled
+                            >
+                        </div>
+                        <div class="input-group mt-4">
+                            <input 
+                                id="prenomInput"
+                                name="prenom"
+                                type="text" 
+                                placeholder="Prenom"
+                                class="form-control mx-2" 
+                                aria-describedby="AidePrenom" 
+                                maxlength="30"
+                                value="{{informations.prenom}}"
+                                disabled
+                            >
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="form-group my-3">
+                <label for="Email" class="form-label">Email</label>
+                <div class="input-group">
+                    <input 
+                        id="emailInput"
+                        name="email"
+                        type="email" 
+                        placeholder="Entrer votre email"
+                        class="form-control" 
+                        aria-describedby="AideNom" 
+                        maxlength="50"
+                        value="{{informations.email}}"
+                    >
+                </div>
+            </div>
+            <div class="form-group my-3">
+                <label for="Pseudo" class="form-label">Pseudo</label>
+                <div class="input-group">
+                    <input 
+                        id="pseudoInput"
+                        name="pseudo"
+                        type="text" 
+                        placeholder="Entrer votre pseudo"  
+                        class="form-control" 
+                        aria-describedby="AidePseudo" 
+                        maxlength="45"
+                        value="{{informations.pseudo}}"
+                    >
+                </div>
+            </div>
+            <div class="form-group my-3">
+                <label for="Pseudo" class="form-label">Changer mon mot de passe</label>
+                <div class="input-group">
+                    <input 
+                        id="passwordInput"
+                        name="password"
+                        type="password" 
+                        placeholder="Mot de passe"  
+                        class="form-control" 
+                        aria-describedby="AideMotDePasse" 
+                        maxlength="50"
+                    >
+                    <input 
+                        id="passwordInput"
+                        name="password"
+                        type="password" 
+                        placeholder="Mot de passe (encore)"  
+                        class="form-control" 
+                        aria-describedby="AideMotDePasse" 
+                        maxlength="50"
+                    >
+                </div>
+            </div>
+            <div class="form-group my-3">
+                <div class="row">
+                    <div class="col-lg-2 btn-group"> 
+                        <button id="submitEdit" type="submit" class="btn btn-primary"
+                            data-bs-toggle="tooltip" data-bs-html="true" title="Modifier les données relatives à mon compte">
+                            Modifier !
+                        </button>
+                    </div>
+                    <div class="col-lg-2 btn-group mt-lg-0 mt-2"> 
+                        <button id="deleteAccount" type="button" class="btn btn-outline-danger"
+                            data-bs-toggle="tooltip" data-bs-html="true" title="En supprimant votre compte, vous n'aurez plus accès à ce site mais toutes vos actions sur celui ci seront gardées.">
+                            Supprimer mon compte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% include '../decoupeur.html' %}
+<script src="{% static 'JS/cropper.js' %}"></script>
+<script src="{% static 'JS/imageDecoupeur.js' %}"></script>
+<script>
+    (window.addEventListener("DOMContentLoaded",() => {
+        //Définition les aides pour les boutons d'actions
+        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        let tooltips = []
+        for(let i = 0; i < tooltipsDOM.length; i++){
+            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
+        }
+        let decoupeur = new imageDecoupeur(document.getElementById("imageInput"), 
+            document.getElementById("imageUploadBox"),
+            document.getElementById("imagePreview"),
+            document.getElementById("svgImage"),
+            ratio={lon: 1, lar: 1}
+        )
+
+        //Affichage de l'image dans la zone de prévisualisation
+        if(document.getElementById("imageInput").defaultValue !== ""){
+                var request = new XMLHttpRequest();
+                
+                //Récupération de l'url de l'image
+                let ip = window.location.href.split("/")[2]
+                let url = "http://" + ip + document.getElementById("imageInput").defaultValue
+
+                var reader = new FileReader();
+
+                //Récupération de l'image
+                createFile(url).then(file => {
+
+
+                    //Lecture des données de l'image
+                    reader.readAsDataURL(file);
+
+                    reader.onload =  function(e){
+                        //Modification des paramètres pour afficher l'image dans la zone de prévisualisation
+                        decoupeur.imageUploaded = file
+                        decoupeur.cropImagePreview.src = e.target.result
+                        decoupeur.isImageLoaded = true
+                        decoupeur.imagePreview.style.backgroundImage = "url(" + e.target.result + ")"
+                        decoupeur.imageUploadBox.dataset.bsToggle = "modal"
+                        decoupeur.svgImage.setAttribute("hidden", "true")
+                        decoupeur.imagePreview.hidden = false
+                    };
+
+                    let container = new DataTransfer();
+                    container.items.add(file);
+
+                    decoupeur.imageInput.files = container.files
+                })             
+            }
+    }))
+
+    async function createFile(url){
+    /**
+     *  Fonction récupérant une image depuis une url et renvoyant un objet File contenant l'image
+     * 
+     *  @param
+     *      url {string} - Url vers l'image
+     * 
+     *  @return
+     *      image {File} - Fichier contenant l'image 
+     */
+
+    let response = await fetch(url);
+    let data = await response.blob();
+
+    let metadata = {
+        type: 'image/png'
+    };
+    let file = new File([data], "article.png", metadata);
+    return file
+}
+    
+</script>
+{%endblock content%}

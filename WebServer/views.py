@@ -1,6 +1,7 @@
 from django.http.response import Http404
 from django.shortcuts import render
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import permission_required
 
 #Variable de debug
 GROUPE = "ADMIN"
@@ -37,6 +38,7 @@ def modifierArticle(request, message=""):
     '''
         Fonction appelé quand on veut modifier un article.
     '''
+    #To-do : Verification du groupe / utilisateur pour voir sil a le droit de modifier l'article
     if request.GET.get('id', '') != '':
         return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", {'user_group': GROUPE}, informations={"title": "Les militaires", "date": "2021-07-10", "articleContent": "ils sont gentils", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
 
@@ -68,6 +70,8 @@ def gestionAffichage(request):
 """
     Section gérant tout ce qui touche aux sondages
 """
+
+#Utiliser le @permission_required()
 def sondages(request):
     if GROUPE != "STUDENT":
         return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", {"user_group": GROUPE}))
@@ -127,6 +131,31 @@ def modifierInformation(request):
 
     else:
         raise PermissionDenied()
+
+
+
+"""Section gérant tout ce qui touche aux comptes"""
+def comptes(request):
+    return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", {"user_group": GROUPE}))
+
+def ajouterCompte(request):
+    return render(request, 'WebServer/Comptes/ajouter.html', exInfos("Ajouter un compte", {"user_group": GROUPE}))
+
+def modifierCompte(request):
+    if request.GET.get('id', False):
+        return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", {"user_group": GROUPE}, informations={"prenom": "Jean Michel", "nom": "Bernadette", "email": "JMBernadette@gmail.com", "pseudo": "JMB", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
+    else:
+        return render(request, 'WebServer/Comptes/modifierComptePerso.html', exInfos("Modifier mon compte", {"user_group": GROUPE}, informations={"prenom": "Jean Michel", "nom": "Bernadette", "email": "JMBernadette@gmail.com", "pseudo": "JMB", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
+
+def supprimerCompte(request):
+    pass
+
+def deconnection(request):
+    pass
+
+def afficherComptes(request):
+    return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", {"user_group": GROUPE}))
+
 
 
 
