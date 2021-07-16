@@ -32,6 +32,7 @@ Pour utiliser des images dans les articles, on a du créer un système pour les 
 2) Un DIV sur lequel on cliquera pour obtenir la fenêtre de modification
 3) (Optiennel) Un IMG pour afficher une prévisualisation de l'image hors de la fenêtre de modification
 4) (Optionnel) Un SVG que l'on veut cacher/afficher en fonction de si l'utilisateur à selectionné une nouvelle image (comme une image par défaut)
+5) (Optionnel) Un ratio d'image à respecter, par défaut il est égal à 16:9 
 
 Ensuite, du coté HTML, on devra avoir le code formé comme ceci :
 ```html
@@ -58,6 +59,7 @@ let decoupeur = new imageDecoupeur(document.getElementById("imageInput"),
     document.getElementById("imageUploadBox"),
     document.getElementById("imagePreview"),
     document.getElementById("svgImage"),
+    {lon: 16, lar: 9}
 )
 ```
 
