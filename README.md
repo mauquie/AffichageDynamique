@@ -45,7 +45,7 @@ Les données `data-bs-toggle` et `data-bs-target` sont utilisées pour afficher 
 
 Pour que le code fonctionne, il faudra cependant importer d'autres choses. Nous devons d'abord faire un 
 ```django
-{% decoupeur.html %}
+{% include './decoupeur.html' %}
 ``` 
 (le lien symbolique peut changer, il se trouve dans Templates/WebServer/), ensuite, nous devrons importer les fichiers javascript :
 ```html
