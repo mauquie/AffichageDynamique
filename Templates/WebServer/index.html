@@ -9,63 +9,68 @@
     <p class="fs-1 align-middle">Administration des écrans du lycée Antoine Bourdelle</p>
 </div>
 <div class="row">
-    <div class="col-lg-6 col-11 p-4 m-3 border rounded-3">
-        <div class="row">
-            <h2>Actions rapides :</h2>
+    <div class="col-lg-6 col-11 m-3">
+        <div class="p-4 border rounded-3">
+            <div class="row">
+                <h2>Actions rapides :</h2>
+            </div>
+            <div class="row g-2">
+                <div class="col-lg-6 col-12">
+                    <a href="articles" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Voir les derniers articles en ligne</h5>
+                        </div>
+                    </a>
+                </div>
+                {% ifequal user.user_group "ADMIN" %}
+                <div class="col-lg-6 col-12">
+                    <a href="parametres/informations" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Modifier le message affiché sur les écrans</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a href="comptes/ajouter" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Créer un nouvel utilisateur</h5>
+                        </div>
+                    </a>
+                </div>
+                {% endifequal %}
+                <div class="col-lg-6 col-12">
+                    <a href="articles/ajouter" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Poster un article</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
-        <div class="row g-2">
-            <div class="col-lg-6 col-12">
-                <a href="articles" class="clickable" >
-                    <div class="p-3 border rounded-1">
-                        <h5>Voir les derniers articles en ligne</h5>
-                    </div>
-                </a>
-            </div>
-            {% ifequal user.user_group "ADMIN" %}
-            <div class="col-lg-6 col-12">
-                <a href="#" class="clickable" >
-                    <div class="p-3 border rounded-1">
-                        <h5>Modifier le message affiché sur les écrans</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-6 col-12">
-                <a href="#" class="clickable" >
-                    <div class="p-3 border rounded-1">
-                        <h5>Créer un nouvel utilisateur</h5>
-                    </div>
-                </a>
-            </div>
-            {% endifequal %}
-            <div class="col-lg-6 col-12">
-                <a href="articles/ajouter" class="clickable" >
-                    <div class="p-3 border rounded-1">
-                        <h5>Poster un article</h5>
-                    </div>
-                </a>
-            </div>
-        </div>
+        
     </div>
-    <div class="col-lg-5 col-11 p-4 m-3 border rounded-3">
-        <div class="row">
-            <h2>Mon compte :</h2>
+    <div class="col-lg-5 col-11 m-3">
+        <div class="p-4 border rounded-3">
+            <div class="row">
+                <h2>Mon compte :</h2>
+            </div>
+            <div class="row g-2">
+                <div class="col-lg-6 col-12">
+                    <a href="comptes" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Voir tout mes articles</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a href="comptes/modifier" class="clickable">
+                        <div class="p-3 border rounded-1">
+                            <h5>Modifier mes informations</h5>
+                        </div>
+                    </a>
+                </div>
+            </div>  
         </div>
-        <div class="row g-2">
-            <div class="col-lg-6 col-12">
-                <a href="#" class="clickable" >
-                    <div class="p-3 border rounded-1">
-                        <h5>Voir tout mes articles</h5>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-6 col-12">
-                <a href="#" class="clickable">
-                    <div class="p-3 border rounded-1">
-                        <h5>Modifier mon mot de passe</h5>
-                    </div>
-                </a>
-            </div>
-        </div>  
     </div>
 </div>
 {% endblock content %}

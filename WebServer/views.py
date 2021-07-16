@@ -49,7 +49,7 @@ def supprimerArticle(request, message=""):
     '''
         Fonction appelé quand on veut supprimer un article
     '''
-    message = "Supprimé avec succès !"
+    message = {"text": "Supprimé avec succès !", "type":"success"}
     return articles(request, message)
 
 
@@ -98,7 +98,7 @@ def supprimerSondage(request, message=""):
     '''
         Fonction appelé quand on veut supprimer un article
     '''
-    message = "Supprimé avec succès !"
+    message = {"text": "Supprimé avec succès !", "type":"success"}
     return articles(request, message)
 
 
@@ -107,9 +107,9 @@ def supprimerSondage(request, message=""):
 """
     Section gérant tout ce qui touche aux informations
 """
-def informations(request):
+def informations(request, message=""):
     if GROUPE != "STUDENT":
-        return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", {"user_group": GROUPE}))
+        return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", {"user_group": GROUPE}, message))
     
     else:
         raise PermissionDenied()
@@ -132,10 +132,16 @@ def modifierInformation(request):
     else:
         raise PermissionDenied()
 
+def supprimerInformation(request):
+    return informations(request, {"text": "Supprimé avec succés", "type":"success"})
 
 
-"""Section gérant tout ce qui touche aux comptes"""
-def comptes(request):
+
+
+"""
+    Section gérant tout ce qui touche aux comptes
+"""
+def comptes(request, message=""):
     return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", {"user_group": GROUPE}))
 
 def ajouterCompte(request):
@@ -148,13 +154,14 @@ def modifierCompte(request):
         return render(request, 'WebServer/Comptes/modifierComptePerso.html', exInfos("Modifier mon compte", {"user_group": GROUPE}, informations={"prenom": "Jean Michel", "nom": "Bernadette", "email": "JMBernadette@gmail.com", "pseudo": "JMB", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
 
 def supprimerCompte(request):
-    pass
+    message = {"text": "Compte bien désactivé !", "type": "success"}
+    return afficherComptes(request, message)
 
 def deconnection(request):
     pass
 
-def afficherComptes(request):
-    return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", {"user_group": GROUPE}))
+def afficherComptes(request, message=""):
+    return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", {"user_group": GROUPE}, message))
 
 
 
@@ -163,7 +170,7 @@ def afficherComptes(request):
 """
     Section contenant les fonctions qui servent pour les views mais que n'en retourne pas
 """
-def exInfos(pageTitle, user, message="", informations={}):
+def exInfos(pageTitle, user, message={}, informations={}):
     '''
         Fonction appelé quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
         de l'utilisateur ou un message d'information sur une action effectuée
@@ -171,8 +178,8 @@ def exInfos(pageTitle, user, message="", informations={}):
         @Params :
             pageTitle {string}     - Nom de la page
             user {dict}            - Dictionnaire d'infos sur l'utilisateur
-            ?message {string}      - Message à transmettre à l'utilisateur sur la page
-            ?informations {dict}   - Informations complètes à passer à la page (du genre les données d'un article)
+            ?message {dict}        - Message à transmettre à l'utilisateur sur la page (text: "", type: "success" | "danger" | "warning" )
+            ?informations {dict}   - Informations complètes à passer à la page (Ex: les données d'un article)
 
         @Return :
             dict : Informations complémentaires

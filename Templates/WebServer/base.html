@@ -62,13 +62,9 @@
                 {% endblock content %}
             </div>
         </div>
-        <footer id="footer" class="text-center text-lg-start" style="transform: translateY(200%);">
-            
-            
-        </footer>
         <footer class="bd-footer mt-5 absolute-bottom">
             <div class="container">
-              <div class="row">
+                <div class="row">
                     <div class="text-center p-3">
                         <span>
                             <a href="#" class="clickable">À propos</a>
@@ -79,13 +75,34 @@
                         </span>
                         <p class="text-muted">Made with Love <3</p>
                         <img src="{% static 'IMG/Logo_lycée_Bourdelle.jpg'%}" alt="Logo lycée Bourdelle" class="rounded" width="115px" style="min-height: 100px; min-width:100px">
-
                     </div>
-              </div>
+                </div>
             </div>
-          </footer>
+        </footer>
     </div>
+    {% if message|length > 0 %}
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div class="toast align-items-center text-white bg-{{message.type}} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    {{message.text}}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    {%endif%}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            var toastElList = document.querySelectorAll('.toast')[0]
+            if (toastElList != undefined){
+                var toast = new bootstrap.Toast(toastElList, {delay: 7000})
+                toast.show()
+            }
+        })
+    </script>
 </body>
 </html>
