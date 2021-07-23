@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Article, ArticleAdmin, Display, DisplayAdmin, Page, PageAdmin
 
-# Register your models here.
+admin.site.register(Article, ArticleAdmin)
+admin.site.register(Display, DisplayAdmin)
+admin.site.register(Page, PageAdmin)
