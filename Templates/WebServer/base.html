@@ -80,15 +80,19 @@
             </div>
         </footer>
     </div>
-    {% if message|length > 0 %}
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-        <div class="toast align-items-center text-white bg-{{message.type}} border-0" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body">
-                    {{message.text}}
+    {% if messages|length > 0 %}
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11">
+            {% for message in messages %}
+                <div class="toast align-items-center text-white bg-{{message.type}} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{message.text}}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
                 </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
+            {%endfor%}
         </div>
     </div>
     {%endif%}
@@ -97,10 +101,17 @@
     
     <script>
         window.addEventListener("DOMContentLoaded", () => {
-            var toastElList = document.querySelectorAll('.toast')[0]
+            //Gestion des notifications
+            var toastElList = document.querySelectorAll('.toast')
+            
             if (toastElList != undefined){
-                var toast = new bootstrap.Toast(toastElList, {delay: 7000})
-                toast.show()
+                let toast
+
+                //Crée et affiche les différents messages à l'écran
+                for(let i = 0; i < toastElList.length; i++){
+                    toast = new bootstrap.Toast(toastElList[i], {delay: 7000})
+                    toast.show()
+                }
             }
         })
     </script>
