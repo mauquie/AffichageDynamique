@@ -70,6 +70,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AffichageDynamique.wsgi.application'
 
+LOGIN_URL = '/login/'
+
+APPEND_SLASH = False
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

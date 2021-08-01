@@ -4,6 +4,9 @@ from . import views as urls
 #Urls concernant le serveur Web (celui utilisé par des êtres humains)
 urlpatterns = [
     path("", urls.index),
+    path("login/", urls.loginView),
+    path("firstLogin/", urls.firstLogin),
+    path("logout/", urls.deconnection),
     path("articles", urls.articles),
     path("articles/ajouter", urls.ajouterArticle),
     path("articles/modifier", urls.modifierArticle),
@@ -22,5 +25,4 @@ urlpatterns = [
     path("comptes/modifier", urls.modifierCompte),
     path("comptes/supprimer", urls.supprimerCompte),
     path("comptes/voir", urls.afficherComptes),
-
 ]
