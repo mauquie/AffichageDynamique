@@ -14,7 +14,7 @@
                 <div class="input-group">
                     <input 
                         id="nomInput"
-                        name="nom"
+                        name="last_name"
                         type="text" 
                         placeholder="Nom"
                         class="form-control mx-2" 
@@ -25,7 +25,7 @@
                     >
                     <input 
                         id="prenomInput"
-                        name="prenom"
+                        name="first_name"
                         type="text" 
                         placeholder="Prenom"
                         class="form-control mx-2" 
@@ -38,14 +38,11 @@
             </div>
             <div class="form-group my-3">
                 <label for="typeInformation">Type de compte</label>
-                <select class="form-select my-2" aria-label="select information">
-                    <option value="1" selected>Etudiant</option>
-                    <option value="2">Surveillant</option>
-                    <option value="3">Administrateur</option>
-                </select>
+                {{ form.groups }}
             </div>
             <div class="form-group">
                 <small id="identifiant" class="form-text text-muted">L'identifiant du compte est : prenom.nom</small>
+                <input type="text" id="username" name="username" hidden>
             </div>
             <div class="form-group my-3">
                 <div class="row">
@@ -81,6 +78,8 @@
         id = id.split(" ").join("_")
 
         document.getElementById('identifiant').innerText = "L'identifiant du compte est : " + id
+        document.getElementById('username').value = id
+        console.log(document.getElementById('username'))
     }
 </script>
 {%endblock content%}
