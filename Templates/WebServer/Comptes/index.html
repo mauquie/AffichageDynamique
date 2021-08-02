@@ -32,13 +32,14 @@
             </div>
         </div>
     </div>  
-    {% if user.user_group == "ADMIN" %}
+    {% if perms.user.can_add_user or perms.user.can_view_user %}
     <div class="col-lg-5 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Gérer d'autres comptes :</h2>
             </div>
             <div class="row g-2">
+                {% if perms.user.can_view_user %}
                 <div class="col-lg-6 col-12">
                     <a href="/comptes/voir" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -46,6 +47,8 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
+                {% if perms.user.can_add_user %}
                 <div class="col-lg-6 col-12">
                     <a href="/comptes/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -53,11 +56,13 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>  
     {% endif %}
-    <div class="{% if user.user_group == 'ADMIN' %}col-lg-6{%endif%} col-11 m-3">
+    {% if perms.article.can_add_article %}
+    <div class="col-lg-6 col-11 m-3">
         <div class="border rounded-3">
             <div class="row" >
                 <div class="accordion accordion-flush" id="accordion-articles">
@@ -100,7 +105,8 @@
             </div>
         </div>
     </div>
-    {% if user.user_group != "STUDENT" %}
+    {% endif %}
+    {% if perms.sondage.can_add_sondage %}
     <div class="col-lg-5 col-11 m-3">
         <div class="border rounded-3">
             <div class="row">

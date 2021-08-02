@@ -28,6 +28,7 @@
                                     </svg>
                                 </a>
                             </li>
+                            {% if perms.article.can_add_article %}
                             <li class="nav-item">
                                 <a href="/articles/ajouter" class="nav-link {% ifequal pageTitle "Ajouter un article" %}active{% endifequal%}" title="Ajouter un article">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -36,7 +37,7 @@
                                     </svg>
                                 </a>
                             </li>
-                            {% if user.user_group != "STUDENT" %}
+                            {% endif %}
                             <li class="nav-item">
                                 <a href="/parametres" class="nav-link {% ifequal pageTitle "Gestion de l'affichage" %}active{% endifequal%}" title="Paramètres de l'affichage">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
@@ -45,7 +46,6 @@
                                     </svg>
                                 </a>
                             </li>
-                            {% endif %}
                             <li class="nav-item">
                                 <a href="/comptes" class="nav-link {% ifequal pageTitle "Gestion du compte" %}active{% endifequal%} clickable" title="Mon compte">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
@@ -67,8 +67,6 @@
                 <div class="row">
                     <div class="text-center p-3">
                         <span>
-                            <a href="#" class="clickable">À propos</a>
-                            &middot
                             <a href="https://github.com/mauquie/AffichageDynamique" target="_blank" class="clickable">GitHub</a>
                             &middot
                             <a href="https://bourdelle.mon-ent-occitanie.fr/" target="_blank" class="clickable">Ent</a>

@@ -9,12 +9,14 @@
     <p class="fs-1 align-middle">Gestion de l'affichage</p>
 </div>
 <div class="row">
+    {% if perms.information.can_view_information or perms.information.can_add_information %}
     <div class="col-lg-6 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Informations :</h2>
             </div>
             <div class="row g-2">
+                {% if perms.information.can_view_information %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/informations" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -22,6 +24,8 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
+                {% if perms.information.can_add_information %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/informations/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -29,13 +33,19 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
             </div>
         </div>
-        <div class="p-4 mt-5 border rounded-3">
+    </div>
+    {% endif %}
+    {% if perms.sondage.can_add_sondage or perms.sondage.can_view_sondage %}
+    <div class="col-lg-5 col-11 m-3">
+        <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Sondages :</h2>
             </div>
             <div class="row g-2">
+                {% if perms.sondage.can_add_sondage %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/sondages/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -43,6 +53,8 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
+                {% if perms.sondage.can_view_sondage %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/sondages" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -50,10 +62,12 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
-    <div class="col-lg-5 col-11 m-3">
+    {% endif %}
+    <div class="col-lg-6 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Ecrans :</h2>

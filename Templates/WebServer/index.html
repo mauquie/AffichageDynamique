@@ -15,6 +15,7 @@
                 <h2>Actions rapides :</h2>
             </div>
             <div class="row g-2">
+                {% if perms.article.can_view_article %}
                 <div class="col-lg-6 col-12">
                     <a href="articles" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -22,14 +23,15 @@
                         </div>
                     </a>
                 </div>
-                {% ifequal user.user_group "ADMIN" %}
+                {% endif %}
                 <div class="col-lg-6 col-12">
-                    <a href="parametres/informations" class="clickable" >
+                    <a href="comptes" class="clickable" >
                         <div class="p-3 border rounded-1">
-                            <h5>Modifier le message affiché sur les écrans</h5>
+                            <h5>Gérer mon compte</h5>
                         </div>
                     </a>
                 </div>
+                {% if perms.user.can_add_user %}
                 <div class="col-lg-6 col-12">
                     <a href="comptes/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -37,7 +39,8 @@
                         </div>
                     </a>
                 </div>
-                {% endifequal %}
+                {% endif %}
+                {% if perms.article.can_add_article %}
                 <div class="col-lg-6 col-12">
                     <a href="articles/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -45,6 +48,7 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
             </div>
         </div>
         
@@ -55,6 +59,7 @@
                 <h2>Mon compte :</h2>
             </div>
             <div class="row g-2">
+                {% if perms.article.can_view_article %}
                 <div class="col-lg-6 col-12">
                     <a href="comptes" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -62,6 +67,7 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
                 <div class="col-lg-6 col-12">
                     <a href="comptes/modifier" class="clickable">
                         <div class="p-3 border rounded-1">
