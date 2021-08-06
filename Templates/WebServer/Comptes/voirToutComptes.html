@@ -1,7 +1,7 @@
 {% extends '../base.html' %}
 
 {% block title %}{{ pageTitle }}{% endblock title %}
-
+{% load static %}
 {% block content %}
 <div class="row p-3">
     <p class="fs-1 align-middle">Gestion des utilisateurs</p>
@@ -21,18 +21,16 @@
                     </tr>
                 </thead>
                 <tbody class="tbody-pointer">
-                    <tr class="article-row table-danger" id="id_article">
-                        <td scope="row">Harnisch</td>
-                        <td>Elowan</td>
-                        <td>Administrateur</td>
-                        <td class="d-none d-lg-block">Non</td>
+
+                    {% for user in informations.users %}
+                    <tr class="article-row {% if user.is_active != True %}table-danger{%endif%}"
+                      id="{{user.id}}">
+                        <td scope="row">{{user.last_name}}</td>
+                        <td>{{user.first_name}}</td>
+                        <td>{%for group in user.groups.all%}{{group}}{%if group != user.groups.all.0%}, {%endif%}{% endfor %}</td>
+                        <td class="d-none d-lg-block">{% if user.is_active %}Oui{%else%}Non{%endif%}</td>
                     </tr>
-                    <tr class="article-row">
-                        <td scope="row">Bernadette</td>
-                        <td>Jean Michel</td>
-                        <td>Vie scolaire</td>
-                        <td class="d-none d-lg-block">Oui</td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -45,84 +43,42 @@
             </button>
             <h5>Utilisateur : <strong id="article-name">Aucun utilisateur sélectionné</strong></h5>
             <div id="actions-btn">
-                <button type="button" id="edit" class="btn btn-outline-primary" onclick="window.location = 'modifier?id=1'" disabled>Voir son compte</button>
-                <button type="button" id="delete" class="btn btn-danger" onclick="window.location = '/comptes/supprimer'" disabled>Désactiver</button>
+                <button type="button" id="edit" class="btn btn-outline-primary" disabled>Voir son compte</button>
+                <button type="button" id="delete" class="btn btn-outline-warning" disabled>Désactiver</button>
             </div>
         </div>
         
     </div>
 </div>
+<script src="{% static 'JS/List.js' %}"></script>
 <script>
     window.addEventListener("DOMContentLoaded", () => {
         //Récupération des éléments DOM nécessaires
-        var articles = document.getElementsByClassName("article-row")
+        let utilisateurs = document.getElementsByClassName("article-row")
+        let nomUtilisateur = document.getElementById("article-name")
+        let btnDelete = document.getElementById("delete")
+        let btnEdit = document.getElementById("edit")
 
         //Association des lignes du tableau avec les différentes fonctions
-        const Articles = new Article(articles)
-        Articles.associateArticlesFunctions()
+        const userList = new List(utilisateurs, nomUtilisateur, btnDelete, "table-danger", "Activer", "Désactiver")
+
+        //Recuperation de l'evenement quand on change d'objet sélectionné
+        document.addEventListener("selection", e => {
+            //Si pas déjà fait, on rend l'accès aux boutons
+            btnDelete.disabled = false
+            btnEdit.disabled = false
+
+            //Mise à jour des liens vers le bon objet
+            btnDelete.addEventListener("click", () => {
+                window.location = "/comptes/supprimer?id=" + e.detail.id
+            })
+
+            btnEdit.addEventListener("click", () => {
+                window.location = "/comptes/modifier?id=" + e.detail.id
+            })
+
+        })
+
     })
-    
-    function toggleActions(selected) {
-        /*
-        *   Fonction affichant les boutons quand l'utilisateur selectionne un article
-        *   et qui modifie le bouton "Cacher/Afficher" en fonction de si l'article est actuellement
-        *   à l'écran ou non
-        */
-        let articleName = document.getElementById("article-name")
-        let buttons = document.getElementById("actions-btn").children
-        
-        //Modification du texte affichant le nom de l'article selectionné
-        articleName.innerText = selected.children[0].innerText
-
-        //Boucle s'executant à chaque fois que l'utilisateur sélectionne un article
-        //Elle s'éxécute une fois pour chaque bouton d'action
-        for(let i = 0; i < buttons.length; i++){
-            buttons[i].disabled = false
-
-            //Changement du texte du bouton affichant (ou non) l'article à l'écran et son style
-            if(buttons[i].id == "hide" && selected.className.indexOf("table-warning") != -1){
-                buttons[i].innerHTML = "Afficher"
-                buttons[i].className = "btn btn-outline-success"
-
-            } else if (buttons[i].id == "hide") {
-                buttons[i].innerHTML = "Cacher"
-                buttons[i].className = "btn btn-outline-warning"
-            }
-        }   
-    }
-
-    class Article {
-        constructor(articles){
-            this.articles = articles
-            this.selected = undefined
-        }
-
-        associateArticlesFunctions(){
-            /*
-            *   Association de chaque ligne du tableau contenant les articles aux fonctions
-            *   gérant les boutons et les lignes ditent "active" (sélectionné)
-            */
-            //Affectation de l'évenement "click" à chaque ligne du tableau contenant les articles
-            for(let i = 0; i < this.articles.length ; i++){
-                this.articles[i].addEventListener("click", () => {
-                    this._toggleArticleActive(this.articles[i])
-                    toggleActions(this.selected)
-                })
-            }
-        }
-
-        _toggleArticleActive(article){
-            if(this.selected !== undefined){
-                let classList = this.selected.classList.value.split(" ")
-                classList.pop()
-                this.selected.classList.value = classList.join(" ")
-                        
-            }
-                    
-            this.selected = article
-            this.selected.classList.value += " table-active"
-        }
-    }
-
 </script>
 {% endblock content %}

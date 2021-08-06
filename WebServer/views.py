@@ -163,6 +163,11 @@ def supprimerArticle(request, messages=[]):
     message = {"text": "Supprimé avec succès !", "type":"success"}
     return articles(request, message)
 
+@permission_required('ApiServer.change_article')
+def toggleVisibiliteArticle(request):
+    #Vérification du groupe pour savoir si on peut modifier ou non
+    message = [{"type": "success", "text": "Modifié avec succée"}]
+    return articles(request, message)
 
 
 """
@@ -267,7 +272,7 @@ def comptes(request, messages=[]):
 def ajouterCompte(request):
     if request.method == "GET":
         form = forms.UserForm()
-        return render(request, 'WebServer/Comptes/ajouter.html', exInfos("Ajouter un compte", {"user_group": GROUPE}, form=form))
+        return render(request, 'WebServer/Comptes/ajouter.html', exInfos("Ajouter un compte", form=form))
 
     elif request.method == "POST":
         form = forms.UserForm(request.POST)
@@ -305,7 +310,9 @@ def ajouterCompte(request):
 
 @login_required
 def modifierCompte(request):
+    #Si l'user veut modifier un compte particulier
     if request.GET.get('id', False):
+        #Verification qu'il a les droits pour visionner le compte
         if request.user.has_perm("ApiServer.change_user"):
             return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", informations={"prenom": "Jean Michel", "nom": "Bernadette", "email": "JMBernadette@gmail.com", "pseudo": "JMB", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
         
@@ -314,6 +321,7 @@ def modifierCompte(request):
 
     else:
         if request.method == "POST":
+            #Si l'user veut modifier un compte particulier
             id = request.POST.get("id")
             if id == None:
                 #Modification de son propre compte
@@ -323,15 +331,20 @@ def modifierCompte(request):
                     password = request.POST.get("password", False)
                     passwordConfirm = request.POST.get("password_confirm", False)
 
+                    #Verification de si l'user veut modifier son mot de passe
                     if password :
                         if passwordConfirm == password:
+                            #Changement du mot de passe
                             request.user.password = make_password(password)
                             request.user.save()
                         
                         else:
                             return render(request, "WebServer/Comptes/modifierComptePerso.html", exInfos("Modifier mon compte", messages=[{"type": "danger", "text": "Les mots de passes ne sont pas identiques."}]))
                         
+                    #Sauvegarde du reste des informations
                     form.save()
+
+                    #Mise à jour du cookie de session
                     update_session_auth_hash(request, request.user)
 
                     return render(request, "WebServer/Comptes/modifierComptePerso.html", exInfos("Modifier mon compte", messages=[{"type": "success", "text": "Compte modifié !"}]))
@@ -374,7 +387,9 @@ def deconnection(request):
 
 @permission_required('ApiServer.view_user')
 def afficherComptes(request, messages=[]):
-    return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", {"user_group": GROUPE}, messages))
+    users = models.User.objects.all()
+    print(users[1].groups.all())
+    return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", messages=messages, informations={"users": users}))
 
 
 
