@@ -64,3 +64,44 @@ let decoupeur = new imageDecoupeur(document.getElementById("imageInput"),
 ```
 
 Maintenant, grâce à cela, nous pouvons utiliser le decoupeur partout dans l'application.
+
+## La classe List
+La classe List permet de gérer la sélection d'objet dans une ```<table>``` et de mettre à jour automatiquement le titre affiché et un bouton Toggle au choix.
+
+C'est notamment cette classe qui gère toutes les listes (Utilisateurs, Articles, Informations, Sondages) du site internet. L'utilisateur peut sélectionner une ligne du tableau et le titre à gauche sera mit à jour et le bouton "Cacher" sera changé en "Montrer" si la ligne du tableau montre que l'objet et caché et inversement.
+
+### Utiliser la classe List
+Pour utiliser la classe liste il suffit de l'importer via un :
+```django
+{% load static %}
+<script src="{% static 'JS/List.js' %}"></script>
+```
+La classe prendra ensuite les paramètres suivants :
+```
+objects {List} - Liste des éléments <tr> du tableau
+title {DomElement} - Element DOM qui prendra le nom l'objet sélectionné 
+button {DomButton} - Bouton qui changera de style en fonction de l'objet sélectionné
+
+?classOfDisabledObject {String} = table-warning - classe de l'objet (dans le tableau) qui sera mit en évidence 
+?activeMessage {String} = Montrer - Texte qui sera affiché sur le bouton quand l'objet sélectionné est en évidence
+?disableMessage {String} = Cacher - Texte qui sera affiché sur le bouton quand l'objet sélectionné n'est pas en évidence
+```
+Par exemple :
+```javascript
+//Récupération des éléments DOM nécessaires
+let utilisateurs = document.getElementsByClassName("article-row")
+let nomUtilisateur = document.getElementById("article-name")
+let btnDelete = document.getElementById("delete")
+
+const userList = new List(utilisateurs, nomUtilisateur, btnDelete, "table-danger", "Activer", "Désactiver")
+```
+
+### Supplément
+Un événement ```selection``` est émit sur ```document``` quand l'utilisateur sélectionne un objet dans le tableau.
+L'objet sélectionné se trouve dans ```event.detail```
+Exemple : 
+```javascript
+document.addEventListener("selection", event => {
+    console.log(event.detail)
+})
+```

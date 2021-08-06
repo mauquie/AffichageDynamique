@@ -2,6 +2,8 @@
 
 {%block title%}{{pageTitle}}{%endblock title%}
 
+{% load static%}
+
 {%block content%}
 <div class="row p-3">
     <p class="fs-1 align-middle">Informations</p>
@@ -27,7 +29,7 @@
                         <td>Oui</td>
                         <td class="d-none d-lg-block">7 jours</td>
                     </tr>
-                    <tr class="information-row">
+                    <tr class="information-row" id="2">
                         <td scope="row">Le self</td>    
                         <td>Lambda</td>
                         <td>Non</td>
@@ -45,85 +47,48 @@
             </button>
             <h5>Information : <strong id="information-name">Aucun information sélectionné</strong></h5>
             <div id="actions-btn">
-                <button type="button" id="edit" class="btn btn-outline-primary" onclick="window.location = 'informations/modifier?id=1'" disabled>Modifier</button>
+                <button type="button" id="edit" class="btn btn-outline-primary" disabled>Modifier</button>
                 <button type="button" id="hide" class="btn btn-outline-warning" disabled>Cacher</button>
-                <button type="button" id="delete" class="btn btn-danger" onclick="window.location = '/parametres/informations/supprimer'" disabled>Supprimer</button>
+                <button type="button" id="delete" class="btn btn-danger" disabled>Supprimer</button>
             </div>
         </div>
         
     </div>
 </div>
-<script>
+<script src="{% static 'JS/List.js' %}"></script>
+<script> 
     window.addEventListener("DOMContentLoaded", () => {
         //Récupération des éléments DOM nécessaires
-        var information = document.getElementsByClassName("information-row")
+        var informations = document.getElementsByClassName("information-row")
+        var informationName = document.getElementById("information-name")
+        let btnHide = document.getElementById("hide")
+        var btnEdit = document.getElementById("edit")
+        var btnDelete = document.getElementById("delete")
 
         //Association des lignes du tableau avec les différentes fonctions
-        const informations = new Information(information)
-        informations.associateInformationsFunctions()
+        const infoList = new List(informations, informationName, btnHide)
+        infoList.associateObjectFunctions()
+
+        //Modification des boutons à chaque fois que l'user change sa sélection
+        document.addEventListener("selection", e => {
+            btnDelete.disabled = false;
+            btnHide.disabled = false;
+            btnEdit.disabled = false;
+
+            //Mise à jour des liens vers le bon objet
+            btnDelete.addEventListener("click", () => {
+                window.location = "/parametres/informations/supprimer?id=" + e.detail.id
+            })
+
+            btnEdit.addEventListener("click", () => {
+                window.location = "/parametres/informations/modifier?id=" + e.detail.id
+            })
+
+            btnHide.addEventListener("click", () => {
+                window.location = "/parametres/informations/toggleVisibilite?id=" + e.detail.id
+            })
+        })
     })
     
-    function toggleActions(selected) {
-        /*
-        *   Fonction affichant les boutons quand l'utilisateur selectionne un information
-        *   et qui modifie le bouton "Cacher/Afficher" en fonction de si l'information est actuellement
-        *   à l'écran ou non
-        */
-        let informationName = document.getElementById("information-name")
-        let buttons = document.getElementById("actions-btn").children
-        
-        //Modification du texte affichant le nom de l'information selectionné
-        informationName.innerText = selected.children[0].innerText
-
-        //Boucle s'executant à chaque fois que l'utilisateur sélectionne un information
-        //Elle s'éxécute une fois pour chaque bouton d'action
-        for(let i = 0; i < buttons.length; i++){
-            buttons[i].disabled = false
-
-            //Changement du texte du bouton affichant (ou non) l'information à l'écran et son style
-            if(buttons[i].id == "hide" && selected.className.indexOf("table-warning") != -1){
-                buttons[i].innerHTML = "Afficher"
-                buttons[i].className = "btn btn-outline-success"
-
-            } else if (buttons[i].id == "hide") {
-                buttons[i].innerHTML = "Cacher"
-                buttons[i].className = "btn btn-outline-warning"
-            }
-        }   
-    }
-
-    class Information {
-        constructor(informations){
-            this.informations = informations
-            this.selected = undefined
-        }
-
-        associateInformationsFunctions(){
-            /*
-            *   Association de chaque ligne du tableau contenant les informations aux fonctions
-            *   gérant les boutons et les lignes ditent "active" (sélectionné)
-            */
-            //Affectation de l'évenement "click" à chaque ligne du tableau contenant les informations
-            for(let i = 0; i < this.informations.length ; i++){
-                this.informations[i].addEventListener("click", () => {
-                    this._toggleInformationActive(this.informations[i])
-                    toggleActions(this.selected)
-                })
-            }
-        }
-
-        _toggleInformationActive(information){
-            if(this.selected !== undefined){
-                let classList = this.selected.classList.value.split(" ")
-                classList.pop()
-                this.selected.classList.value = classList.join(" ")
-                        
-            }
-                    
-            this.selected = information
-            this.selected.classList.value += " table-active"
-        }
-    }
-
 </script>
 {%endblock content%}
