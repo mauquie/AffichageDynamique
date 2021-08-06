@@ -8,3 +8,12 @@ class UserForm(forms.ModelForm):
         fields = ["first_name", "last_name", "username"]
 
     groups = forms.ModelChoiceField(queryset=Group.objects.all(), initial=1, widget=forms.Select(attrs={'class': 'form-select my-2'}))
+
+class changeOwnAccount(forms.ModelForm):
+    class Meta:
+        model = models.User
+        fields = ["username", "email", "profile_picture"]
+
+    username = forms.CharField(required=False)
+    email = forms.CharField(required=False)
+    profile_picture = forms.ImageField(required=False)

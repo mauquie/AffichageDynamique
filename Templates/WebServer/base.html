@@ -28,7 +28,7 @@
                                     </svg>
                                 </a>
                             </li>
-                            {% if perms.article.can_add_article %}
+                            {% if perms.ApiServer.add_article %}
                             <li class="nav-item">
                                 <a href="/articles/ajouter" class="nav-link {% ifequal pageTitle "Ajouter un article" %}active{% endifequal%}" title="Ajouter un article">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -38,6 +38,7 @@
                                 </a>
                             </li>
                             {% endif %}
+                            {% if perms.ApiServer.manage_screen %}
                             <li class="nav-item">
                                 <a href="/parametres" class="nav-link {% ifequal pageTitle "Gestion de l'affichage" %}active{% endifequal%}" title="Paramètres de l'affichage">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
@@ -46,6 +47,7 @@
                                     </svg>
                                 </a>
                             </li>
+                            {% endif %}
                             <li class="nav-item">
                                 <a href="/comptes" class="nav-link {% ifequal pageTitle "Gestion du compte" %}active{% endifequal%} clickable" title="Mon compte">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
@@ -99,6 +101,13 @@
     
     <script>
         window.addEventListener("DOMContentLoaded", () => {
+            //Affichage des aides sur les boutons
+            let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            let tooltips = []
+            for(let i = 0; i < tooltipsDOM.length; i++){
+                tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
+            }
+
             //Gestion des notifications
             var toastElList = document.querySelectorAll('.toast')
             

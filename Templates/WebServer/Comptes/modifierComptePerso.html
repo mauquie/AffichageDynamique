@@ -10,7 +10,7 @@
 </div>
 <div class="row p-3">
     <div class="border rounded-3 m-3 mb-1 px-3 mx-2">
-        <form id="formulaire" action="#" method="post">
+        <form id="formulaire" action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-group my-3">
                 <div class="row">
@@ -22,13 +22,13 @@
                             </svg>
                             <div id="imagePreview" class="rounded-circle" data-bs-toggle="tooltip" data-bs-html="true" title="Modifier l'image" hidden></div>
                             <input 
-                                name="image" 
+                                name="profile_picture" 
                                 type="file" 
                                 accept="image/*"
                                 class="form-control" 
                                 id="imageInput" 
                                 hidden
-                                value="{{informations.image}}"
+                                value="{{user.profile_picture}}"
                             >
                         </div>
                     </div>
@@ -36,26 +36,22 @@
                         <div class="input-group">
                             <input 
                                 id="nomInput"
-                                name="nom"
                                 type="text" 
                                 placeholder="Nom"
                                 class="form-control mx-2" 
-                                aria-describedby="AideNom" 
                                 maxlength="30"
-                                value="{{informations.nom}}"
+                                value="{{user.last_name}}"
                                 disabled
                             >
                         </div>
                         <div class="input-group mt-4">
                             <input 
                                 id="prenomInput"
-                                name="prenom"
                                 type="text" 
                                 placeholder="Prenom"
                                 class="form-control mx-2" 
-                                aria-describedby="AidePrenom" 
                                 maxlength="30"
-                                value="{{informations.prenom}}"
+                                value="{{user.first_name}}"
                                 disabled
                             >
                         </div>
@@ -74,7 +70,8 @@
                         class="form-control" 
                         aria-describedby="AideNom" 
                         maxlength="50"
-                        value="{{informations.email}}"
+                        value="{{user.email}}"
+
                     >
                 </div>
             </div>
@@ -83,13 +80,13 @@
                 <div class="input-group">
                     <input 
                         id="pseudoInput"
-                        name="pseudo"
+                        name="username"
                         type="text" 
                         placeholder="Entrer votre pseudo"  
                         class="form-control" 
                         aria-describedby="AidePseudo" 
                         maxlength="45"
-                        value="{{informations.pseudo}}"
+                        value="{{user.get_username}}"
                     >
                 </div>
             </div>
@@ -104,15 +101,17 @@
                         class="form-control" 
                         aria-describedby="AideMotDePasse" 
                         maxlength="50"
+
                     >
                     <input 
                         id="passwordInput"
-                        name="password"
+                        name="password_confirm"
                         type="password" 
                         placeholder="Mot de passe (encore)"  
                         class="form-control" 
                         aria-describedby="AideMotDePasse" 
                         maxlength="50"
+
                     >
                 </div>
             </div>
@@ -126,7 +125,8 @@
                     </div>
                     <div class="col-lg-2 btn-group mt-lg-0 mt-2"> 
                         <button id="deleteAccount" type="button" class="btn btn-outline-danger"
-                            data-bs-toggle="tooltip" data-bs-html="true" title="En supprimant votre compte, vous n'aurez plus accès à ce site mais toutes vos actions sur celui ci seront gardées.">
+                            data-bs-toggle="tooltip" data-bs-html="true" title="En supprimant votre compte, vous n'aurez plus accès à ce site mais toutes vos actions sur celui ci seront gardées."
+                            onclick="window.location = '/comptes/supprimer'">
                             Supprimer mon compte
                         </button>
                     </div>
@@ -141,11 +141,6 @@
 <script>
     (window.addEventListener("DOMContentLoaded",() => {
         //Définition les aides pour les boutons d'actions
-        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        let tooltips = []
-        for(let i = 0; i < tooltipsDOM.length; i++){
-            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
-        }
         let decoupeur = new imageDecoupeur(document.getElementById("imageInput"), 
             document.getElementById("imageUploadBox"),
             document.getElementById("imagePreview"),
@@ -159,14 +154,12 @@
                 
                 //Récupération de l'url de l'image
                 let ip = window.location.href.split("/")[2]
-                let url = "http://" + ip + document.getElementById("imageInput").defaultValue
+                let url = "http://" + ip + "/" + document.getElementById("imageInput").defaultValue
 
                 var reader = new FileReader();
 
                 //Récupération de l'image
                 createFile(url).then(file => {
-
-
                     //Lecture des données de l'image
                     reader.readAsDataURL(file);
 
@@ -181,10 +174,13 @@
                         decoupeur.imagePreview.hidden = false
                     };
 
+                    //Modification de l'image de prévisualisation
                     let container = new DataTransfer();
                     container.items.add(file);
 
                     decoupeur.imageInput.files = container.files
+                }).catch(error => {
+                    
                 })             
             }
     }))
@@ -201,13 +197,24 @@
      */
 
     let response = await fetch(url);
-    let data = await response.blob();
+    
+    //Si l'image est trouvée
+    if (response.status == 200){
+        //Création d'un fichier pour pouvoir redefinir un input prenant un fichier
+        let data = await response.blob();
 
-    let metadata = {
-        type: 'image/png'
-    };
-    let file = new File([data], "article.png", metadata);
-    return file
+        let metadata = {
+            type: 'image/png'
+        };
+
+        let file = new File([data], "article.png", metadata);
+        return file
+
+    } else {
+        throw response.statusText
+    }
+
+    
 }
     
 </script>

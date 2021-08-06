@@ -1,8 +1,9 @@
 from django.http.response import Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.hashers import make_password
 from ApiServer import models 
 from . import forms 
 from django.contrib.auth.models import Group
@@ -34,7 +35,6 @@ def loginView(request):
         password = request.POST['password']
 
         user = authenticate(request, username=username, password=password)
-
         #Si l'utilisateur est bien reconnu
         if user is not None:
             login(request, user)
@@ -59,7 +59,7 @@ def loginView(request):
                     else: 
                         return render(request, "login.html", {"messages": [{"type": "warning", "text": "Identifiants invalides"}]})
 
-            return render(request, "login.html")
+            return render(request, "login.html", {"messages": [{"type": "warning", "text": "Identifiants invalides"}]})
 
 def firstLogin(request):
     '''
@@ -127,7 +127,7 @@ def firstLogin(request):
 
 """
 
-@permission_required('view_article')
+@permission_required('ApiServer.view_article')
 def articles(request, messages=[]):
     '''
         Fonction appelée quand on veut intéragir d'une quelconque façon avec les articles (ajouter, modifier, supprimer)
@@ -136,14 +136,14 @@ def articles(request, messages=[]):
     '''
     return render(request, 'WebServer/Articles/index.html', exInfos("Articles", {"user_group": GROUPE}, messages))
 
-@permission_required('add_article')
+@permission_required('ApiServer.add_article')
 def ajouterArticle(request, messages=[]):
     '''
         Fonction appelé quand on veut écrire un article.
     '''
     return render(request, 'WebServer/Articles/ajouter.html', exInfos("Ajouter un article", {"user_group": GROUPE}, messages))
 
-@permission_required('change_article')
+@permission_required('ApiServer.change_article')
 def modifierArticle(request, messages=[]):
     '''
         Fonction appelé quand on veut modifier un article.
@@ -155,7 +155,7 @@ def modifierArticle(request, messages=[]):
     else:
         raise Http404()
 
-@permission_required('delete_article')
+@permission_required('ApiServer.delete_article')
 def supprimerArticle(request, messages=[]):
     '''
         Fonction appelé quand on veut supprimer un article
@@ -168,6 +168,7 @@ def supprimerArticle(request, messages=[]):
 """
     Section gérant tout ce qui touche à la gestion de l'affichage
 """
+@permission_required('ApiServer.manage_screen')
 def gestionAffichage(request):
     if GROUPE != "STUDENT":
         return render(request, 'WebServer/Gestion Affichage/index.html', exInfos("Gestion de l'affichage", {"user_group": GROUPE}))
@@ -182,7 +183,7 @@ def gestionAffichage(request):
     Section gérant tout ce qui touche aux sondages
 """
 
-#Utiliser le @permission_required()
+@permission_required('ApiServer.view_sondage')
 def sondages(request):
     if GROUPE != "STUDENT":
         return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", {"user_group": GROUPE}))
@@ -190,6 +191,7 @@ def sondages(request):
     else:
         raise PermissionDenied()
 
+@permission_required('ApiServer.add_sondage')
 def ajouterSondage(request):
     if GROUPE != "STUDENT":
         return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Ajouter un sondage", {"user_group": GROUPE}))
@@ -197,6 +199,7 @@ def ajouterSondage(request):
     else:
         raise PermissionDenied()
 
+@permission_required('ApiServer.change_sondage')
 def modifierSondage(request):
     #To-do : Un check du groupe pour savoir si il est au même niveau ou au dessus pour avoir le droit de modifier me sondage
     if GROUPE != "STUDENT":
@@ -205,6 +208,7 @@ def modifierSondage(request):
     else:
         raise PermissionDenied()
 
+@permission_required('ApiServer.delete_sondage')
 def supprimerSondage(request, messages=[]):
     '''
         Fonction appelé quand on veut supprimer un article
@@ -218,6 +222,7 @@ def supprimerSondage(request, messages=[]):
 """
     Section gérant tout ce qui touche aux informations
 """
+@permission_required('ApiServer.view_information')
 def informations(request, messages=[]):
     if GROUPE != "STUDENT":
         return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", {"user_group": GROUPE}, messages))
@@ -225,6 +230,7 @@ def informations(request, messages=[]):
     else:
         raise PermissionDenied()
 
+@permission_required('ApiServer.add_information')
 def ajouterInformation(request):
     if GROUPE != "STUDENT":
         return render(request, 'WebServer/Gestion Affichage/Informations/ajouter.html', exInfos("Modifier l'information", {"user_group": GROUPE}))
@@ -232,6 +238,7 @@ def ajouterInformation(request):
     else:
         raise PermissionDenied()
 
+@permission_required('ApiServer.change_information')
 def modifierInformation(request):
     if GROUPE != "STUDENT":
         if(request.GET.get("id", "") != ""):
@@ -243,6 +250,7 @@ def modifierInformation(request):
     else:
         raise PermissionDenied()
 
+@permission_required('ApiServer.delete_information')
 def supprimerInformation(request):
     return informations(request, [{"text": "Supprimé avec succés", "type":"success"}])
 
@@ -255,6 +263,7 @@ def supprimerInformation(request):
 def comptes(request, messages=[]):
     return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", {"user_group": GROUPE}, messages=messages))
 
+@permission_required('ApiServer.add_user')
 def ajouterCompte(request):
     if request.method == "GET":
         form = forms.UserForm()
@@ -276,7 +285,6 @@ def ajouterCompte(request):
             #Retour du status
             informations = exInfos(
                 pageTitle = "Ajouter un compte",
-                user = {"user_group": GROUPE},
                 form = form,
                 messages = [{"type": "success", "text": "Utilisateur crée avec succés"}],
             )
@@ -290,29 +298,81 @@ def ajouterCompte(request):
             #Renvoie du formulaire et des erreurs
             informations = exInfos(
                 pageTitle = "Ajouter un compte",
-                user = {"user_group": GROUPE},
                 form = form,
                 messages = messages,
             )
             return render(request, 'WebServer/Comptes/ajouter.html', informations)
 
-        
-
-
+@login_required
 def modifierCompte(request):
     if request.GET.get('id', False):
-        return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", {"user_group": GROUPE}, informations={"prenom": "Jean Michel", "nom": "Bernadette", "email": "JMBernadette@gmail.com", "pseudo": "JMB", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
-    else:
-        return render(request, 'WebServer/Comptes/modifierComptePerso.html', exInfos("Modifier mon compte", {"user_group": GROUPE}, informations={"prenom": "Jean Michel", "nom": "Bernadette", "email": "JMBernadette@gmail.com", "pseudo": "JMB", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
+        if request.user.has_perm("ApiServer.change_user"):
+            return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", informations={"prenom": "Jean Michel", "nom": "Bernadette", "email": "JMBernadette@gmail.com", "pseudo": "JMB", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
+        
+        else: 
+            return redirect("/comptes")
 
+    else:
+        if request.method == "POST":
+            id = request.POST.get("id")
+            if id == None:
+                #Modification de son propre compte
+                form = forms.changeOwnAccount(request.POST, request.FILES, instance=request.user)
+
+                if form.is_valid():
+                    password = request.POST.get("password", False)
+                    passwordConfirm = request.POST.get("password_confirm", False)
+
+                    if password :
+                        if passwordConfirm == password:
+                            request.user.password = make_password(password)
+                            request.user.save()
+                        
+                        else:
+                            return render(request, "WebServer/Comptes/modifierComptePerso.html", exInfos("Modifier mon compte", messages=[{"type": "danger", "text": "Les mots de passes ne sont pas identiques."}]))
+                        
+                    form.save()
+                    update_session_auth_hash(request, request.user)
+
+                    return render(request, "WebServer/Comptes/modifierComptePerso.html", exInfos("Modifier mon compte", messages=[{"type": "success", "text": "Compte modifié !"}]))
+                
+                else:
+                    return render(request, "WebServer/Comptes/modifierComptePerso.html", exInfos("Modifier mon compte", messages=createErrorMessages(form)))
+            
+            else:
+                #Modification d'un autre compte
+                if request.user.has_perm("ApiServer.change_user"):
+                    pass
+                else:
+                    return PermissionDenied()
+        else:
+            form = forms.changeOwnAccount(instance=request.user)
+            return render(request, 'WebServer/Comptes/modifierComptePerso.html', exInfos("Modifier mon compte", form=form))
+
+@login_required
 def supprimerCompte(request):
-    message = {"text": "Compte bien désactivé !", "type": "success"}
+    if request.GET.get("id", False):
+        if request.user.has_perm("ApiServer.delete_user"):
+            user = get_object_or_404(models.User, pk = id)
+
+            user.is_active = False
+            user.save()
+            message = {"text": "Compte bien désactivé !", "type": "success"}
+
+
+        else:
+            return PermissionDenied()
+    else:
+        request.user.is_active = False
+        request.user.save()
+        message = {"text": "Compte bien désactivé !", "type": "success"}
     return afficherComptes(request, message)
 
 def deconnection(request):
     logout(request)
     return redirect("/")
 
+@permission_required('ApiServer.view_user')
 def afficherComptes(request, messages=[]):
     return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", {"user_group": GROUPE}, messages))
 
@@ -323,14 +383,14 @@ def afficherComptes(request, messages=[]):
 """
     Section contenant les fonctions qui servent pour les views mais que n'en retourne pas
 """
-def exInfos(pageTitle, user, messages=[], informations={}, form={}):
+def exInfos(pageTitle, userGr={}, messages=[], informations={}, form={}):
     '''
         Fonction appelé quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
         de l'utilisateur ou un message d'information sur une action effectuée
 
         @Params :
             pageTitle {string}     - Nom de la page
-            user {dict}            - Dictionnaire d'infos sur l'utilisateur
+            ?userGr {dict}         - Dictionnaire d'infos sur l'utilisateur
             ?message {dict}        - Message à transmettre à l'utilisateur sur la page (text: "", type: "success" | "danger" | "warning" )
             ?informations {dict}   - Informations complètes à passer à la page (Ex: les données d'un article)
             ?form {ModelForm}      - Formulaire à donner au Template
@@ -340,7 +400,7 @@ def exInfos(pageTitle, user, messages=[], informations={}, form={}):
     '''
     return {
         "pageTitle": pageTitle,
-        "user": user,
+        "userGr": userGr,
         "messages": messages,
         "informations": informations,
         "form": form,
@@ -357,7 +417,6 @@ def createErrorMessages(form):
         @Return :
             list : Liste des érreurs déjà formatée pour les Templates
     '''
-    print(type(form))
     errors = form.errors.as_data().values()
     messages = []
     for value in errors:
