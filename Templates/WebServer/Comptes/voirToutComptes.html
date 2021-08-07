@@ -23,7 +23,7 @@
                 <tbody class="tbody-pointer">
 
                     {% for user in informations.users %}
-                    <tr class="article-row {% if user.is_active != True %}table-danger{%endif%}"
+                    <tr class="user-row {% if user.is_active != True %}table-danger{%endif%}"
                       id="{{user.id}}">
                         <td scope="row">{{user.last_name}}</td>
                         <td>{{user.first_name}}</td>
@@ -41,9 +41,9 @@
             <button type="button" id="add" class="btn btn-primary mb-4" onclick="window.location = 'ajouter'">
                 + Ajouter un utilisateur
             </button>
-            <h5>Utilisateur : <strong id="article-name">Aucun utilisateur sélectionné</strong></h5>
+            <h5>Utilisateur : <strong id="user-name">Aucun utilisateur sélectionné</strong></h5>
             <div id="actions-btn">
-                <button type="button" id="edit" class="btn btn-outline-primary" disabled>Voir son compte</button>
+                <button type="button" id="edit" class="btn btn-outline-primary" disabled>Voir le compte</button>
                 <button type="button" id="delete" class="btn btn-outline-warning" disabled>Désactiver</button>
             </div>
         </div>
@@ -54,8 +54,8 @@
 <script>
     window.addEventListener("DOMContentLoaded", () => {
         //Récupération des éléments DOM nécessaires
-        let utilisateurs = document.getElementsByClassName("article-row")
-        let nomUtilisateur = document.getElementById("article-name")
+        let utilisateurs = document.getElementsByClassName("user-row")
+        let nomUtilisateur = document.getElementById("user-name")
         let btnDelete = document.getElementById("delete")
         let btnEdit = document.getElementById("edit")
 
@@ -70,7 +70,7 @@
 
             //Mise à jour des liens vers le bon objet
             btnDelete.addEventListener("click", () => {
-                window.location = "/comptes/supprimer?id=" + e.detail.id
+                window.location = "/comptes/toggleActive?id=" + e.detail.id
             })
 
             btnEdit.addEventListener("click", () => {

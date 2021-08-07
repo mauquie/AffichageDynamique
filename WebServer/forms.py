@@ -14,6 +14,13 @@ class changeOwnAccount(forms.ModelForm):
         model = models.User
         fields = ["username", "email", "profile_picture"]
 
-    username = forms.CharField(required=False)
+    email = forms.CharField(required=False)
+    profile_picture = forms.ImageField(required=False)
+
+class changeOthersAccount(forms.ModelForm):
+    class Meta:
+        model = models.User
+        fields = ["username", "first_name", "last_name", "email", "profile_picture"]
+
     email = forms.CharField(required=False)
     profile_picture = forms.ImageField(required=False)

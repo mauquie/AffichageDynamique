@@ -23,6 +23,6 @@ urlpatterns = [
     path("comptes", urls.comptes),
     path("comptes/ajouter", urls.ajouterCompte),
     path("comptes/modifier", urls.modifierCompte),
-    path("comptes/supprimer", urls.supprimerCompte),
+    path("comptes/toggleActive", urls.toggleActive),
     path("comptes/voir", urls.afficherComptes),
 ]
