@@ -89,8 +89,8 @@ button {DomButton} - Bouton qui changera de style en fonction de l'objet sélect
 Par exemple :
 ```javascript
 //Récupération des éléments DOM nécessaires
-let utilisateurs = document.getElementsByClassName("article-row")
-let nomUtilisateur = document.getElementById("article-name")
+let utilisateurs = document.getElementsByClassName("utilisateurs-row")
+let nomUtilisateur = document.getElementById("utilisateur-name")
 let btnDelete = document.getElementById("delete")
 
 const userList = new List(utilisateurs, nomUtilisateur, btnDelete, "table-danger", "Activer", "Désactiver")
