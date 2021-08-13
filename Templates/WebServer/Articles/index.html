@@ -16,25 +16,21 @@
                 <thead>
                     <tr>
                         <th scope="col">Titre</th>
-                        <th scope="col">Temps avant de se cacher</th>
-                        <th scope="col">Affiché sur les écrans</th>
+                        <th scope="col">Jour où l'article ne sera plus affiché</th>
+                        <th scope="col">Est affiché sur les écrans</th>
                         <th scope="col" class="d-none d-lg-block">Contient des images</th>
                         
                     </tr>
                 </thead>
                 <tbody class="tbody-pointer">
-                    <tr class="article-row table-warning" id="1">
-                        <td scope="row">Les militaires</td>
-                        <td>2 jours</td>
-                        <td>Oui</td>
-                        <td class="d-none d-lg-block">Oui</td>
+                    {% for article in informations %}
+                    <tr class="article-row {% if article.shown %}table-warning{% else %}showed{%endif%}" id="{{article.id}}">
+                        <td scope="row">{{article.title}}</td>
+                        <td>{{article.expiration_date}}</td>
+                        <td>article.shown</td>
+                        <td class="d-none d-lg-table-cell">{% if article.image %}Oui{%else%}Non{%endif%}</td>
                     </tr>
-                    <tr class="article-row" id="2">
-                        <td scope="row">Les surveillants</td>
-                        <td>4 jours</td>
-                        <td>Non</td>
-                        <td class="d-none d-lg-block">Non</td>
-                    </tr>
+                    {%endfor%}
                 </tbody>
             </table>
         </div>
@@ -49,7 +45,10 @@
             <div id="actions-btn">
                 <button type="button" id="edit" class="btn btn-outline-primary" disabled>Modifier</button>
                 <button type="button" id="hide" class="btn btn-outline-warning" disabled>Cacher</button>
-                <button type="button" id="delete" class="btn btn-danger" isabled>Supprimer</button>
+                <button type="button" id="delete" class="btn btn-danger" disabled 
+                  data-bs-toggle="tooltip" data-bs-html="true" title="En supprimant l'article, toutes les données seront perdues et aucun retour en arrière sera possible">
+                    Supprimer
+                </button>
             </div>
         </div>
         
@@ -66,7 +65,7 @@
         var btnDelete = document.getElementById("delete")
 
         //Association des lignes du tableau avec les différentes fonctions
-        const Articles = new List(articles, articleName, btnHide)
+        const Articles = new List(articles, articleName, btnHide, "showed")
 
         //Modification des boutons à chaque fois que l'user change sa sélection
         document.addEventListener("selection", e => {

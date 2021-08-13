@@ -138,14 +138,30 @@ def articles(request):
         Elle contient une liste des 5 derniers articles postés avec des boutons pour modifier et supprimer un article
         et un autre lien pour créer un article.
     '''
-    return render(request, 'WebServer/Articles/index.html', exInfos("Articles"))
+    articles = models.Article.objects.all()
+    return render(request, 'WebServer/Articles/index.html', exInfos("Articles", informations=articles))
 
 @permission_required('ApiServer.add_article')
 def ajouterArticle(request):
     '''
         Fonction appelé quand on veut écrire un article.
     '''
-    return render(request, 'WebServer/Articles/ajouter.html', exInfos("Ajouter un article"))
+    if request.method == "GET":
+        form = forms.ArticleForm()
+        return render(request, 'WebServer/Articles/ajouter.html', exInfos("Ajouter un article"))
+
+    elif request.method == "POST":
+        form = forms.ArticleForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+
+            messages.success(request, "Article bien ajouté !")
+            return redirect("/articles/ajouter")
+
+        else:
+            createErrorMessages(request, form)
+            return render(request, "WebServer/Articles/ajouter.html", exInfos("Ajouter un article", form=form))
 
 @permission_required('ApiServer.change_article')
 def modifierArticle(request):
@@ -153,24 +169,63 @@ def modifierArticle(request):
         Fonction appelé quand on veut modifier un article.
     '''
     #To-do : Verification du groupe / utilisateur pour voir sil a le droit de modifier l'article
-    if request.GET.get('id', '') != '':
-        return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", informations={"title": "Les militaires", "date": "2021-07-10", "articleContent": "ils sont gentils", "image": "/static/IMG/Logo_lycée_Bourdelle.jpg"}))
+    id = request.GET.get("id", False)
 
-    else:
-        raise Http404()
+    if request.method == "GET":
+        if id:
+            article = get_object_or_404(models.Article, pk = id)
+            return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", informations=article))
+
+        else:
+            raise Http404()
+
+    elif request.method == "POST":
+        #Recupération de l'article choisi
+        article = get_object_or_404(models.Article, pk = id)
+        form = forms.ArticleForm(request.POST, request.FILES, instance=article)
+
+        if form.is_valid():
+            form.save()
+
+            #On modifie la dernière personne l'ayant modifié
+            article.last_edit_by = models.User.objects.get(pk = request.user.id)
+            article.save()
+
+            messages.success(request, "Article modifié avec succés !")
+            return redirect("/articles/modifier?id="+id)
+
+        else: #Il y a eu un problème
+            createErrorMessages(request, form)
+            return render(request, "WebServer/Articles/modifier.html", exInfos("Modifier un article", form=form, informations=article))
 
 @permission_required('ApiServer.delete_article')
 def supprimerArticle(request):
     '''
         Fonction appelé quand on veut supprimer un article
     '''
-    messages.success(request, "Supprimé avec succès !")
+    id = request.GET.get("id", False)
+    if id:
+        articles = get_object_or_404(models.Article, pk = id)
+        #To-do Verification du groupe
+        articles.delete()
+        messages.success(request, "Supprimé avec succès !")
+
+    else:
+        Http404()
     return redirect("/articles")
 
 @permission_required('ApiServer.change_article')
 def toggleVisibiliteArticle(request):
     #Vérification du groupe pour savoir si on peut modifier ou non
-    messages.success("Modifié avec succés")
+    id = request.GET.get("id", False)
+    if id:
+        article = get_object_or_404(models.Article, pk = id)
+        #article.shown = False
+        messages.success(request, "Modifié avec succés")
+
+    else:
+        Http404()
+
     return redirect("/articles")
 
 
@@ -219,7 +274,7 @@ def supprimerSondage(request):
 """
 @permission_required('ApiServer.view_information')
 def informations(request):
-    return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", {"user_group": GROUPE}, messages))
+    return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations"))
 
 @permission_required('ApiServer.add_information')
 def ajouterInformation(request):
@@ -246,8 +301,11 @@ def supprimerInformation(request):
 """
     Section gérant tout ce qui touche aux comptes
 """
+@login_required
 def comptes(request):
-    return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte"))
+    articles = models.Article.objects.all().filter(author_id = request.user.id)
+    print(articles)
+    return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", informations={"articles": articles, "sondages": {}}))
 
 @permission_required('ApiServer.add_user')
 def ajouterCompte(request):
@@ -364,7 +422,7 @@ def modifierCompte(request):
 @login_required
 def toggleActive(request):
     id = request.GET.get("id", False)
-    #Si l'user desactive son propre compte ou un autre compte
+    #Si l'user desactive un autre compte
     if id:
         if request.user.has_perm("ApiServer.delete_user"):
             user = get_object_or_404(models.User, pk = id)
@@ -381,7 +439,8 @@ def toggleActive(request):
 
         else:
             return PermissionDenied()
-    else:
+
+    else: #Sinon il desactive son compte
         if request.user.is_active:
             request.user.is_active = False
             messages.success(request, "Compte désactivé ! Pour le reactiver, veuillez vous adresser à un administrateur")
@@ -411,15 +470,13 @@ def afficherComptes(request):
 """
     Section contenant les fonctions qui servent pour les views mais que n'en retourne pas
 """
-def exInfos(pageTitle, user={}, informations={}, form={}):
+def exInfos(pageTitle, informations={}, form={}):
     '''
         Fonction appelé quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
         de l'utilisateur ou un message d'information sur une action effectuée
 
         @Params :
             pageTitle {string}     - Nom de la page
-            ?userGr {dict}         - Dictionnaire d'infos sur l'utilisateur
-            ?message {dict}        - Message à transmettre à l'utilisateur sur la page (text: "", type: "success" | "danger" | "warning" )
             ?informations {dict}   - Informations complètes à passer à la page (Ex: les données d'un article)
             ?form {ModelForm}      - Formulaire à donner au Template
            
@@ -441,6 +498,7 @@ def createErrorMessages(request, form):
             form {ModelForm}     - Formulaire non valide
 
     '''
+    print(form.errors)
     errors = form.errors.as_data().values()
     for value in errors:
         messages.error(request, value[0].message)

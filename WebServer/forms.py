@@ -24,3 +24,10 @@ class changeOthersAccount(forms.ModelForm):
 
     email = forms.CharField(required=False)
     profile_picture = forms.ImageField(required=False)
+
+class ArticleForm(forms.ModelForm):
+    class Meta: 
+        model = models.Article
+        fields = ["title", "article", "image", "expiration_date"]
+
+    image = forms.ImageField(required=False)

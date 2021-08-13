@@ -85,16 +85,13 @@
                                         </tr>
                                     </thead>
                                     <tbody class="tbody-pointer">
-                                        <tr class="article-row table-warning" id="id_article">
-                                            <td scope="row">Les militaires</td>
-                                            <td>2 jours</td>
-                                            <td>Oui</td>
+                                        {% for article in informations.articles %}
+                                        <tr class="article-row {% if article.shown %}table-warning{% else %}showed{%endif%}" id="id_article" onclick="window.location = '/articles/modifier?id={{article.id}}'">
+                                            <td scope="row">{{article.title}}</td>
+                                            <td>{{article.expiration_date}}</td>
+                                            <td>article.shown</td>
                                         </tr>
-                                        <tr class="article-row">
-                                            <td scope="row">Les surveillants</td>
-                                            <td>4 jours</td>
-                                            <td>Non</td>
-                                        </tr>
+                                        {%endfor%}
                                     </tbody>
                                 </table>
                             </div>

@@ -59,13 +59,6 @@
 </div>
 <script>
     (window.addEventListener("DOMContentLoaded",() => {
-        //Définition les aides pour les boutons d'actions
-        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        let tooltips = []
-        for(let i = 0; i < tooltipsDOM.length; i++){
-            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
-        }
-
         document.getElementById('nomInput').addEventListener('input', () => {createID()})
         document.getElementById('prenomInput').addEventListener('input', () => {createID()})
     }))
