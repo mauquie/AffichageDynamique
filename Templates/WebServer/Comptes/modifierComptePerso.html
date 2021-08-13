@@ -28,7 +28,7 @@
                                 class="form-control {% if form.profile_picture.errors %}is-invalid{% endif %}" 
                                 id="imageInput" 
                                 hidden
-                                value="{{user.profile_picture}}"
+                                value="Logo_lycée_Bourdelle.jpg"
                             >
                         </div>
                     </div>
@@ -147,75 +147,9 @@
             document.getElementById("svgImage"),
             ratio={lon: 1, lar: 1}
         )
-
-        //Affichage de l'image dans la zone de prévisualisation
-        if(document.getElementById("imageInput").defaultValue !== ""){
-                var request = new XMLHttpRequest();
-                
-                //Récupération de l'url de l'image
-                let ip = window.location.href.split("/")[2]
-                let url = "http://" + ip + "/" + document.getElementById("imageInput").defaultValue
-
-                var reader = new FileReader();
-
-                //Récupération de l'image
-                createFile(url).then(file => {
-                    //Lecture des données de l'image
-                    reader.readAsDataURL(file);
-
-                    reader.onload =  function(e){
-                        //Modification des paramètres pour afficher l'image dans la zone de prévisualisation
-                        decoupeur.imageUploaded = file
-                        decoupeur.cropImagePreview.src = e.target.result
-                        decoupeur.isImageLoaded = true
-                        decoupeur.imagePreview.style.backgroundImage = "url(" + e.target.result + ")"
-                        decoupeur.imageUploadBox.dataset.bsToggle = "modal"
-                        decoupeur.svgImage.setAttribute("hidden", "true")
-                        decoupeur.imagePreview.hidden = false
-                    };
-
-                    //Modification de l'image de prévisualisation
-                    let container = new DataTransfer();
-                    container.items.add(file);
-
-                    decoupeur.imageInput.files = container.files
-                }).catch(error => {
-                    
-                })             
-            }
     }))
 
-    async function createFile(url){
-    /**
-     *  Fonction récupérant une image depuis une url et renvoyant un objet File contenant l'image
-     * 
-     *  @param
-     *      url {string} - Url vers l'image
-     * 
-     *  @return
-     *      image {File} - Fichier contenant l'image 
-     */
-
-    let response = await fetch(url);
     
-    //Si l'image est trouvée
-    if (response.status == 200){
-        //Création d'un fichier pour pouvoir redefinir un input prenant un fichier
-        let data = await response.blob();
-
-        let metadata = {
-            type: 'image/png'
-        };
-
-        let file = new File([data], "article.png", metadata);
-        return file
-
-    } else {
-        throw response.statusText
-    }
-
-    
-}
     
 </script>
 {%endblock content%}

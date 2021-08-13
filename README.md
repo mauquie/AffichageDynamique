@@ -44,6 +44,16 @@ Ensuite, du coté HTML, on devra avoir le code formé comme ceci :
 ```
 Les données `data-bs-toggle` et `data-bs-target` sont utilisées pour afficher la fenêtre Modal de bootstrap(celle de modification). Il y a deux champs `hidden`, le premier est car on ne veut pas afficher de prévisualisation avant d'avoir une image à afficher, et le second est car on ne veut pas avoir de champ visible pour la sélection de l'image. C'est grâce à notre code qu'on l'affiche la fenêtre de sélection.
 
+On peut associe spécifié une image par defaut, pour cela il suffit d'ajouter un champ value à l'input Image qui contiendra l'url du fichier à aller chercher, par exemple :
+```html
+<div id="imageUploadBox" data-bs-toggle="" data-bs-target="#staticBackdrop">
+    <svg id="svgImage"></svg>
+    <div id="imagePreview" hidden></div>
+    <input name="image" id="imageInput" type="file" accept="image/*" value="monImage.png" hidden>
+</div>
+```
+Le decoupeur ira chercher le fichier à /static/IMG/monImage.png
+
 Pour que le code fonctionne, il faudra cependant importer d'autres choses. Nous devons d'abord faire un 
 ```django
 {% include './decoupeur.html' %}

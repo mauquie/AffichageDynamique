@@ -208,75 +208,13 @@
 <script src="{% static 'JS/imageDecoupeur.js' %}"></script>
 <script>
     (window.addEventListener("DOMContentLoaded",() => {
-        //Définition les aides pour les boutons d'actions
-        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        let tooltips = []
-        for(let i = 0; i < tooltipsDOM.length; i++){
-            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
-        }
+        //Ajout du découpeur
         let decoupeur = new imageDecoupeur(document.getElementById("imageInput"), 
             document.getElementById("imageUploadBox"),
             document.getElementById("imagePreview"),
             document.getElementById("svgImage"),
             ratio={lon: 1, lar: 1}
         )
-
-        //Affichage de l'image dans la zone de prévisualisation
-        if(document.getElementById("imageInput").defaultValue !== ""){
-                var request = new XMLHttpRequest();
-                
-                //Récupération de l'url de l'image
-                let ip = window.location.href.split("/")[2]
-                let url = "http://" + ip + document.getElementById("imageInput").defaultValue
-
-                var reader = new FileReader();
-
-                //Récupération de l'image
-                createFile(url).then(file => {
-
-
-                    //Lecture des données de l'image
-                    reader.readAsDataURL(file);
-
-                    reader.onload =  function(e){
-                        //Modification des paramètres pour afficher l'image dans la zone de prévisualisation
-                        decoupeur.imageUploaded = file
-                        decoupeur.cropImagePreview.src = e.target.result
-                        decoupeur.isImageLoaded = true
-                        decoupeur.imagePreview.style.backgroundImage = "url(" + e.target.result + ")"
-                        decoupeur.imageUploadBox.dataset.bsToggle = "modal"
-                        decoupeur.svgImage.setAttribute("hidden", "true")
-                        decoupeur.imagePreview.hidden = false
-                    };
-
-                    let container = new DataTransfer();
-                    container.items.add(file);
-
-                    decoupeur.imageInput.files = container.files
-                })             
-            }
-    }))
-
-    async function createFile(url){
-    /**
-     *  Fonction récupérant une image depuis une url et renvoyant un objet File contenant l'image
-     * 
-     *  @param
-     *      url {string} - Url vers l'image
-     * 
-     *  @return
-     *      image {File} - Fichier contenant l'image 
-     */
-
-    let response = await fetch(url);
-    let data = await response.blob();
-
-    let metadata = {
-        type: 'image/png'
-    };
-    let file = new File([data], "article.png", metadata);
-    return file
-}
-    
+    }))   
 </script>
 {%endblock content%}

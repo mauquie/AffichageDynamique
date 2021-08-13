@@ -26,6 +26,7 @@ class imageDecoupeur{
         this.cropper;
 
         this._setEvents() //Attributions des fonctions pour les événements adéquats
+        this._assignDefaultImage() //Association de l'image par defaut si elle est spécifiée
     }
 
     _setEvents(){
@@ -229,4 +230,77 @@ class imageDecoupeur{
         this.imagePreview.hidden = true
         this.isImageLoaded = false
     }
+
+    _assignDefaultImage() {
+        /**
+         *  Fonction assignant une image par default au decoupeur et à l'input si l'url est spécifié dans le
+         *  "value" de l'input pour l'image
+         * 
+         */
+        if (this.imageInput.defaultValue != "") {
+            //Récupération de l'url de l'image
+            let ip = window.location.href.split("/")[2]
+            let url = "http://" + ip + "/static/IMG/" + this.imageInput.defaultValue
+            var reader = new FileReader();
+        
+            //Récupération de l'image
+            createFile(url).then(file => {
+                //Lecture des données de l'image
+                reader.readAsDataURL(file);
+                
+                let decoupeur = this
+                reader.onload =  function(e){
+                    //Modification des paramètres pour afficher l'image dans la zone de prévisualisation
+                    decoupeur.imageUploaded = file
+                    decoupeur.cropImagePreview.src = e.target.result
+                    decoupeur.isImageLoaded = true
+                    decoupeur.imagePreview.style.backgroundImage = "url(" + e.target.result + ")"
+                    decoupeur.imageUploadBox.dataset.bsToggle = "modal"
+                    decoupeur.svgImage.setAttribute("hidden", "true")
+                    decoupeur.imagePreview.hidden = false
+                };
+        
+                //Modification de l'image de prévisualisation
+                let container = new DataTransfer();
+                container.items.add(file);
+                this.imageInput.files = container.files
+        
+            }).catch(error => {
+                console.error(error)
+            })      
+        }
+    }
+
+}
+
+async function createFile(url){
+    /**
+     *  Fonction récupérant une image depuis une url et renvoyant un objet File contenant l'image
+     * 
+     *  @param
+     *      url {string} - Url vers l'image
+     * 
+     *  @return
+     *      image {File} - Fichier contenant l'image 
+     */
+
+    let response = await fetch(url);
+    
+    //Si l'image est trouvée
+    if (response.status == 200){
+        //Création d'un fichier pour pouvoir redefinir un input prenant un fichier
+        let data = await response.blob();
+
+        let metadata = {
+            type: 'image/png'
+        };
+
+        let file = new File([data], "article.png", metadata);
+        return file
+
+    } else {
+        throw response.statusText
+    }
+
+    
 }

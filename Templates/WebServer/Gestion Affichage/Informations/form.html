@@ -76,13 +76,6 @@
             document.getElementById('dateExpiration').valueAsDate = date;
         }
 
-        //Définition les aides pour les boutons d'actions
-        let tooltipsDOM = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        let tooltips = []
-        for(let i = 0; i < tooltipsDOM.length; i++){
-            tooltips.push(new bootstrap.Tooltip(tooltipsDOM[i]))
-        }
-
         //Définition les compteurs de caractères 
         let title = document.getElementById("titleLength")
         let titleInput = document.getElementById("titleInput")
