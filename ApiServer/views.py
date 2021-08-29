@@ -1,25 +1,69 @@
 from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Article
+from django.http import JsonResponse, HttpResponseBadRequest
+from .models import Article, Info, Survey
 
-# Create your views here.
-def index(request):
-    return getArticles()
-
-def getArticles()->JsonResponse:
+# Récupère les articles visibles et les retourne sous format JSON.
+def getArticles(request)->JsonResponse:
     query = Article.objects.filter(is_shown=True)
     [entry for entry in query]
-    list = {}
+    articleList = list()
     for entry in query:
         json = {
             "title": entry.title,
             "article": entry.article,
-            "image": entry.image,
+            "image": str(entry.image),
             "creation_date": entry.creation_date,
-            "expiration_date": entry.expiration_date,
-            "author": entry.author,
+            "author": {
+                "first_name": entry.author.first_name,
+                "last_name": entry.author.last_name
+            },
             "modification_date": entry.modification_date,
-            "last_edit_by": entry.last_edit_by
+            "last_edit_by": {
+                "first_name": entry.author.first_name,
+                "last_name": entry.author.last_name
+            }
+
         }
-        list.append(json)
-    return JsonResponse(list)
+        articleList.append(json)
+    return JsonResponse(articleList, safe=False)
+
+# Récupère les informations visibles et les retourne sous format JSON.
+def getInfos(request)->JsonResponse:
+    query = Info.objects.filter(is_shown=True)
+    [entry for entry in query]
+    infoList = list()
+    for entry in query:
+        json = {
+            "message": entry.message,
+            "type": {
+                "id": entry.type.id,
+                "name": entry.type.name
+            },
+            "creation_date": entry.creation_date,
+            "author": {
+                "first_name": entry.author.first_name,
+                "last_name": entry.author.last_name
+            }
+
+        }
+        infoList.append(json)
+    return JsonResponse(infoList, safe=False)
+
+# Récupère les sondages visibles et les retourne sous format JSON.
+def getSurveys(request)->JsonResponse:
+    query = Survey.objects.filter(is_shown=True)
+    [entry for entry in query]
+    surveyList = list()
+    for entry in query:
+        json = {
+            "description": entry.description,
+            "link": entry.link,
+            "creation_date": entry.creation_date,
+            "author": {
+                "first_name": entry.author.first_name,
+                "last_name": entry.author.last_name
+            }
+
+        }
+        surveyList.append(json)
+    return JsonResponse(surveyList, safe=False)
