@@ -15,26 +15,22 @@
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th scope="col">Titre</th>
+                        <th scope="col">Message</th>
                         <th scope="col">Type</th>
                         <th scope="col">Affiché sur les écrans</th>
-                        <th scope="col" class="d-none d-lg-block">Temps avant de se cacher</th>
+                        <th scope="col" class="d-none d-lg-table-cell">Dernier jour à l'affiche</th>
                         
                     </tr>
                 </thead>
                 <tbody class="tbody-pointer">
-                    <tr class="information-row table-warning" id="id_information">
-                        <td scope="row">Inscriptions</td>
-                        <td>Urgente</td>
-                        <td>Oui</td>
-                        <td class="d-none d-lg-block">7 jours</td>
+                    {%for info in informations %}
+                    <tr class="information-row {%if info.is_shown %}table-warning{%else%}info-not-showed{%endif%}" id="{{info.id}}">
+                        <td scope="row">{{info.message}}</td>    
+                        <td>{{info.type.name}}</td>
+                        <td>{% if info.is_shown %}Oui{%else%}Non{%endif%}</td>
+                        <td class="d-none d-lg-table-cell">{{info.expiration_date}}</td>
                     </tr>
-                    <tr class="information-row" id="2">
-                        <td scope="row">Le self</td>    
-                        <td>Lambda</td>
-                        <td>Non</td>
-                        <td class="d-none d-lg-block">2 jours</td>
-                    </tr>
+                    {%endfor%}
                 </tbody>
             </table>
         </div>
@@ -66,8 +62,7 @@
         var btnDelete = document.getElementById("delete")
 
         //Association des lignes du tableau avec les différentes fonctions
-        const infoList = new List(informations, informationName, btnHide)
-        infoList.associateObjectFunctions()
+        const infoList = new List(informations, informationName, btnHide, "info-not-showed")
 
         //Modification des boutons à chaque fois que l'user change sa sélection
         document.addEventListener("selection", e => {

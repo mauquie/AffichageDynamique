@@ -10,20 +10,22 @@
 </div>
 <div class="row p-3">
     <div class="border rounded-3 m-3 px-3 mx-2">
+        {%if informations.canEdit%}
         <div class="alert alert-danger mt-2" role="alert">
             Attention, vous avez les droits nécessaires pour modifier ce compte. Ne faites pas n'importe quoi avec !
         </div>
+        {%endif%}
         <form id="formulaire" action="" method="POST">
             {% csrf_token %}
             <div class="form-group my-3">
                 <div class="row">
                     <div class="col-lg-2 mb-3 mb-lg-0">
-                        <div class="border rounded-circle d-flex align-items-center justify-content-center profilePic" id="imageUploadBox" data-bs-toggle="" data-bs-target="#staticBackdrop">
+                        <div class="border rounded-circle d-flex align-items-center justify-content-center profilePic" id="imageUploadBox" {% if informations.canEdit%}data-bs-toggle="" data-bs-target="#staticBackdrop" {%else%} style="background-color: rgba(0, 0, 0, 0.2);"{%endif%}>
                             <svg id="svgImage" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
                                 <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                                 <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
                             </svg>
-                            <div id="imagePreview" class="rounded-circle" data-bs-toggle="tooltip" data-bs-html="true" title="Modifier l'image" hidden></div>
+                            <div class="rounded-circle {%if informations.canEdit%}imagePreview{%endif%}" id="imagePreview" {%if informations.canEdit %} data-bs-toggle="tooltip" data-bs-html="true" title="Modifier l'image"{%endif%} hidden></div>
                             <input 
                                 name="image" 
                                 type="file" 
@@ -31,7 +33,9 @@
                                 class="form-control {% if form.profile_picture.errors %}is-invalid{%endif%}" 
                                 id="imageInput" 
                                 hidden
-                                value="{{informations.profile_picture}}"
+                                value="{{informations.user.profile_picture}}"
+                                {% if informations.canEdit == False %}disabled{%endif%}
+
                             >
                         </div>
                     </div>
@@ -46,7 +50,8 @@
                                 class="form-control mx-2 {% if form.last_name.errors %}is-invalid{%endif%}" 
                                 aria-describedby="AideNom" 
                                 maxlength="30"
-                                value="{{informations.last_name}}"
+                                value="{{informations.user.last_name}}"
+                                {% if informations.canEdit == False %}disabled{%endif%}
                             >
                         </div>
                         <label for="Prenom" class="form-label">Prenom :</label>
@@ -59,13 +64,16 @@
                                 class="form-control mx-2 {% if form.first_name.errors %}is-invalid{%endif%}" 
                                 aria-describedby="AidePrenom" 
                                 maxlength="30"
-                                value="{{informations.first_name}}"
+                                value="{{informations.user.first_name}}"
+                                {% if informations.canEdit == False %}disabled{%endif%}
+
                             >
                         </div>
                     </div>
                 </div>
                 
             </div>
+            {%if informations.canEdit %}
             <div class="form-group my-3">
                 <label for="Email" class="form-label">Email</label>
                 <div class="input-group has-validation">
@@ -77,10 +85,11 @@
                         class="form-control {% if form.email.errors %}is-invalid{%endif%}" 
                         aria-describedby="AideNom" 
                         maxlength="50"
-                        value="{{informations.email}}"
+                        value="{{informations.user.email}}"
                     >
                 </div>
             </div>
+            {%endif%}
             <div class="form-group my-3">
                 <label for="Pseudo" class="form-label">Identifiant</label>
                 <div class="input-group has-validation">
@@ -92,10 +101,12 @@
                         class="form-control {% if form.username.errors %}is-invalid{%endif%}" 
                         aria-describedby="AideIdentifiant" 
                         maxlength="45"
-                        value="{{informations.username}}"
+                        value="{{informations.user.username}}"
+                        {% if informations.canEdit == False %}disabled{%endif%}
                     >
                 </div>
             </div>
+            {%if informations.canEdit %}
             <div class="form-group my-3">
                 <div class="row">
                     <div class="col-lg-2 btn-group"> 
@@ -105,24 +116,26 @@
                         </button>
                     </div>
                     <div class="col-lg-2 btn-group mt-lg-0 mt-2"> 
-                        {% if informations.is_active %}
+                        {% if informations.user.is_active %}
                         <button id="deleteAccount" type="button" class="btn btn-outline-danger"
                             data-bs-toggle="tooltip" data-bs-html="true" title="En désactivant le compte, l'utilisateur n'aura plus accès à ce site mais toutes ses données sont gardées et vous pourrez lui redonner l'accés si vous le voulez"
-                            onclick="window.location = '/comptes/toggleActive?id={{informations.id}}'">
+                            onclick="window.location = '/comptes/toggleActive?id={{informations.user.id}}'">
                             Desactiver le compte
                         </button>
                         {% else %}
                         <button id="deleteAccount" type="button" class="btn btn-outline-success"
                             data-bs-toggle="tooltip" data-bs-html="true" title="En réactivant le compte, l'utilisateur aura accès à ce site comme si son compte n'a jamais été désactivé"
-                            onclick="window.location = '/comptes/toggleActive?id={{informations.id}}'">
+                            onclick="window.location = '/comptes/toggleActive?id={{informations.user.id}}'">
                             Réactiver le compte
                         </button>
                         {%endif%}
                     </div>
                 </div>
             </div>
+            {%endif%}
         </form>
     </div>
+    {%if informations.articles %}
     <div class="border rounded-3 m-3 mb-1 mx-2">
         <div class="row">
             <div class="accordion accordion-flush" id="accordion-articles">
@@ -139,22 +152,19 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">Titre</th>
-                                            <th scope="col">Temps avant de se cacher</th>
+                                            <th scope="col">Dernier jour à l'affiche</th>
                                             <th scope="col">Est affiché</th>
                                             
                                         </tr>
                                     </thead>
                                     <tbody class="tbody-pointer">
-                                        <tr class="article-row table-warning" id="id_article">
-                                            <td scope="row">Les militaires</td>
-                                            <td>2 jours</td>
-                                            <td>Oui</td>
+                                        {% for article in informations.articles %}
+                                        <tr class="article-row {% if article.is_shown %}table-warning{% else %}showed{%endif%}" id="{{article.id}}" onclick="window.location = '/articles/modifier?id={{article.id}}'">
+                                            <td scope="row">{{article.title}}</td>
+                                            <td>{{article.expiration_date}}</td>
+                                            <td>{% if article.is_shown %}Oui{%else%}Non{%endif%}</td>
                                         </tr>
-                                        <tr class="article-row">
-                                            <td scope="row">Les surveillants</td>
-                                            <td>4 jours</td>
-                                            <td>Non</td>
-                                        </tr>
+                                        {%endfor%}
                                     </tbody>
                                 </table>
                             </div>
@@ -164,6 +174,8 @@
             </div>
         </div>
     </div>
+    {%endif%}
+    {%if informations.sondages %}
     <div class="border rounded-3 m-3 mb-1 mx-2">
         <div class="row">
             <div class="accordion accordion-flush" id="accordion-sondages">
@@ -179,21 +191,19 @@
                                 <thead class="">
                                     <tr>
                                         <th scope="col">Titre</th>
-                                        <th scope="col">Nombre de réponse</th>
+                                        <th scope="col">Dernier jour à l'affiche</th>
                                         <th scope="col">Est affiché</th>
                                     </tr>
                                 </thead>
                                 <tbody class="tbody-pointer">
-                                    <tr class="sondage-row table-warning" id="id_sondage">
-                                        <td scope="row">Un nouveau jeu</td>
-                                        <td>503</td>
-                                        <td>Oui</td>
+                                    {%for sondage in informations.sondages%}
+                                    <tr class="sondage-row {%if sondage.is_shown%}table-warning{%endif%}" id="{{sondage.id}}"
+                                        onclick="window.location = '/parametres/sondages/modifier?id={{sondage.id}}'">
+                                        <td scope="row">{{sondage.description}}</td>
+                                        <td>{{sondage.expiration_date}}</td>
+                                        <td>{%if sondage.is_shown%}Oui{%else%}Non{%endif%}</td>
                                     </tr>
-                                    <tr class="sondage-row">
-                                        <td scope="row">Les repas</td>
-                                        <td>1294</td>
-                                        <td>Non</td>
-                                    </tr>
+                                    {%endfor%}
                                 </tbody>
                             </table>
                         </div>
@@ -202,6 +212,7 @@
             </div>
         </div>
     </div>
+    {%endif%}
 </div>
 {% include '../decoupeur.html' %}
 <script src="{% static 'JS/cropper.js' %}"></script>

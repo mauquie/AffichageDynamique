@@ -154,7 +154,12 @@ def ajouterArticle(request):
         form = forms.ArticleForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
+            record = form.save(commit=False)
+            record.author = models.User.objects.filter(pk=request.user.pk)[0]
+            record.last_edit_by = models.User.objects.filter(pk=request.user.pk)[0]
+            
+            record.save()
+
 
             messages.success(request, "Article bien ajouté !")
             return redirect("/articles/ajouter")
@@ -173,22 +178,23 @@ def modifierArticle(request):
 
     if request.method == "GET":
         if id:
+            form = forms.ArticleForm()
             article = get_object_or_404(models.Article, pk = id)
-            return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", informations=article))
+            return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", informations=article, form=form))
 
         else:
             raise Http404()
 
     elif request.method == "POST":
         #Recupération de l'article choisi
-        article = get_object_or_404(models.Article, pk = id)
+        article = get_object_or_404(models.Article, pk=id)
         form = forms.ArticleForm(request.POST, request.FILES, instance=article)
 
         if form.is_valid():
             form.save()
 
             #On modifie la dernière personne l'ayant modifié
-            article.last_edit_by = models.User.objects.get(pk = request.user.id)
+            article.last_edit_by = request.user
             article.save()
 
             messages.success(request, "Article modifié avec succés !")
@@ -220,7 +226,12 @@ def toggleVisibiliteArticle(request):
     id = request.GET.get("id", False)
     if id:
         article = get_object_or_404(models.Article, pk = id)
-        #article.shown = False
+        if article.is_shown:
+            article.is_shown = False
+        else:
+            article.is_shown = True
+
+        article.save()
         messages.success(request, "Modifié avec succés")
 
     else:
@@ -246,7 +257,8 @@ def gestionAffichage(request):
 
 @permission_required('ApiServer.view_sondage')
 def sondages(request):
-    return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages"))
+    sondages = models.Survey.objects.all()
+    return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", informations=sondages))
 
 @permission_required('ApiServer.add_sondage')
 def ajouterSondage(request):
@@ -263,10 +275,34 @@ def supprimerSondage(request):
     '''
         Fonction appelé quand on veut supprimer un article
     '''
-    messages.success(request, "Sondage supprimé avec succés !")
+    id = request.GET.get("id", "")
+    if id:
+        sondage = get_object_or_404(models.Survey, pk=id)
+        sondage.delete()
+        messages.success(request, "Sondage supprimé avec succés !")
+
+    else:
+        Http404()
     return redirect("/parametres/sondages")
 
+@permission_required('ApiServer.change_sondage')
+def toggleVisibiliteSondage(request):
+    id = request.GET.get("id", "")
+    if id:
+        sondage = get_object_or_404(models.Survey, pk=id)
+        if sondage.is_shown:
+            sondage.is_shown = False
+        
+        else:
+            sondage.is_shown = True
 
+        sondage.save()
+        
+        messages.success(request, "Sondage modifié avec succés")
+        return redirect("/parametres/sondages")
+    
+    else:
+        Http404()
 
 
 """
@@ -274,17 +310,55 @@ def supprimerSondage(request):
 """
 @permission_required('ApiServer.view_information')
 def informations(request):
-    return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations"))
+    infos = models.Info.objects.all()
+    return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", informations=infos))
 
 @permission_required('ApiServer.add_information')
 def ajouterInformation(request):
-    return render(request, 'WebServer/Gestion Affichage/Informations/ajouter.html', exInfos("Modifier l'information"))
+    if request.method == "GET":
+        infotypes = models.InfoType.objects.all()
+        form = forms.InformationForm()
+        return render(request, 'WebServer/Gestion Affichage/Informations/ajouter.html', exInfos("Modifier l'information", form=form, informations={"infotypes": infotypes}))
     
+    elif request.method == "POST":
+        form = forms.InformationForm(request.POST)
+        
+        if form.is_valid():
+            record = form.save(commit=False)
+            record.author = request.user
+            record.save()
+
+            messages.success(request, "Information crée avec succées !")
+
+        return redirect("/parametres/informations/ajouter")
+
 
 @permission_required('ApiServer.change_information')
 def modifierInformation(request):
-    if(request.GET.get("id", "") != ""):
-        return render(request, 'WebServer/Gestion Affichage/Informations/modifier.html', exInfos("Modifier l'information", informations={"title": "Le nouveaujeu", "informationContent": "je suis le contenu", "date": "2021-08-12", "type": "2"} ))
+    id = request.GET.get("id", "")
+    if(id):
+        info = get_object_or_404(models.Info, pk=id)
+
+        if request.method == "GET":
+            form = forms.InformationForm()
+            infotypes = models.InfoType.objects.all()
+
+            return render(request, 'WebServer/Gestion Affichage/Informations/modifier.html', exInfos("Modifier l'information", form = form, informations={"info": info, "infotypes": infotypes}))
+        
+        elif request.method == "POST":
+            form = forms.InformationForm(request.POST, instance=info)
+
+            if form.is_valid():
+                form.save()
+
+                messages.success(request, "Information bien mise à jour !")
+                return redirect("/parametres/informations")
+
+            else:
+                createErrorMessages(request, form)
+                infotypes = models.InfoType.objects.all()
+                return render(request, 'WebServer/Gestion Affichage/Informations/modifier.html', exInfos("Modifier l'information", form = form, informations={"info": info, "infotypes": infotypes}))
+
 
     else:
         raise Http404()
@@ -292,20 +366,44 @@ def modifierInformation(request):
 
 @permission_required('ApiServer.delete_information')
 def supprimerInformation(request):
-    messages.success(request, "Supprimé avec succés")
+    id = request.GET.get('id', '')
+    if id:  
+        info = get_object_or_404(models.Info, pk=id)
+        info.delete()
+        messages.success(request, "Supprimé avec succés")
+
+    else:
+        Http404()
+
     return redirect("/parametres/informations")
 
+@permission_required('ApiServer.change_information')
+def toggleVisibiliteInformation(request):
+    id = request.GET.get('id', "")
+    if(id):
+        info = get_object_or_404(models.Info, pk=id)
 
+        if info.is_shown:
+            info.is_shown = False
+            messages.success(request, "Information cachée !")
 
+        else:
+            info.is_shown = True
+            messages.success(request, "Information affichée !")
+
+        info.save()
+
+    return redirect("/parametres/informations")
 
 """
     Section gérant tout ce qui touche aux comptes
 """
 @login_required
 def comptes(request):
+    #Récuperation des articles crée par l'user
     articles = models.Article.objects.all().filter(author_id = request.user.id)
-    print(articles)
-    return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", informations={"articles": articles, "sondages": {}}))
+    sondages = models.Survey.objects.all().filter(author_id = request.user.id)
+    return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", informations={"articles": articles, "sondages": sondages}))
 
 @permission_required('ApiServer.add_user')
 def ajouterCompte(request):
@@ -355,13 +453,18 @@ def modifierCompte(request):
     if request.method == "GET":
         #Verification qu'il a les droits pour visionner le compte
         if id:
-            if request.user.has_perm("ApiServer.change_user"):
-                #Si l'utilisateur est trouvé on l'affiche sinon on renvoie un 404
-                user = get_object_or_404(models.User, pk=id)
-                return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", informations=user))
+            #Si l'utilisateur est trouvé on l'affiche sinon on renvoie un 404
+            user = get_object_or_404(models.User, pk=id)
+            articles = models.Article.objects.filter(author=user)
+            sondages = models.Survey.objects.filter(author=user)
+
+            if request.user.has_perm('ApiServer.change_user'):
+                canEdit = True
+            else:
+                canEdit = False
+
+            return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", informations={"user": user, "articles": articles, "sondages": sondages, "canEdit": canEdit}))
             
-            else: 
-                return redirect("/comptes/voir")
 
         else:   
             return render(request, "WebServer/Comptes/modifierComptePerso.html", exInfos("Modifier mon compte"))

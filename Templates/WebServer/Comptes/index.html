@@ -79,17 +79,17 @@
                                     <thead>
                                         <tr>
                                             <th scope="col">Titre</th>
-                                            <th scope="col">Temps avant de se cacher</th>
+                                            <th scope="col">Dernier jour à l'affiche</th>
                                             <th scope="col">Est affiché</th>
                                             
                                         </tr>
                                     </thead>
                                     <tbody class="tbody-pointer">
                                         {% for article in informations.articles %}
-                                        <tr class="article-row {% if article.shown %}table-warning{% else %}showed{%endif%}" id="id_article" onclick="window.location = '/articles/modifier?id={{article.id}}'">
+                                        <tr class="article-row {% if article.is_shown %}table-warning{% else %}showed{%endif%}" id="id_article" onclick="window.location = '/articles/modifier?id={{article.id}}'">
                                             <td scope="row">{{article.title}}</td>
                                             <td>{{article.expiration_date}}</td>
-                                            <td>article.shown</td>
+                                            <td>{% if article.is_shown %}Oui{%else%}Non{%endif%}</td>
                                         </tr>
                                         {%endfor%}
                                     </tbody>
@@ -119,22 +119,21 @@
                             <table class="table table-hover">
                                 <thead class="">
                                     <tr>
-                                        <th scope="col">Titre</th>
-                                        <th scope="col">Nombre de réponse</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Dernier jour à l'affiche</th>
                                         <th scope="col">Est affiché</th>
                                     </tr>
                                 </thead>
                                 <tbody class="tbody-pointer">
-                                    <tr class="sondage-row table-warning" id="id_sondage">
-                                        <td scope="row">Un nouveau jeu</td>
-                                        <td>503</td>
-                                        <td>Oui</td>
+
+                                    {%for sondage in informations.sondages %}
+                                    <tr class="sondage-row {%if sondage.is_shown%}table-warning{%endif%}" id="{{sondage.id}}" 
+                                        onclick="window.location = '/parametres/sondages/modifier?id={{sondage.id}}'">
+                                        <td scope="row">{{sondage.description}}</td>
+                                        <td>{{sondage.expiration_date}}</td>
+                                        <td>{%if sondage.is_shown%}Oui{%else%}Non{%endif%}</td>
                                     </tr>
-                                    <tr class="sondage-row">
-                                        <td scope="row">Les repas</td>
-                                        <td>1294</td>
-                                        <td>Non</td>
-                                    </tr>
+                                    {%endfor%}
                                 </tbody>
                             </table>
                         </div>

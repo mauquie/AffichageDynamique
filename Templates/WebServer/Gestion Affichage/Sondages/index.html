@@ -15,23 +15,20 @@
                     <tr>
                         <th scope="col">Titre</th>
                         <th scope="col">Auteur</th>
-                        <th scope="col">Nombre de réponse</th>
-                        <th scope="col" class="d-none d-lg-block">Est affiché</th>
+                        <th scope="col">Dernier jour à l'affiche</th>
+                        <th scope="col" class="d-none d-lg-table-cell">Est affiché</th>
                     </tr>
                 </thead>
                 <tbody class="tbody-pointer">
-                    <tr class="sondage-row table-warning" id="id_sondage">
-                        <td scope="row">Un nouveau jeu</td>
-                        <td>MDL</td>
-                        <td>503</td>
-                        <td class="d-none d-lg-block">Oui</td>
+                    {%for sondage in informations%}
+                    <tr class="sondage-row {%if sondage.is_shown%}table-warning{%else%}showned{%endif%}" id="{{sondage.id}}">
+                        <td scope="row">{{sondage.description}}</td>
+                        <td>{{sondage.author}}</td>
+                        <td>{{sondage.expiration_date}}</td>
+                        <td class="d-none d-lg-table-cell">{%if sondage.is_shown%}Oui{%else%}Non{%endif%}</td>
+                        <td id="sondage-link-{{sondage.id}}" class="d-none">{{sondage.link}}</td>
                     </tr>
-                    <tr class="sondage-row">
-                        <td scope="row">Les repas</td>
-                        <td>Administration</td>
-                        <td>1294</td>
-                        <td class="d-none d-lg-block">Non</td>
-                    </tr>
+                    {%endfor%}
                 </tbody>
             </table>
         </div>
@@ -43,6 +40,7 @@
                 + Ajouter un sondage
             </button>
             <h5>Sondage : <strong id="sondage-name">Aucun sondage sélectionné</strong></h5>
+            <h5>Lien : <a id="sondage-link" style="font-weight: 800;" target="_blank">Aucun sondage sélectionné</a></h5>
             <div id="actions-btn">
                 <button type="button" id="edit" class="btn btn-outline-primary" disabled>Modifier</button>
                 <button type="button" id="hide" class="btn btn-outline-warning" disabled>Cacher</button>
@@ -58,12 +56,13 @@ window.addEventListener("DOMContentLoaded", () => {
         //Récupération des éléments DOM nécessaires
         let sondages = document.getElementsByClassName("sondage-row")
         let sondageName = document.getElementById("sondage-name")
+        let sondageLink = document.getElementById("sondage-link")
         let btnHide = document.getElementById("hide")
         var btnEdit = document.getElementById("edit")
         var btnDelete = document.getElementById("delete")
         
         //Association des lignes du tableau avec les différentes fonctions
-        const Sondages = new List(sondages, sondageName, btnHide)
+        const Sondages = new List(sondages, sondageName, btnHide, "showned")
 
         //Modification des boutons à chaque fois que l'user change sa sélection
         document.addEventListener("selection", e => {
@@ -83,6 +82,10 @@ window.addEventListener("DOMContentLoaded", () => {
             btnHide.addEventListener("click", () => {
                 window.location = "/parametres/sondages/toggleVisibilite?id=" + e.detail.id
             })
+
+            sondageLink.classList = "clickable"
+            sondageLink.innerText = "Go"
+            sondageLink.href = document.getElementById("sondage-link-" + e.detail.id).textContent
         })
     })
 </script>

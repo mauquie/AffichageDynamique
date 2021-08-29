@@ -24,7 +24,7 @@
     background-repeat: no-repeat;
 }
 
-#imagePreview:hover {
+.imagePreview:hover {
     width: 90%;
     height: 90%;
 }

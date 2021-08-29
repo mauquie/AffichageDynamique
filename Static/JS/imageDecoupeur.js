@@ -25,7 +25,9 @@ class imageDecoupeur{
         this.imageUploaded;
         this.cropper;
 
-        this._setEvents() //Attributions des fonctions pour les événements adéquats
+        if (!this.imageInput.disabled){
+            this._setEvents() //Attributions des fonctions pour les événements adéquats
+        }
         this._assignDefaultImage() //Association de l'image par defaut si elle est spécifiée
     }
 
@@ -240,7 +242,7 @@ class imageDecoupeur{
         if (this.imageInput.defaultValue != "") {
             //Récupération de l'url de l'image
             let ip = window.location.href.split("/")[2]
-            let url = "http://" + ip + "/static/IMG/" + this.imageInput.defaultValue
+            let url = "http://" + ip + "/Medias/" + this.imageInput.defaultValue
             var reader = new FileReader();
         
             //Récupération de l'image
@@ -295,7 +297,7 @@ async function createFile(url){
             type: 'image/png'
         };
 
-        let file = new File([data], "article.png", metadata);
+        let file = new File([data], "image.png", metadata);
         return file
 
     } else {

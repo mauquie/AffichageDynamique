@@ -30,4 +30,9 @@ class ArticleForm(forms.ModelForm):
         model = models.Article
         fields = ["title", "article", "image", "expiration_date"]
 
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=False, widget=forms.FileInput(attrs={"class": "form-control", "id": "imageInput", "hidden": ""}))
+
+class InformationForm(forms.ModelForm):
+    class Meta:
+        model = models.Info
+        fields = ["type", "message", "expiration_date"]

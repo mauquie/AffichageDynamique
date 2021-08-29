@@ -3,51 +3,35 @@
     <form id="formulaire" action="#" method="post">
         {% csrf_token %}
         <div class="form-group my-3">
-            <label for="titre" class="form-label">Titre</label>
-            <div class="input-group">
-                <input 
-                    id="titleInput"
-                    name="title"
-                    type="text" 
-                    class="form-control" 
-                    aria-describedby="AideTitre" 
-                    placeholder="Entrer le titre (il doit être court et concis)" 
-                    maxlength="65"
-                    value="{{informations.title}}"
-                >
-            </div>
-            <small id="titleLength" class="form-text text-muted" style="display: block;">0 / 65</small>
-        </div>
-        <div class="form-group my-3">
             <label for="typeInformation">Type de l'information</label>
-            <select class="form-select my-2" aria-label="select information">
-                <option value="1" {%ifequal informations.type "1"%}selected{%endifequal%}>Information lambda</option>
-                <option value="2" {%ifequal informations.type "2"%}selected{%endifequal%}>Information importante</option>
-                <option value="3" {%ifequal informations.type "3"%}selected{%endifequal%}>Information urgente</option>
+            <select class="form-select my-2 {% if form.type.errors %}is-invalid{% endif %}" aria-label="select information" name="type">
+                {% for infotype in informations.infotypes %}
+                <option value="{{infotype.id}}" {%if infotype.id == informations.info.type.id %}selected{%endif%}>{{infotype.name}}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="form-group my-3">
             <label for="informationContent" class="form-label">Contenu de l'information</label>
             <textarea
-                name="informationContent" 
+                name="message" 
                 id="informationContent" 
-                class="form-control" 
+                class="form-control {% if form.message.errors %}is-invalid{% endif %}" 
                 data-provide="markdown" 
                 maxlength="150" 
                 placeholder="Entrer le contenu de l'information"
-            >{{informations.informationContent}}</textarea>
-            <small id="compteurCaractereInformationContenu" class="form-text text-muted">0/150</small>
+            >{{informations.info.message}}</textarea>
+            <small id="compteurCaractereInformationContenu" class="form-text text-muted">Max. 150 caractères</small>
         </div>
-        <div class="form-group my-3">
+        <div class="form-group my-3" style="{% if form.expiration_date.errors %}color: red{% endif %}">
             <label for="dateExpiration">Date d'expiration de l'information : </label>
             <input 
                 type="date" 
-                name="dateExpiration"
+                name="expiration_date"
                 id="dateExpiration"
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
                 title="Date du dernier jour où l'information sera affiché sur les écrans"
-                value="{{informations.date}}"
+                value="{{informations.info.expiration_date|date:'Y-m-d'}}"
             > 
         </div>
         <div class="form-group mt-3">
@@ -75,19 +59,6 @@
             date.setDate(date.getDate() + 7)
             document.getElementById('dateExpiration').valueAsDate = date;
         }
-
-        //Définition les compteurs de caractères 
-        let title = document.getElementById("titleLength")
-        let titleInput = document.getElementById("titleInput")
-        titleInput.addEventListener("input", () => {
-            title.innerHTML = titleInput.value.length + " / 65"
-        })
-
-        let compteurCaractere = document.getElementById("compteurCaractereInformationContenu")
-        let informationContent = document.getElementById("informationContent")
-        informationContent.addEventListener("input", () => {
-            compteurCaractere.innerHTML = informationContent.value.length + " / 150"
-        })  
     }))
 </script>
 {%endblock content%}
