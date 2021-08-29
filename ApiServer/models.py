@@ -5,16 +5,16 @@ from django.contrib.auth.models import AbstractUser, Group
 # Les modèles nécéssaires pour la base de données. Les modèles pour l'administration sont créées en dessous.
 
 class User(AbstractUser):
-    profile_picture = models.ImageField(upload_to="Medias/User/profile_picture/")
+    profile_picture = models.ImageField(upload_to="User/profile_picture/")
 
 class Article(models.Model):
     title = models.CharField(max_length=100)
     article = models.CharField(max_length=4000)
-    image = models.ImageField(upload_to="Medias/Articles/", blank=True)
-    creation_date = models.DateField(auto_created=True)
+    image = models.ImageField(upload_to="Articles/", blank=True)
+    creation_date = models.DateField(auto_now_add=True)
     expiration_date = models.DateField()
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='author', auto_created=True)
-    modification_date = models.DateField(auto_created=True)
+    modification_date = models.DateField(auto_now_add=True)
     last_edit_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, auto_created=True)
     perm_group = models.ForeignKey(Group, on_delete=models.DO_NOTHING, null=True)
     is_shown = models.BooleanField(default=True)
@@ -25,13 +25,13 @@ class Page(models.Model):
 
 class Display(models.Model):
     name = models.CharField(max_length=100)
-    page = models.ForeignKey(Page, on_delete=models.DO_NOTHING)
+    page = models.ForeignKey(Page, on_delete=models.DO_NOTHING, null=True)
 
 class Survey(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     description = models.CharField(max_length=300)
     link = models.CharField(max_length=300)
-    creation_date = models.DateField(auto_created=True)
+    creation_date = models.DateField(auto_now_add=True)
     expiration_date = models.DateField()
     is_shown = models.BooleanField(default=True)
     
@@ -43,7 +43,7 @@ class Info(models.Model):
     message = models.CharField(max_length=150)
     is_shown = models.BooleanField(default=True)
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    creation_date = models.DateField(auto_created=True)
+    creation_date = models.DateField(auto_now_add=True)
     expiration_date = models.DateField()
 
 # Tous les modèles administrateurs
