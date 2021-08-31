@@ -395,6 +395,9 @@ def toggleVisibiliteInformation(request):
 
     return redirect("/parametres/informations")
 
+
+
+
 """
     Section gérant tout ce qui touche aux comptes
 """
@@ -568,6 +571,146 @@ def afficherComptes(request):
 
 
 
+
+"""
+    Section gérant tout ce qui touche aux écrans
+"""
+def ajouterEcran(request):
+    if request.method == "GET":
+        return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterEcran.html")
+
+    elif request.method == "POST":
+        form = forms.ScreenForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Ajouté avec succés")
+        
+        else:
+            createErrorMessages(request, form)
+        
+    return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterEcran.html")
+    
+
+def modifierEcran(request):
+    id = request.GET.get("id", "")
+    if id:
+        if request.method == "GET":
+            ecran = get_object_or_404(models.Display, pk=id)
+            return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierEcran.html', exInfos("Modifier un écran", informations=ecran))
+
+        elif request.method == "POST":
+            ecran = get_object_or_404(models.Display, pk=id)
+            form = forms.ScreenForm(request.POST, instance=ecran)
+
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Modifié avec succés")
+            else:
+                createErrorMessages(request, form)
+            
+            return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierEcran.html', exInfos("Modifier un écran", form=form, informations=ecran))
+
+    else:
+        Http404()
+
+
+def supprimerEcran(request):
+    return redirect("/parametres")
+
+
+def ajouterPage(request):
+    if request.method == "GET":
+        return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterPage.html")
+
+    elif request.method == "POST":
+        form = forms.PageForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Ajouté avec succés")
+        
+        else:
+            createErrorMessages(request, form)
+        
+    return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterPage.html")
+    
+
+def modifierPage(request):
+    id = request.GET.get("id", "")
+    if id:
+        if request.method == "GET":
+            ecran = get_object_or_404(models.Page, pk=id)
+            return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierPage.html', exInfos("Modifier une page", informations=ecran))
+
+        elif request.method == "POST":
+            ecran = get_object_or_404(models.Page, pk=id)
+            form = forms.PageForm(request.POST, instance=ecran)
+
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Modifié avec succés")
+            else:
+                createErrorMessages(request, form)
+            
+            return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierPage.html', exInfos("Modifier une page", form=form, informations=ecran))
+
+    else:
+        Http404()
+
+def supprimerPage(request):
+    return redirect("/parametres")
+
+def modifierAffectation(request):
+    """
+        Fonction s'occupant de renvoyer la page qui permet d'affecter chaque écran à une page
+    """
+    if request.method == "GET":
+        ecrans = models.Display.objects.all().order_by("name")
+        pages = models.Page.objects.all()
+        return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierLaffectation.html', exInfos("Modification des écrans", informations={"ecrans": ecrans, "pages": pages}))
+    
+    elif request.method == "POST":
+        #Si l'user fourni une page précise, on le recupère sinon on met la page par defaut (correspondant au -1 pour l'identifiant)
+        pageId = int(request.POST.get("page", -1))
+        
+        #Si l'id fourni est différent de -1 donc que l'user l'a fourni
+        if pageId > -1:
+            #Recherche de la page correspondante
+            page = models.Page.objects.filter(pk = pageId)
+
+        #Si l'user a donné une liste d'écrans à modifier
+        if request.POST.getlist("ecrans", ""):
+
+            #Pour tous les écrans dans cette liste
+            for i in range(len(request.POST.getlist("ecrans"))):
+                #Id de l'écran qu'on modifie dans cette itération
+                ecranId = request.POST.getlist("ecrans")[i]
+
+                #L'écran correspondant à l'id
+                ecran = models.Display.objects.filter(pk = ecranId)
+
+                #Si l'écran n'est pas trouvé
+                if len(ecran) < 1:
+                    messages.error(request, "Il y a eu un problème, l'écran avec l'identifiant " + ecranId + " n'a pas pu être mis à jour")
+                
+                #S'il est trouvé
+                else:
+                    #Si on a pas trouvé la page ou que l'user ne souhaite pas de page en particulier
+                    if pageId == -1:
+                        ecran[0].page = None
+
+                    #Si l'user veut une page en particulier qu'on a trouvé
+                    else:
+                        ecran[0].page = page[0]
+
+                    #Sauvegarde
+                    ecran[0].save()
+
+                    messages.success(request, "Les écrans ont bien été mis à jour !")
+
+        
+        return redirect("/parametres/modifierPageEcran")
 
 
 """

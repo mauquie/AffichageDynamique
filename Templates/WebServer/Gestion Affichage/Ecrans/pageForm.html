@@ -1,0 +1,31 @@
+{%block content%}
+<div class="border rounded-3 m-3 mb-5 p-4 ">
+    <form id="formulaire" action="" method="post">
+        {% csrf_token %}
+        <div class="form-group my-3">
+            <label for="informationContent" class="form-label">Description de la page</label>
+            <input
+                name="description" 
+                id="nameContent" 
+                class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                data-provide="markdown" 
+                maxlength="100" 
+                type="text"
+                placeholder="Entrer la description de la page"
+                value="{{informations.description}}"
+            ></input>
+            <small class="form-text text-muted">Max. 100 caractères</small>
+        </div>
+        <div class="form-group mt-3">
+            <div class="row">
+                <div class="col-lg-2 btn-group"> 
+                    <button id="sendShow" type="submit" class="btn btn-primary"
+                        data-bs-toggle="tooltip" data-bs-html="true" title="Enregistre l'écran dans la base de données">
+                        {% if informations.description %}Modifier{%else%}Ajouter{%endif%} maintenant !
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{%endblock content%}

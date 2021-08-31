@@ -36,3 +36,13 @@ class InformationForm(forms.ModelForm):
     class Meta:
         model = models.Info
         fields = ["type", "message", "expiration_date"]
+
+class ScreenForm(forms.ModelForm):
+    class Meta:
+        model = models.Display
+        fields = ["name"]
+
+class PageForm(forms.ModelForm):
+    class Meta:
+        model = models.Page
+        fields = ["description"]
