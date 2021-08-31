@@ -41,7 +41,7 @@ def loginView(request):
             return redirect('/')
 
         else:
-            #Si un mot de passe n'est pas rentré, il peut s'agir de la première connexion d'un utilisateur
+            #Si un mot de passe n'est pas rentré, il peut s'agir de la première connexion d'un utilisateur donc qu'il n'y a pas de mot de passe
             if password == "":
                 #Essaye de trouver un utilisateur avec le même identifiant
                 try:
@@ -53,7 +53,7 @@ def loginView(request):
 
                 else: 
                     #S'il un utilisateur est trouvé et qu'il ne s'est pas encore connecté une seule fois
-                    if user.last_login == None:
+                    if user.password == "":
                         return redirect('/firstLogin/?username=' + username)
                     
                     else: 
@@ -101,8 +101,8 @@ def firstLogin(request):
                             return redirect('/login/')
 
                         else:
-                            #Si c'est la première fois qu'il se connecte
-                            if user.last_login == None:
+                            #Si 'utilisateur n'a pas de mot de passe enregistré
+                            if user.password == "":
                                 #Définition le mot de passe du compte
                                 user.set_password(password)
                                 user.save()
@@ -569,7 +569,20 @@ def afficherComptes(request):
 
     return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", informations={"users": users}))
 
+@permission_required('ApiServer.change_user')
+def resetPassword(request):
+    id = request.GET.get("id", "")
 
+    if id:
+        user = get_object_or_404(models.User, pk = id)
+
+        user.password = ""
+
+        user.save()
+
+        messages.success(request, "Mot de passe réinitialisé avec succés")
+
+    return redirect("/comptes/voir")
 
 
 """

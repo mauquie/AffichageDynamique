@@ -130,6 +130,13 @@
                         </button>
                         {%endif%}
                     </div>
+                    <div class="col-lg-2 btn-group"> 
+                        <button id="resetPassword" type="button" class="btn btn-outline-secondary"
+                            data-bs-toggle="tooltip" data-bs-html="true" title="Reinitialiser le mot de passe du compte, quand l'utilisateur voudra se connecter au compte, le site lui proposera d'en entrer un nouveau."
+                            onclick="window.location = '/resetPassword?id={{informations.user.id}}'">
+                            Réinitialiser le mot de passe
+                        </button>
+                    </div>
                 </div>
             </div>
             {%endif%}

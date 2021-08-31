@@ -35,4 +35,5 @@ urlpatterns = [
     path("comptes/modifier", urls.modifierCompte),
     path("comptes/toggleActive", urls.toggleActive),
     path("comptes/voir", urls.afficherComptes),
+    path("resetPassword", urls.resetPassword),
 ]
