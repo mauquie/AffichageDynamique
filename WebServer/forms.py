@@ -28,14 +28,14 @@ class changeOthersAccount(forms.ModelForm):
 class ArticleForm(forms.ModelForm):
     class Meta: 
         model = models.Article
-        fields = ["title", "article", "image", "expiration_date"]
+        fields = ["title", "article", "image", "expiration_date", "is_shown"]
 
     image = forms.ImageField(required=False, widget=forms.FileInput(attrs={"class": "form-control", "id": "imageInput", "hidden": ""}))
 
 class InformationForm(forms.ModelForm):
     class Meta:
         model = models.Info
-        fields = ["type", "message", "expiration_date"]
+        fields = ["type", "message", "expiration_date", "is_shown"]
 
 class ScreenForm(forms.ModelForm):
     class Meta:
