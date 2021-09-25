@@ -45,4 +45,4 @@ class ScreenForm(forms.ModelForm):
 class PageForm(forms.ModelForm):
     class Meta:
         model = models.Page
-        fields = ["description"]
+        fields = ["description", "filename"]
