@@ -458,6 +458,12 @@ def modifierCompte(request):
         if id:
             #Si l'utilisateur est trouvé on l'affiche sinon on renvoie un 404
             user = get_object_or_404(models.User, pk=id)
+
+            print(user.id)
+            print(request.user.id)
+            if user.id == request.user.id:
+                return redirect("/comptes/modifier")
+
             articles = models.Article.objects.filter(author=user)
             sondages = models.Survey.objects.filter(author=user)
 
@@ -720,7 +726,7 @@ def modifierAffectation(request):
                     #Sauvegarde
                     ecran[0].save()
 
-                    messages.success(request, "Les écrans ont bien été mis à jour !")
+            messages.success(request, "Les écrans ont bien été mis à jour !")
 
         
         return redirect("/parametres/modifierPageEcran")

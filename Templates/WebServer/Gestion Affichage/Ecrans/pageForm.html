@@ -16,6 +16,20 @@
             ></input>
             <small class="form-text text-muted">Max. 100 caractères</small>
         </div>
+        <div class="form-group my-3">
+            <label for="informationContent" class="form-label">Nom du fichier dans la base de donnée</label>
+            <input
+                name="filename" 
+                id="filename" 
+                class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                data-provide="markdown" 
+                maxlength="100" 
+                type="text"
+                placeholder="Entrer le nom du fichier"
+                value="{{informations.filename}}"
+            ></input>
+            <small class="form-text text-muted">Max. 100 caractères</small>
+        </div>
         <div class="form-group mt-3">
             <div class="row">
                 <div class="col-lg-2 btn-group"> 
