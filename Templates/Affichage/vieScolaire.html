@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
 
     {% load static %}
-    <script src="{% static 'JS/cropper.js' %}"></script>
+    <script src="{% static 'JS/affichageSelf.js' %}"></script>
     <link rel="icon" type="image/png" href="{% static 'favicon.png'%}" />
     <title>{% block title %}{% endblock title %} - Affichage Dynamique</title>
 </head>
@@ -23,10 +21,10 @@
         <div class="col-sm-8">
             <div class="card ms-3 me-3">
                 <div class="card-body">
-                    <h4 class="card-title" style="font-size: 2vw;"> Lorem Ipsum</h4>
+                    <h4 id="titre" class="card-title" style="font-size: 2vw;"> Lorem Ipsum</h4>
                     <div>
-                        <img src="{% static 'image.jpg'%}" width="32%" height="18%" style="float:left; margin-right: 20px;" >
-                        <p class="card-text" style="display: inline; font-size: 1.8vw;" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin at fringilla odio. Vivamus blandit bibendum ornare. Proin turpis ipsum, laoreet eget placerat vitae, volutpat ac lorem. Curabitur in mi ullamcorper, porta erat id, sollicitudin massa. Sed sed lacinia felis, tristique condimentum nunc. Fusce eget risus nec sapien finibus lobortis. Praesent volutpat dolor ut diam aliquet, vel fermentum lectus porta. Sed elementum sollicitudin eros accumsan varius. Curabitur nec arcu eu quam maximus sodales. Fusce eu ante sagittis elit luctus facilisis. Sed molestie sem at ornare consectetur. Curabitur at tellus ut lorem hendrerit viverra. Interdum et malesuada fames ac ante ipsum primis in laoreet. </p>
+                        <img id="image" src="{% static 'image.jpg'%}" width="32%" height="18%" style="float:left; margin-right: 20px;" >
+                        <p id="contenu" class="card-text" style="display: inline; font-size: 1.8vw;" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin at fringilla odio. Vivamus blandit bibendum ornare. Proin turpis ipsum, laoreet eget placerat vitae, volutpat ac lorem. Curabitur in mi ullamcorper, porta erat id, sollicitudin massa. Sed sed lacinia felis, tristique condimentum nunc. Fusce eget risus nec sapien finibus lobortis. Praesent volutpat dolor ut diam aliquet, vel fermentum lectus porta. Sed elementum sollicitudin eros accumsan varius. Curabitur nec arcu eu quam maximus sodales. Fusce eu ante sagittis elit luctus facilisis. Sed molestie sem at ornare consectetur. Curabitur at tellus ut lorem hendrerit viverra. Interdum et malesuada fames ac ante ipsum primis in laoreet. </p>
                     </div>
                 </div>
             </div>
