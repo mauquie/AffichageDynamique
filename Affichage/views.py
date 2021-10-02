@@ -10,7 +10,7 @@ def index(request):
 
 def affichageEcran(request):
     #Lien vers l'écran en cas d'erreurs
-    path = "lien vers ecran base"
+    path = "Affichage/base.html"
 
     #Récupération du paramètre nom pour connaitre l'écran que l'on veut afficher
     displayName = request.GET.get("name", "")

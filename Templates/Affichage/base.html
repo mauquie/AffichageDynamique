@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>Base</title>
+    {% load static%}
+    <link rel="stylesheet" href="{%static 'CSS/clock.css'%}">
+</head>
+<body>
+    <div class="row">
+        <h5 id="information" class="text-center"></h5>
+    </div>
+    <div id="clock" class="row">
+        <div class="col-4"></div>
+        <div class="col-4">
+            <div class="border rounded-3 text-center">
+                <h4>Il est actuellement :</h4>
+                <div id="MyClockDisplay"></div>
+            </div>
+            
+        </div>
+    </div>
+    <script src="{% static 'JS/getInfos.js' %}"></script>
+    <script>
+        function showTime(){
+            var date = new Date();
+            var h = date.getHours(); // 0 - 23
+            var m = date.getMinutes(); // 0 - 59
+            var s = date.getSeconds(); // 0 - 59
+            
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+            
+            var time = h + ":" + m + ":" + s;
+            document.getElementById("MyClockDisplay").innerText = time;
+            document.getElementById("MyClockDisplay").textContent = time;
+            
+            setTimeout(showTime, 1000);
+            
+        }
+
+        showTime();
+    </script>
+</body>
+</html>
