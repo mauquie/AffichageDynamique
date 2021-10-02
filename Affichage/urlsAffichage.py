@@ -6,4 +6,8 @@ from . import views as urls
 urlpatterns = [
     path('', urls.index),
     path("viescolaire", urls.vieScolaire),
+<<<<<<< HEAD
 ]
+=======
+]
+>>>>>>> refs/remotes/origin/main
