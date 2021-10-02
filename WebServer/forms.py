@@ -40,7 +40,7 @@ class InformationForm(forms.ModelForm):
 class ScreenForm(forms.ModelForm):
     class Meta:
         model = models.Display
-        fields = ["name"]
+        fields = ["name", "code_name"]
 
 class PageForm(forms.ModelForm):
     class Meta:

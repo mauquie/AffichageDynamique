@@ -18,6 +18,7 @@ from django.http.response import HttpResponse
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from Affichage.views import affichageEcran
 
 
 def response404(request, exception, template_name="error.html"):
@@ -29,6 +30,6 @@ urlpatterns = [
     path('adminDjango/', admin.site.urls),
     path('api/', include("ApiServer.urlsApiServer")),
     path('', include("WebServer.urlsWebServ")),
-    path('ecran/', include("Affichage.urlsAffichage")),
+    path('ecran', affichageEcran),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
