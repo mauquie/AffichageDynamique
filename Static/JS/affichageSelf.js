@@ -9,6 +9,7 @@ setInterval(()=>{
             domTitre.innerText = article.title
             domContenu.innerText = article.article
             domImage.src = "/Medias/"+article.image
+<<<<<<< HEAD
             if (i == articles.length-1)
             {
                 i = 0
@@ -16,4 +17,9 @@ setInterval(()=>{
         }
     })
 }, 2000)
+=======
+        }
+    })
+}, 5000)
+>>>>>>> 2bbef78a7b263c01e585fe65d3abba0ded2310a8
 

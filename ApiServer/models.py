@@ -23,21 +23,20 @@ class Article(models.Model):
     is_shown = models.BooleanField(default=True)
 
     def __str__(self):
-        return title
+        return self.title
 
 class Page(models.Model):
     filename = models.CharField(max_length=100,null=True)
     description = models.CharField(max_length=100)
 
     def __str__(self):
-        return description
+        return self.description
 
 class Display(models.Model):
     name = models.CharField(max_length=100)
+    code_name = models.CharField(max_length=100, default="")
     page = models.ForeignKey(Page, on_delete=models.CASCADE, null=True)
 
-    def __str__(self):
-        return name
 
 class Survey(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -48,13 +47,13 @@ class Survey(models.Model):
     is_shown = models.BooleanField(default=True)
 
     def __str__(self):
-        return description
+        return self.description
     
 class InfoType(models.Model):
     name = models.CharField(max_length=30)
 
     def __str__(self):
-        return name
+        return self.name
 
 class Info(models.Model):
     type = models.ForeignKey(InfoType, on_delete=models.CASCADE)
@@ -65,7 +64,7 @@ class Info(models.Model):
     expiration_date = models.DateField()
 
     def __str__(self):
-        return message
+        return self.message
 
 # Tous les modèles administrateurs
 
@@ -85,9 +84,9 @@ class PageAdmin(admin.ModelAdmin):
     search_fields = ['filename']
 
 class DisplayAdmin(admin.ModelAdmin):
-    list_display = ('name', 'page')
+    list_display = ('name', 'code_name', 'page')
     list_filter = ('name', 'page')
-    search_fields = ['name']
+    search_fields = ['name', 'code_name']
 
 class SurveyAdmin(admin.ModelAdmin):
     list_display = ('description', 'link', 'author', 'creation_date', 'expiration_date', 'is_shown')
