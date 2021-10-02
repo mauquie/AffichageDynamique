@@ -6,11 +6,7 @@ from datetime import date
 # Create your views here.
 
 def index(request):
-<<<<<<< HEAD
-    return JsonResponse({"text": "Page du premier écran !"})
-=======
     return JsonResponse({})
->>>>>>> 2bbef78a7b263c01e585fe65d3abba0ded2310a8
 
 def affichageEcran(request):
     #Lien vers l'écran en cas d'erreurs
