@@ -11,6 +11,7 @@ def index(request):
 def affichageEcran(request):
     #Lien vers l'écran en cas d'erreurs
     path = "Affichage/base.html"
+    context = {"description": "Base"}
 
     #Récupération du paramètre nom pour connaitre l'écran que l'on veut afficher
     displayName = request.GET.get("name", "")
@@ -26,4 +27,5 @@ def affichageEcran(request):
             if display[0].page:
                 path = "Affichage/" + display[0].page.filename
 
-    return render(request, path)
+                context = {"description": display[0].page.description}
+    return render(request, path, context)

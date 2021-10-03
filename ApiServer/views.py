@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Article, Info, Survey
+from .models import Article, Info, Survey, Display
 
 # Récupère les articles visibles et les retourne sous format JSON.
 def getArticles(request)->JsonResponse:
     query = Article.objects.filter(is_shown=True)
+    
     [entry for entry in query]
     articleList = list()
+
     for entry in query:
         json = {
             "title": entry.title,
@@ -24,14 +26,18 @@ def getArticles(request)->JsonResponse:
             }
 
         }
+
         articleList.append(json)
+
     return JsonResponse(articleList, safe=False)
 
 # Récupère les informations visibles et les retourne sous format JSON.
 def getInfos(request)->JsonResponse:
     query = Info.objects.filter(is_shown=True)
+
     [entry for entry in query]
     infoList = list()
+
     for entry in query:
         json = {
             "message": entry.message,
@@ -46,14 +52,18 @@ def getInfos(request)->JsonResponse:
             }
 
         }
+
         infoList.append(json)
+
     return JsonResponse(infoList, safe=False)
 
 # Récupère les sondages visibles et les retourne sous format JSON.
 def getSurveys(request)->JsonResponse:
     query = Survey.objects.filter(is_shown=True)
+
     [entry for entry in query]
     surveyList = list()
+
     for entry in query:
         json = {
             "description": entry.description,
@@ -65,5 +75,29 @@ def getSurveys(request)->JsonResponse:
             }
 
         }
+
         surveyList.append(json)
+
     return JsonResponse(surveyList, safe=False)
+
+#Récupère l'écran correspondant au paramètre code_name et retourne ses infos sous format JSON
+def getDisplays(request)->JsonResponse:
+    query = Display.objects.filter(code_name=request.GET.get("code_name"))
+
+    infoList = []
+
+    for entry in query:
+        if entry.page:
+            page = entry.page.description
+
+        else:
+            page = "Base"
+
+        json = {
+            "code_name": entry.code_name,
+            "name": entry.name,
+            "page": page
+        }
+        infoList.append(json)
+    
+    return JsonResponse(infoList, safe=False)

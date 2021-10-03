@@ -1,3 +1,4 @@
+/* jshint esversion: 6 */
 class List {
     /**
      *  Classe s'occupant de gérer la sélection d'un objet dans une table (DomElement) donnée et la mise à jour
@@ -12,7 +13,7 @@ class List {
      *      ?activeMessage {String} - Texte qui sera affiché sur le bouton quand l'objet sélectionné est en évidence
      *      ?disableMessage {String} - Texte qui sera affiché sur le bouton quand l'objet sélectionné n'est pas en évidence
      */
-    constructor(objects, title, button, classOfDisabledObject = "table-warning", activeMessage = "Montrer", disableMessage = "Cacher"){
+    constructor(objects, title, button, classOfDisabledObject = "table-warning", activeMessage = "Montrer", disableMessage = "Cacher") {
         this.objects = objects
         this.selected = undefined
         this.title = title
@@ -20,19 +21,19 @@ class List {
         this.activeMessage = activeMessage
         this.disableMessage = disableMessage
         this.classOfDisabledObject = classOfDisabledObject
-        
+
         //Association des lignes du tableau avec les fonctions
         this._associateObjectFunctions()
     }
 
-    _associateObjectFunctions(){
+    _associateObjectFunctions() {
         /*
-        *   Association de chaque ligne du tableau contenant les articles aux fonctions
-        *   gérant les boutons et les lignes ditent "active" (sélectionné)
-        */
+         *   Association de chaque ligne du tableau contenant les articles aux fonctions
+         *   gérant les boutons et les lignes ditent "active" (sélectionné)
+         */
 
         //Affectation de l'évenement "click" à chaque ligne du tableau contenant les articles
-        for(let i = 0; i < this.objects.length ; i++){
+        for (let i = 0; i < this.objects.length; i++) {
             this.objects[i].addEventListener("click", () => {
                 this._toggleObjectActive(this.objects[i])
                 this._toggleActions(this.selected)
@@ -40,20 +41,20 @@ class List {
         }
     }
 
-    _toggleObjectActive(object){
+    _toggleObjectActive(object) {
         /**
          *  Association du clic sur un objet avec la mise en évidence d'une ligne du tableau
          */
-        
+
         //Si l'user à déjà sélectionné un objet
-        if(this.selected !== undefined){
+        if (this.selected !== undefined) {
             //Suppression du style de mise en évidence pour l'ancien objet sélectionné
             let classList = this.selected.classList.value.split(" ")
             classList.pop()
             this.selected.classList.value = classList.join(" ")
-                    
+
         }
-                
+
         //Mise en évidence du nouvel objet
         this.selected = object
         this.selected.classList.value += " table-active"
@@ -72,16 +73,16 @@ class List {
 
     _toggleActions() {
         /*
-        *   Fonction affichant les boutons quand l'utilisateur selectionne un objet
-        *   et qui modifie le bouton toggle en fonction de si objet est actuellement
-        *   "activé" ou "désactivé"
-        */
-        
+         *   Fonction affichant les boutons quand l'utilisateur selectionne un objet
+         *   et qui modifie le bouton toggle en fonction de si objet est actuellement
+         *   "activé" ou "désactivé"
+         */
+
         //Modification du texte affichant le nom de l'objet selectionné
         this.title.innerText = this.selected.children[0].innerText
 
         //Changement du texte du bouton toggle
-        if(this.selected.className.indexOf(this.classOfDisabledObject) != -1){
+        if (this.selected.className.indexOf(this.classOfDisabledObject) != -1) {
             //Si l'objet est en évidence
             this.button.innerHTML = this.activeMessage
             this.button.className = "btn btn-outline-success"
