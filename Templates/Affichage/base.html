@@ -9,7 +9,7 @@
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <title>{{description}}</title>
     {% load static%}
-    <link rel="stylesheet" href="{%static 'CSS/clock.css'%}">
+    <link rel="stylesheet" href="{%static 'CSS/basePage.css'%}">
 </head>
 
 <body style="overflow-y: hidden; overflow-x: hidden;">
@@ -19,35 +19,38 @@
     <div id="clock" class="row">
         <div class="col-4"></div>
         <div class="col-4">
-            <div class="border rounded-3 text-center">
-                <h4>Il est actuellement :</h4>
-                <div id="MyClockDisplay"></div>
+            <div class="row">
+                <div class="">
+                    <div class="border rounded-3 text-center">
+                        <h3>Bonjour !</h3>
+                        <h4 id="date">Nous sommes le </h4>
+                        <h4>Il est actuellement :</h4>
+                        <div id="MyClockDisplay"></div>
+                    </div>
+                </div>
             </div>
 
         </div>
     </div>
+    <footer class="position-fixed">
+        <div class="fixed-bottom m-3">
+            <div class="border rounded-3 p-2" id="MeteoContainer" style="background-image: url({%static 'IMG/bgImageMeteo.png'%});">
+                <h4 class="meteoTitle">Méteo du jour :</h4>
+                <div class="">
+                    <ul id="weatherCardList" class="list-group list-group-horizontal list-group-flush">
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="{% static 'JS/getInfos.js' %}"></script>
     <script src="{% static 'JS/getDisplay.js' %}"></script>
+    <script src="{% static 'JS/clockApp.js' %}"></script>
+    <script src="{% static 'JS/weatherApp.js' %}"></script>
     <script>
-        function showTime() {
-            var date = new Date();
-            var h = date.getHours(); // 0 - 23
-            var m = date.getMinutes(); // 0 - 59
-            var s = date.getSeconds(); // 0 - 59
-
-            h = (h < 10) ? "0" + h : h;
-            m = (m < 10) ? "0" + m : m;
-            s = (s < 10) ? "0" + s : s;
-
-            var time = h + ":" + m + ":" + s;
-            document.getElementById("MyClockDisplay").innerText = time;
-            document.getElementById("MyClockDisplay").textContent = time;
-
-            setTimeout(showTime, 1000);
-
-        }
-
-        showTime();
+        const domDate = document.getElementById("date")
+        const date = new Date()
     </script>
 </body>
 

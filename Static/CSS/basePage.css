@@ -1,0 +1,25 @@
+#MyClockDisplay {
+    font-size: 60px;
+    letter-spacing: 7px;
+}
+
+#MeteoContainer {
+    background-position: bottom;
+    background-size: cover;
+}
+
+.meteoTitle {
+    color: white
+}
+
+.tempCold {
+    background: -webkit-linear-gradient(rgb(7, 133, 236),rgb(0, 150, 250));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.tempHot {
+    background: -webkit-linear-gradient(rgb(236, 7, 45), rgb(250, 71, 0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
