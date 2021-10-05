@@ -1,0 +1,23 @@
+.menuContainer {
+    border-color: rgb(255, 147, 47) !important;
+    border-width: 2px !important;
+}
+
+.separator {
+    display: inline-block;
+    border-left: 1px solid #ccc;
+    margin: 0 10px;
+    height: 5vw;
+}
+
+.fs-1 {
+    font-size: 2vw !important;
+}
+
+.fs-2 {
+    font-size: 1.8vw !important
+}
+
+.fs-3 {
+    font-size: 1.6vw !important;
+}
