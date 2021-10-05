@@ -8,15 +8,12 @@
 
     {% load static %}
     <script src="{% static 'JS/affichageSelf.js' %}"></script>
+    <script src="{% static 'JS/getDisplay.js' %}"></script>
     <link rel="icon" type="image/png" href="{% static 'favicon.png'%}" />
-    <title>{% block title %}{% endblock title %} - Affichage Dynamique</title>
+    <title>{{description}}</title>
 </head>
 <body style="overflow-y: hidden; overflow-x: hidden;">
-    <div class="container-fluid align-items-center">
-        <div class="row bg-light m-2 rounded-3 fs-2">
-            <p style="font-size: 3vw;">Repas de Noël organisé par la région.</p>
-        </div>
-    </div>
+    {% include "./info.html" %}
     <div class="row">
         <div class="col-sm-8">
             <div class="card ms-3 me-3">
