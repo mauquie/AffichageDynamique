@@ -25,7 +25,7 @@
                 <tbody class="tbody-pointer">
                     {%for info in informations %}
                     <tr class="information-row {%if info.is_shown %}table-warning{%else%}info-not-showed{%endif%}" id="{{info.id}}">
-                        <td scope="row">{{info.message}}</td>    
+                        <td scope="row"  class="text-break">{{info.message}}</td>    
                         <td>{{info.type.name}}</td>
                         <td>{% if info.is_shown %}Oui{%else%}Non{%endif%}</td>
                         <td class="d-none d-lg-table-cell">{{info.expiration_date}}</td>
@@ -41,7 +41,7 @@
             <button type="button" id="add" class="btn btn-primary mb-4" onclick="window.location = 'informations/ajouter'">
                 + Ajouter une information
             </button>
-            <h5>Information : <strong id="information-name">Aucun information sélectionné</strong></h5>
+            <h5>Information : <strong id="information-name" class="text-break">Aucun information sélectionné</strong></h5>
             <div id="actions-btn">
                 <button type="button" id="edit" class="btn btn-outline-primary" disabled>Modifier</button>
                 <button type="button" id="hide" class="btn btn-outline-warning" disabled>Cacher</button>

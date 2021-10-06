@@ -22,7 +22,7 @@
                 <tbody class="tbody-pointer">
                     {%for sondage in informations%}
                     <tr class="sondage-row {%if sondage.is_shown%}table-warning{%else%}showned{%endif%}" id="{{sondage.id}}">
-                        <td scope="row">{{sondage.description}}</td>
+                        <td scope="row" class="text-break">{{sondage.description}}</td>
                         <td>{{sondage.author}}</td>
                         <td>{{sondage.expiration_date}}</td>
                         <td class="d-none d-lg-table-cell">{%if sondage.is_shown%}Oui{%else%}Non{%endif%}</td>

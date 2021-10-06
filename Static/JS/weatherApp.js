@@ -84,12 +84,12 @@ function addWeatherCard(temp, time, imgLink, firstOne = false) {
         <li class="list-group-item col-1" style="border: none;background:none; ">\
             <div class="card text-center" style="">\
                 <div class="card-header">\
-                    <span class="' + tempClass + '">' + temp + '</span>\
+                    <span class="' + tempClass + ' fs-5">' + temp + '</span>\
                 </div>\
                 <div class="card-body">\
-                    <img src="https:' + imgLink + '" style="height: 40px; width: 40px">\
+                    <img src="https:' + imgLink + '" style="width: 8vh; height:auto">\
                 </div>\
-                <div class="card-footer text-muted">\
+                <div class="card-footer text-muted fs-6">\
                     ' + time + '\
                 </div>\
             </div>\
