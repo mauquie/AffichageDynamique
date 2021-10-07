@@ -51,6 +51,5 @@ function setSize(text)
 
 getInformations();
 setInterval(() => {
-    console.log("prout")
     getInformations();
 }, 50000)
