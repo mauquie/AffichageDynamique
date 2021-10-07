@@ -1,5 +1,5 @@
-i = 0
-setInterval(()=>{
+function getArticles()
+{
     fetch("/api/articles").then((reponse)=>reponse.json()).then((data) => {        
         articles = data
         article = articles[i]
@@ -10,11 +10,11 @@ setInterval(()=>{
         domContenu.innerText = article.article
         if (article.image == "")
         {
-            domImage.style.visibility = "hidden"
+            domImage.hidden = true;
         }
         else
         {
-            domImage.style.visibility = "visible"
+            domImage.hidden = false;
             domImage.src = "/Medias/"+article.image
         }
         if (i == articles.length-1)
@@ -23,5 +23,6 @@ setInterval(()=>{
         }
         i++
     })
-}, 5000)
-
+}
+i = 0
+setInterval(()=>getArticles(), 5000)
