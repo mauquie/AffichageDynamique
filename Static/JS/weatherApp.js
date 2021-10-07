@@ -39,15 +39,29 @@ function getWeatherInfos() {
                     //Si on a déjà 12 cartes affichées on coupe la boucle
                     if (nbCardsShown == 12) {
                         break;
+
+                    } else if (nbCardsShown == 0) {
+                        //On prend la température actuelle
+                        hour = data.current
+
+                        //Et l'heure actuelle
+                        var date = new Date();
+
+
+                    } else {
+                        //On prend la prevision pour l'heure i
+                        hour = data.forecast.forecastday[jour].hour[i]
+
+                        //Et l'heure de l'heure i
+                        var date = new Date(hour.time_epoch * 1000);
                     }
 
-                    //Heure que l'on va traiter
-                    hour = data.forecast.forecastday[jour].hour[i]
+
 
                     //Arrangement des données
                     temp = hour.feelslike_c
 
-                    var date = new Date(hour.time_epoch * 1000);
+                    //Récupération de l'heure
                     time = date.getHours() + ":00"
 
                     //Image correspondante à la météo
@@ -84,12 +98,12 @@ function addWeatherCard(temp, time, imgLink, firstOne = false) {
         <li class="list-group-item col-1" style="border: none;background:none; ">\
             <div class="card text-center" style="">\
                 <div class="card-header">\
-                    <span class="' + tempClass + '">' + temp + '</span>\
+                    <span class="' + tempClass + ' fs-5">' + temp + '</span>\
                 </div>\
                 <div class="card-body">\
-                    <img src="https:' + imgLink + '" style="height: 40px; width: 40px">\
+                    <img src="https:' + imgLink + '" style="width: 8vh; height:auto">\
                 </div>\
-                <div class="card-footer text-muted">\
+                <div class="card-footer text-muted fs-6">\
                     ' + time + '\
                 </div>\
             </div>\

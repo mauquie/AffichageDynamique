@@ -9,6 +9,7 @@
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <title>{{description}}</title>
     {% load static%}
+    <link rel="stylesheet" href="{% static 'CSS/bootstrapModifier.css' %}">
     <link rel="stylesheet" href="{%static 'CSS/basePage.css'%}">
 </head>
 
@@ -20,9 +21,9 @@
             <div class="row">
                 <div class="">
                     <div class="mt-3 text-center">
-                        <h2 class="mb-3">Bonjour !</h2>
-                        <h4 id="date" class="mb-5"></h4>
-                        <h4>Il est actuellement :</h4>
+                        <h2 id="bjrText" class="mb-3 fs-1">Bonjour !</h2>
+                        <h4 id="date" class="mb-5 fs-4"></h4>
+                        <h4 class="fs-4">Il est actuellement :</h4>
                         <div id="myClock" class="border rounded-3"></div>
                     </div>
                 </div>
@@ -33,7 +34,7 @@
     <footer class="position-fixed">
         <div class="fixed-bottom m-3">
             <div class="border rounded-3 p-2" id="MeteoContainer" style="background-image: url({%static 'IMG/bgImageMeteo.png'%});">
-                <h4 class="meteoTitle">Méteo du jour :</h4>
+                <h4 class="meteoTitle fs-4">Méteo du jour :</h4>
                 <div class="">
                     <ul id="weatherCardList" class="list-group list-group-horizontal list-group-flush">
                     </ul>
@@ -47,9 +48,28 @@
     <script src="{% static 'JS/weatherApp.js' %}"></script>
     <script>
         const domDate = document.getElementById("date")
-        const date = new Date()
-        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        domDate.innerText = "Nous sommes le " +  date.toLocaleDateString("fr-FR", options)
+        var date = new Date()
+
+        //Execution toutes les heures
+        setInterval(() => {
+            let testDate = new Date()
+
+            //Si on change de jour, on met à jour la date
+            if (testDate.getDay() != date.getDay()){
+                date = testDate
+                changeDate()
+            }
+        }, 3600000)
+
+        function changeDate(){
+            //Affichage de la date dans l'élément domDate
+            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            domDate.innerText = "Nous sommes le " +  date.toLocaleDateString("fr-FR", options) + "."
+
+        }
+
+        changeDate()
+
         showTime("myClock", true)
     </script>
 </body>

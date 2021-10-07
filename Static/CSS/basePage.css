@@ -1,5 +1,5 @@
 #myClock {
-    font-size: 60px;
+    font-size: 3vw;
     letter-spacing: 7px;
 }
 
@@ -20,6 +20,12 @@
 
 .tempHot {
     background: -webkit-linear-gradient(rgb(236, 7, 45), rgb(250, 71, 0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#bjrText {
+    background: -webkit-linear-gradient(rgb(241, 137, 17),rgb(250, 29, 0));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
