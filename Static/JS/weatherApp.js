@@ -39,15 +39,29 @@ function getWeatherInfos() {
                     //Si on a déjà 12 cartes affichées on coupe la boucle
                     if (nbCardsShown == 12) {
                         break;
+
+                    } else if (nbCardsShown == 0) {
+                        //On prend la température actuelle
+                        hour = data.current
+
+                        //Et l'heure actuelle
+                        var date = new Date();
+
+
+                    } else {
+                        //On prend la prevision pour l'heure i
+                        hour = data.forecast.forecastday[jour].hour[i]
+
+                        //Et l'heure de l'heure i
+                        var date = new Date(hour.time_epoch * 1000);
                     }
 
-                    //Heure que l'on va traiter
-                    hour = data.forecast.forecastday[jour].hour[i]
+
 
                     //Arrangement des données
                     temp = hour.feelslike_c
 
-                    var date = new Date(hour.time_epoch * 1000);
+                    //Récupération de l'heure
                     time = date.getHours() + ":00"
 
                     //Image correspondante à la météo

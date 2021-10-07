@@ -23,3 +23,9 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+#bjrText {
+    background: -webkit-linear-gradient(rgb(241, 137, 17),rgb(250, 29, 0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
