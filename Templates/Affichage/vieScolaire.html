@@ -10,7 +10,9 @@
     <link rel="icon" type="image/png" href="{% static 'favicon.png'%}" />
     <title>{{description}}</title>
 </head>
+
 <body style="overflow-y: hidden; overflow-x: hidden;">
+  <div class="container-fluid p-4">
     {% include "./info.html" %}
     <div class="row">
         <div class="col-sm-8">
@@ -62,6 +64,7 @@
             </div>
         </div>
     </div>
+  </div>
     <script src="{% static 'JS/affichageSelf.js' %}"></script>
     <script src="{% static 'JS/getDisplay.js' %}"></script>
 </body>

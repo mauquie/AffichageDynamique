@@ -9,8 +9,7 @@ documentMesure.style.top = "-200px"
 index=0
 function changeInfo(listeInfo)
 {
-    var domInfo = document.getElementById("information")
-    debugger;
+    var domInfo = document.getElementById("infoContainer")
     if (listeInfo.length == 0)
     {
         domInfo.hidden = true
@@ -20,7 +19,6 @@ function changeInfo(listeInfo)
         domInfo.hidden = false
         if (index >= listeInfo.length)
         {
-            console.log("pouet")
             index = 0
         }
         var information = "Information " + listeInfo[index].type.name + " : " + listeInfo[index].message;
@@ -53,10 +51,17 @@ function playAnimation()
     })
 }
 
-function setSize(text)
+function setSize()
 {
+    console.log("oui")
     domContainerInfo = document.getElementById("infoContainer")
-
+    pInfoDom = document.getElementById("information")
+    pInfoDom.fontSize+=1;
+    if (domContainerInfo.clientHeight > pInfoDom.clientHeight)
+    {
+        console.log("vroum")
+    }
+    
 }
 
 getInformations()
