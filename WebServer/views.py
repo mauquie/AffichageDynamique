@@ -8,6 +8,7 @@ from ApiServer import models
 from . import forms 
 from django.contrib.auth.models import Group
 from django.contrib import messages
+import datetime
 
 
 @login_required
@@ -228,7 +229,14 @@ def toggleVisibiliteArticle(request):
         article = get_object_or_404(models.Article, pk = id)
         if article.is_shown:
             article.is_shown = False
+
         else:
+            if article.expiration_date < datetime.date.today():
+                date = datetime.date.today()
+                newDate = date.replace(day=date.day + 7)
+
+                article.expiration_date = newDate
+
             article.is_shown = True
 
         article.save()
@@ -294,6 +302,12 @@ def toggleVisibiliteSondage(request):
             sondage.is_shown = False
         
         else:
+            if sondage.expiration_date < datetime.date.today():
+                date = datetime.date.today()
+                newDate = date.replace(day=date.day + 7)
+
+                sondage.expiration_date = newDate
+
             sondage.is_shown = True
 
         sondage.save()
@@ -388,6 +402,12 @@ def toggleVisibiliteInformation(request):
             messages.success(request, "Information cachée !")
 
         else:
+            if info.expiration_date < datetime.date.today():
+                date = datetime.date.today()
+                newDate = date.replace(day=date.day + 7)
+
+                info.expiration_date = newDate
+
             info.is_shown = True
             messages.success(request, "Information affichée !")
 

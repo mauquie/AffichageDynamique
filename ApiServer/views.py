@@ -1,14 +1,35 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
 from .models import Article, Info, Survey, Display
+import datetime
+
+def hideExpiredObjects(query):
+    #Récupération de la date d'hier
+    date = datetime.date.today()
+    date = date.replace(day = date.day - 1)
+
+    #Modification de tous les objets aillant une date d'expiration plus petite ou égale à hier
+    expiredObjects = query.filter(expiration_date__lte = date)
+
+    #Pour tous ces objets, on les cache
+    for entry in expiredObjects:
+        entry.is_shown = False
+        entry.save()
 
 # Récupère les articles visibles et les retourne sous format JSON.
 def getArticles(request)->JsonResponse:
-    query = Article.objects.filter(is_shown=True)
+    # Récupération de tous les articles
+    query = Article.objects.all()
     
-    [entry for entry in query]
+    #On cache tous les articles passés 
+    hideExpiredObjects(query)    
+
+    #On récupère tous les articles affichés
+    query = query.filter(is_shown = True)
+
     articleList = list()
 
+    #Formatage des données à renvoyer 
     for entry in query:
         json = {
             "title": entry.title,
@@ -33,11 +54,18 @@ def getArticles(request)->JsonResponse:
 
 # Récupère les informations visibles et les retourne sous format JSON.
 def getInfos(request)->JsonResponse:
-    query = Info.objects.filter(is_shown=True)
+    #Récupération de toutes les informations
+    query = Info.objects.all()
 
-    [entry for entry in query]
+    #On cache toutes les informations passées
+    hideExpiredObjects(query)
+
+    #Récupération des informations toujours à l'affiche après le "tri" de hideExpiredObjects
+    query = query.filter(is_shown = True)
+
     infoList = list()
 
+    #Formatage des données
     for entry in query:
         json = {
             "message": entry.message,
@@ -59,11 +87,18 @@ def getInfos(request)->JsonResponse:
 
 # Récupère les sondages visibles et les retourne sous format JSON.
 def getSurveys(request)->JsonResponse:
-    query = Survey.objects.filter(is_shown=True)
+    #Récupération de tous les sondages
+    query = Survey.objects.all()
 
-    [entry for entry in query]
+    #On cache tous les sondages passés
+    hideExpiredObjects(query)
+
+    #Récupération des sondages qui ont survécus au tri 
+    query = query.filter(is_shown = True)
+
     surveyList = list()
 
+    #Formatage des données
     for entry in query:
         json = {
             "description": entry.description,
@@ -82,15 +117,16 @@ def getSurveys(request)->JsonResponse:
 
 #Récupère l'écran correspondant au paramètre code_name et retourne ses infos sous format JSON
 def getDisplays(request)->JsonResponse:
+    #Récupération de l'ecran aillant le code_name égal au parametre de la requete
     query = Display.objects.filter(code_name=request.GET.get("code_name"))
 
     infoList = []
 
     for entry in query:
-        if entry.page:
+        if entry.page: #Si on a une page configurée pour l'écran
             page = entry.page.description
 
-        else:
+        else: #Si on n'a pas de page configurée ou qu'on a pas trouvé l'écran correspondant au code_name
             page = "Base"
 
         json = {

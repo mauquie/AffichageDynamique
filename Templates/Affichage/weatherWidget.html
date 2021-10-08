@@ -1,7 +1,9 @@
 {% load static %}
 
+<link rel="stylesheet" href="{% static 'CSS/meteo.css' %}">
+
 {% block weatherWidget %}
-<div class="border rounded-3 d-inline-block px-2">
+<div class="border rounded-3 d-inline-block px-2 m-2">
     <span id="weatherTemp" class="fs-3 align-middle"></span>
     <img id="weatherImage" class="m-2 d-inline-block" style="width: 8vh; height:auto">
     <div class="separator align-bottom mx-2"></div>

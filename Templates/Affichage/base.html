@@ -11,38 +11,42 @@
     {% load static%}
     <link rel="stylesheet" href="{% static 'CSS/bootstrapModifier.css' %}">
     <link rel="stylesheet" href="{%static 'CSS/basePage.css'%}">
+    <link rel="stylesheet" href="{%static 'CSS/meteo.css'%}">
 </head>
 
 <body style="overflow-y: hidden; overflow-x: hidden;">
     {% include "./info.html" %}
-    <div id="clock" class="row">
-        <div class="col-4"></div>
-        <div class="col-4">
-            <div class="row">
-                <div class="">
-                    <div class="mt-3 text-center">
-                        <h2 id="bjrText" class="mb-3 fs-1">Bonjour !</h2>
-                        <h4 id="date" class="mb-5 fs-4"></h4>
-                        <h4 class="fs-4">Il est actuellement :</h4>
-                        <div id="myClock" class="border rounded-3"></div>
+    <div class="container-fluid">
+        <div id="clock" class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="">
+                        <div class="mt-3 text-center">
+                            <h2 id="bjrText" class="mb-3 fs-1">Bonjour !</h2>
+                            <h4 id="date" class="mb-5 fs-4"></h4>
+                            <h4 class="fs-4">Il est actuellement :</h4>
+                            <div id="myClock" class="border rounded-3"></div>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+        <footer class="position-fixed">
+            <div class="fixed-bottom m-3">
+                <div class="border rounded-3 p-2" id="MeteoContainer" style="background-image: url({%static 'IMG/bgImageMeteo.png'%});">
+                    <h4 class="meteoTitle fs-4">Méteo du jour :</h4>
+                    <div class="">
+                        <ul id="weatherCardList" class="list-group list-group-horizontal list-group-flush">
+                        </ul>
+    
                     </div>
                 </div>
             </div>
-
-        </div>
+        </footer>
     </div>
-    <footer class="position-fixed">
-        <div class="fixed-bottom m-3">
-            <div class="border rounded-3 p-2" id="MeteoContainer" style="background-image: url({%static 'IMG/bgImageMeteo.png'%});">
-                <h4 class="meteoTitle fs-4">Méteo du jour :</h4>
-                <div class="">
-                    <ul id="weatherCardList" class="list-group list-group-horizontal list-group-flush">
-                    </ul>
-
-                </div>
-            </div>
-        </div>
-    </footer>
+    
     <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script src="{% static 'JS/clockApp.js' %}"></script>
     <script src="{% static 'JS/weatherApp.js' %}"></script>
