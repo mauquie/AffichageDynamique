@@ -5,32 +5,42 @@ documentMesure.style.cssText = text.style.cssText
 documentMesure.style.position = "absolute"
 documentMesure.style.top = "-200px"
 
+
 index=0
-function getInformations() {
+function changeInfo(listeInfo)
+{
+    var domInfo = document.getElementById("information")
+    debugger;
+    if (listeInfo.length == 0)
+    {
+        domInfo.hidden = true
+    }
+    else
+    {
+        domInfo.hidden = false
+        if (index >= listeInfo.length)
+        {
+            console.log("pouet")
+            index = 0
+        }
+        var information = "Information " + listeInfo[index].type.name + " : " + listeInfo[index].message;
+        domInfo.innerHTML = information
+        index++
+    }
+}
+
+function getInformations() 
+{
     fetch("/api/infos").then(response => {
         return response.json();
 
     }).then(data => {
-        var domInfo = document.getElementById("information");
-        if (data.length == 0)
-        {
-            domInfo.hidden = "true"
-            return;
-        }
-        var domInfo = document.getElementById("information");
-        var text = data[index].message
-        var information = "Information " + data[index].type.name + " : " + data[index].message;
-        domInfo.innerText = information;
-        if (index==data.length-1)
-        {
-            index = -1
-        }
-        index++
+        changeInfo(data)
     });
 }
 
 function playAnimation()
-    {
+{
     var textInfo = document.getElementById("information")
     documentMesure.innerHTML = text.innerHTML
     textLength = documentMesure.offsetWidth
@@ -46,10 +56,10 @@ function playAnimation()
 function setSize(text)
 {
     domContainerInfo = document.getElementById("infoContainer")
-    
+
 }
 
-getInformations();
+getInformations()
 setInterval(() => {
-    getInformations();
-}, 50000)
+    getInformations()
+}, 5000)
