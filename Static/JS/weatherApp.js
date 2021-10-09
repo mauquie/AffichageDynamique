@@ -6,7 +6,9 @@ function getWeatherInfos() {
             "method": "GET",
             "headers": {
                 "Content-type": "application/json",
-                "Access-Control-Allow-Headers": "*"
+                "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Origin": "*",
+                "crossorigin": "anonymous"
             }
         })
         .then(response => {
@@ -59,7 +61,7 @@ function getWeatherInfos() {
 
 
                     //Arrangement des données
-                    temp = hour.feelslike_c
+                    temp = hour.temp_c
 
                     //Récupération de l'heure
                     time = date.getHours() + ":00"

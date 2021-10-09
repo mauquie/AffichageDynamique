@@ -33,8 +33,13 @@
     
             </div>
         </div>
+    
         <footer class="position-fixed">
             <div class="fixed-bottom m-3">
+                <div class="" style="margin-bottom:-6.2%">
+                    <img id ="bourdelleAnim" src="{% static 'IMG/Animation Bourdelle/bourdelle_1.png'%}" alt="" style="width: 129vh; transform: translateX(-2300px);">
+                    <img id ="arrow" src="{% static 'IMG/Animation Bourdelle/arrow.png'%}" alt="" style="width: 35vh; transform: translateX(-2300px)">
+                </div>
                 <div class="border rounded-3 p-2" id="MeteoContainer" style="background-image: url({%static 'IMG/bgImageMeteo.png'%});">
                     <h4 class="meteoTitle fs-4">Méteo du jour :</h4>
                     <div class="">
@@ -45,11 +50,13 @@
                 </div>
             </div>
         </footer>
+        
     </div>
     
     <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script src="{% static 'JS/clockApp.js' %}"></script>
     <script src="{% static 'JS/weatherApp.js' %}"></script>
+    <script src="{% static 'JS/anime.min.js' %}"></script>
     <script>
         const domDate = document.getElementById("date")
         var date = new Date()
@@ -75,6 +82,76 @@
         changeDate()
 
         showTime("myClock", true)
+    </script>
+    <script>
+        var imgBourdelleAnim = document.getElementById("bourdelleAnim")
+        var imgArrow = document.getElementById("arrow")
+        var chemin = imgBourdelleAnim.src.split('/')[3]
+
+        function animationBourdelle(){
+            var bourdelleAnim = anime({ //Apparition de bourdelle par la gauche
+                    targets: imgBourdelleAnim,
+                    translateX: [-900, -500],
+                    duration: 6000,
+                    easing: 'easeInOutExpo',
+
+                    complete: function(anim){
+                        imgBourdelleAnim.src = "/" + chemin + "/IMG/Animation Bourdelle/bourdelleShoot.gif"
+
+                        setTimeout(() => {
+                            //Appeler animation qd il lache la corde
+                            imgBourdelleAnim.src = "/" + chemin + "/IMG/Animation Bourdelle/bourdelle_1.png"
+                            
+                            //Tir de la flèche
+                            arrowAnim.play()
+
+                        }, 3408)
+
+                    }
+                })
+
+            //Suivi de bourdelle par la flèche
+            anime({
+                targets: imgArrow,
+                translateX: [-1740, -1340],
+                duration: 6000,
+                easing: 'easeInOutExpo',
+
+                complete: (anim) => {
+                    anime({ //Chargement de la flèche
+                        targets: imgArrow,
+                        translateX: [-1340, -1375],
+                        duration: 3408,
+                        easing: 'linear',
+                    })
+                }
+            })
+
+            var arrowAnim = anime({ //Tir de la fleche
+                targets: imgArrow,
+                translateX: [-1340, 800],
+                duration: 1300,
+                easing: "linear",
+                autoplay: false,
+
+                complete: (anim) => {
+                    bourdelleAnim = anime({ //Retrait de bourdelle par la gauche
+                        targets: imgBourdelleAnim,
+                        translateX: [-500, -900],
+                        duration: 6000,
+                        delay: 2000,
+                        easing: 'easeInOutExpo',
+                    })
+                }
+            })
+        }
+
+
+        setInterval(() => {
+            animationBourdelle()
+        }, 30000);
+
+        animationBourdelle()
     </script>
 </body>
 

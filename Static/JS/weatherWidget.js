@@ -15,7 +15,7 @@ function getWeatherInfos() {
         })
         .then(data => {
             //Récupération de la température
-            temp = data.current.feelslike_c
+            temp = data.current.temp_c
 
             //Image correspondante à la météo
             imgLink = data.current.condition.icon
