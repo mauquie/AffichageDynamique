@@ -30,29 +30,32 @@
                         </div>
                     </div>
                 </div>
-    
+
             </div>
         </div>
-    
+
         <footer class="position-fixed">
             <div class="fixed-bottom m-3">
                 <div class="" style="margin-bottom:-6.2%">
-                    <img id ="bourdelleAnim" src="{% static 'IMG/Animation Bourdelle/bourdelle_1.png'%}" alt="" style="width: 129vh; transform: translateX(-2300px);">
-                    <img id ="arrow" src="{% static 'IMG/Animation Bourdelle/arrow.png'%}" alt="" style="width: 35vh; transform: translateX(-2300px)">
+                    <img id="bourdelleAnim" src="{% static 'IMG/Animation Bourdelle/bourdelle_1.png'%}" alt=""
+                        style="width: 129vh; transform: translateX(-2300px);">
+                    <img id="arrow" src="{% static 'IMG/Animation Bourdelle/arrow.png'%}" alt=""
+                        style="width: 35vh; transform: translateX(-2300px)">
                 </div>
-                <div class="border rounded-3 p-2" id="MeteoContainer" style="background-image: url({%static 'IMG/bgImageMeteo.png'%});">
+                <div class="border rounded-3 p-2" id="MeteoContainer"
+                    style="background-image: url({%static 'IMG/bgImageMeteo.png'%});">
                     <h4 class="meteoTitle fs-4">Méteo du jour :</h4>
                     <div class="">
                         <ul id="weatherCardList" class="list-group list-group-horizontal list-group-flush">
                         </ul>
-    
+
                     </div>
                 </div>
             </div>
         </footer>
-        
+
     </div>
-    
+
     <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script src="{% static 'JS/clockApp.js' %}"></script>
     <script src="{% static 'JS/weatherApp.js' %}"></script>
@@ -66,16 +69,21 @@
             let testDate = new Date()
 
             //Si on change de jour, on met à jour la date
-            if (testDate.getDay() != date.getDay()){
+            if (testDate.getDay() != date.getDay()) {
                 date = testDate
                 changeDate()
             }
         }, 3600000)
 
-        function changeDate(){
+        function changeDate() {
             //Affichage de la date dans l'élément domDate
-            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            domDate.innerText = "Nous sommes le " +  date.toLocaleDateString("fr-FR", options) + "."
+            var options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            domDate.innerText = "Nous sommes le " + date.toLocaleDateString("fr-FR", options) + "."
 
         }
 
@@ -88,27 +96,28 @@
         var imgArrow = document.getElementById("arrow")
         var chemin = imgBourdelleAnim.src.split('/')[3]
 
-        function animationBourdelle(){
+        function animationBourdelle() {
             var bourdelleAnim = anime({ //Apparition de bourdelle par la gauche
-                    targets: imgBourdelleAnim,
-                    translateX: [-900, -500],
-                    duration: 6000,
-                    easing: 'easeInOutExpo',
+                targets: imgBourdelleAnim,
+                translateX: [-900, -500],
+                duration: 6000,
+                easing: 'easeInOutExpo',
 
-                    complete: function(anim){
-                        imgBourdelleAnim.src = "/" + chemin + "/IMG/Animation Bourdelle/bourdelleShoot.gif"
+                complete: function (anim) {
+                    imgBourdelleAnim.src = "/" + chemin + "/IMG/Animation Bourdelle/bourdelleShoot.gif"
 
-                        setTimeout(() => {
-                            //Appeler animation qd il lache la corde
-                            imgBourdelleAnim.src = "/" + chemin + "/IMG/Animation Bourdelle/bourdelle_1.png"
-                            
-                            //Tir de la flèche
-                            arrowAnim.play()
+                    setTimeout(() => {
+                        //Appeler animation qd il lache la corde
+                        imgBourdelleAnim.src = "/" + chemin +
+                            "/IMG/Animation Bourdelle/bourdelle_1.png"
 
-                        }, 3408)
+                        //Tir de la flèche
+                        arrowAnim.play()
 
-                    }
-                })
+                    }, 3408)
+
+                }
+            })
 
             //Suivi de bourdelle par la flèche
             anime({
