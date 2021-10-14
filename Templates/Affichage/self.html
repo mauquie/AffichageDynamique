@@ -51,7 +51,7 @@
             <footer class="position-fixed">
                 <div class="fixed-bottom m-3">
                     <img src="{% static 'IMG/couverts.png'%}" class="rounded float-start" style="height:25%; width:25%">
-                    <img id="cloche" src="{% static 'IMG/Animation Bourdelle/animSelfWaiting.gif'%}" class="rounded float-end" style="height: auto;width: 58%; margin-bottom: -5%;margin-right: -15%;">
+                    <img id="cloche" src="{% static 'IMG/Animation Bourdelle/animSelfWaiting.png'%}" class="rounded float-end" style="height: auto;width: 58%; margin-bottom: -5%;margin-right: -15%;">
                 </div>
             </footer>
 
@@ -66,11 +66,11 @@
             let cloche = document.getElementById("cloche")
             let chemin = cloche.src.split('/')[3]
 
-            cloche.src = "/" + chemin + "/IMG/Animation Bourdelle/animSelf.gif"
+            cloche.src = "/" + chemin + "/IMG/Animation Bourdelle/animSelf.png"
 
             //A la fin de l'animation on revient sur celle de la cloche chaude
             setTimeout(() => {
-                cloche.src = "/" + chemin + "/IMG/Animation Bourdelle/animSelfWaiting.gif"
+                cloche.src = "/" + chemin + "/IMG/Animation Bourdelle/animSelfWaiting.png"
             }, 20000)
 
         }
