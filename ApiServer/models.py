@@ -66,6 +66,36 @@ class Info(models.Model):
     def __str__(self):
         return self.message
 
+
+# Modèles correpondants à Pronote
+class PartieDuRepas(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+class Aliment(models.Model):
+    name = models.CharField(max_length=100)
+    partie_du_repas = models.ForeignKey(PartieDuRepas, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.name
+
+class Repas(models.Model):
+    repas_midi = models.BooleanField()
+    date = models.DateField()
+    aliments_du_repas = models.ManyToManyField(Aliment)
+
+    def __str__(self):
+        if self.repas_midi:
+            titre = "{} - Midi".format(self.date)
+
+        else:
+            titre = "{} - Soir".format(self.date)
+
+        return titre 
+
+
 # Tous les modèles administrateurs
 
 class UserAdmin(admin.ModelAdmin):
@@ -102,3 +132,18 @@ class InfoAdmin(admin.ModelAdmin):
     list_display = ('message', 'type', 'author', 'creation_date', 'expiration_date', 'is_shown')
     list_filter = ('message', 'type', 'author', 'creation_date', 'is_shown')
     search_fields = ['message', 'type', 'author', 'creation_date', 'is_shown']
+
+class RepasAdmin(admin.ModelAdmin):
+    list_display = ('repas_midi', 'date')
+    list_filter = ('repas_midi', 'date', 'aliments_du_repas')
+    search_fields = ['repas_midi', 'date', 'aliments_du_repas']
+
+class AlimentRepas(admin.ModelAdmin):
+    list_display = ('name', 'partie_du_repas')
+    list_filter = ('name', 'partie_du_repas')
+    search_fields = ['name', 'partie_du_repas']
+
+class PartieDuRepasAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    list_filter = ('name', )
+    search_fields = ['name']
