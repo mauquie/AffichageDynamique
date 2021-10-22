@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Article, Info, Survey, Display
+from .models import Article, Info, Survey, Display, Repas
 import datetime
+from .pronote import refreshMenu
 
 def hideExpiredObjects(query):
     #Récupération de la date d'hier
@@ -134,6 +135,40 @@ def getDisplays(request)->JsonResponse:
             "name": entry.name,
             "page": page
         }
+        infoList.append(json)
+    
+    return JsonResponse(infoList, safe=False)
+
+#Récupère le menu correpondant au paramètre date et retourne ses infos sous format JSON
+def getMenus(request)->JsonResponse:
+    refreshMenu()
+
+    #Récupération du repas dans la bdd à la date donnée
+    query = Repas.objects.filter(date=request.GET.get("date"))
+
+    infoList = []
+
+    #Pour chaque repas du jour
+    for entry in query:
+        repas = {}
+        
+        #Création de 6 listes qui vont contenir respenctivement une partie du repas
+        #(Une liste pour les aliments de l'entrée, une pour les viandes, les desserts etc)
+        for x in range(1, 7):
+            repas[x] = []
+
+        #Pour chaque aliment du repas, on ajoute l'aliment à la liste correspondant à sa partie du repas
+        for aliment in entry.aliments_du_repas.all():
+            repas[aliment.partie_du_repas.id].append(aliment.name)
+
+        #On formate les données à renvoyer  
+        json = {
+            "date": request.GET.get("date"),
+            "midi": entry.repas_midi,
+            "repas": repas
+        }
+
+        #On ajoute le dictionnaire à la liste qui va contenir tous les repas différents 
         infoList.append(json)
     
     return JsonResponse(infoList, safe=False)
