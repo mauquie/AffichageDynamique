@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Article, Info, Survey, Display, Repas
+from .models import Article, Info, Survey, Display, Repas, ProfAbsent
 import datetime
-from .pronote import refreshMenu
+from .pronote import refreshInfos
 
 def hideExpiredObjects(query):
     #Récupération de la date d'hier
@@ -141,7 +141,7 @@ def getDisplays(request)->JsonResponse:
 
 #Récupère le menu correpondant au paramètre date et retourne ses infos sous format JSON
 def getMenus(request)->JsonResponse:
-    refreshMenu()
+    refreshInfos()
 
     #Récupération du repas dans la bdd à la date donnée
     query = Repas.objects.filter(date=request.GET.get("date"))
@@ -171,4 +171,33 @@ def getMenus(request)->JsonResponse:
         #On ajoute le dictionnaire à la liste qui va contenir tous les repas différents 
         infoList.append(json)
     
+    return JsonResponse(infoList, safe=False)
+
+def getProfsAbs(request):
+    refreshInfos()
+
+    #Calcul des dates d'aujourd'hui et demain
+    dateToday = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
+    dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
+    dateTomorrow = dateTomorrow.replace(day = dateTomorrow.day + 1)
+
+    #On récupère tous les profs absents de la journée 
+    query = ProfAbsent.objects.filter(debut__gte=dateToday, debut__lte=dateTomorrow)
+
+    infoList = []
+
+    #Poru chaque prof
+    for entry in query:
+        #Convertion des heures dans le bon fuseau horaire (Paris +2:00)
+        debut = entry.debut.replace(hour = entry.debut.hour + 2)
+        fin = entry.fin.replace(hour = entry.fin.hour + 2)
+
+        json = {
+            "prof" : entry.teacher,
+            "debut" : debut,
+            "fin": fin,
+        }
+
+        infoList.append(json)
+
     return JsonResponse(infoList, safe=False)
