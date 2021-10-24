@@ -1,26 +1,4 @@
 index=0
-function changeInfo(listeInfo)
-{
-    var domInfo = document.getElementById("information")
-    if (listeInfo.length == 0)
-    {
-        var domInfoCachable = document.getElementById("container-cachable")
-        domInfoCachable.hidden = true
-    }
-    else
-    {
-        domInfo.hidden = false
-        if (index >= listeInfo.length)
-        {
-            index = 0
-        }
-        var information = listeInfo[index].message;
-        domInfo.innerHTML = information
-        domInfo.style.fontSize="80px" //Taille de base de l'info, adaptée après par setSize().
-        changeStyleInfo(listeInfo[index])
-        index++
-    }
-}
 
 function getInformations() 
 {
@@ -28,80 +6,41 @@ function getInformations()
         return response.json();
 
     }).then(data => {
-        changeInfo(data)
-        setSize()
-        playAnimation()
+        actualInfo = document.getElementById("infoContainer").innerText
+        domInfoCachable = document.getElementById("containerCachable")
+        if (index >= data.length)
+        {
+            index = 0
+        }
+        if (data.length == 0) 
+        {
+            exitScreen().finished.then(() => {
+                domInfoCachable.hidden = true
+            })
+        }
+        else if (actualInfo != data[index].message) //Auncune modifications à faire si l'info à afficher et l'info affichée
+        {                                           //sont les mêmes
+            exitScreen().finished.then(() => 
+            {
+                changeInfo(data)
+                setSize()
+                changeStyleInfo(data[index])
+                enterScreen()
+            })
+        }
     });
+    index++
 }
 
-function playAnimation()
-/*{
-    var domInfoContainer = document.getElementById("infoContainer")
-    var tl = anime.timeline({
-        targets: domInfoContainer
-    })
-    tl.add(
-    {
-        translateY: [-domInfoContainer.clientHeight*2,0],
-        easing: 'spring(1, 80, 10, 0)',
-    })
-    tl.add(
-    {
-        delay: 13000,
-        easing: 'easeInElastic(1, 2)',
-        translateX: domInfoContainer.clientWidth*2,
-    })
-    tl.add({
-        translateX: 0,
-        translateY: -domInfoContainer.clientHeight*2,
-        easing: 'steps(1)',
-    }
-    )
+function changeInfo(listeInfo)
+{
+    domInfo = document.getElementById("information")
+    domInfoCachable = document.getElementById("containerCachable")
 
-}
-*/
-/*
-{
-    var domInfoContainer = document.getElementById("infoContainer")
-    var tl = anime.timeline({
-        targets: domInfoContainer
-    })
-    tl.add(
-    {
-        translateX: [-domInfoContainer.clientWidth*2,0],
-        easing: 'spring(1, 80, 10, 0)',
-    })
-    .add(
-    {
-        delay: 13000,
-        easing: 'easeInElastic(1, 2)',
-        translateX: domInfoContainer.clientWidth*2,
-    })
-    .add({
-        translateX: -domInfoContainer.clientWidth*2,
-        easing: 'steps(1)',
-    })
-}*/
-{
-    var domInfoContainer = document.getElementById("infoContainer")
-    var tl = anime.timeline({
-        targets: domInfoContainer
-    })
-    tl.add(
-    {
-        translateX: [-domInfoContainer.clientWidth*2,0],
-        easing: 'spring(1, 80, 10, 0)',
-    })
-    .add(
-    {
-        delay: 16000,
-        easing: 'easeInElastic(1, 2)',
-        translateX: domInfoContainer.clientWidth*2,
-    })
-    .add({
-        translateX: -domInfoContainer.clientWidth*2,
-        easing: 'steps(1)',
-    })
+    domInfoCachable.hidden = false
+    information = listeInfo[index].message; 
+    domInfo.innerHTML = information
+    domInfo.style.fontSize="80px" //Taille de base de l'info, adaptée après par setSize().
 }
 
 function setSize()
@@ -111,35 +50,89 @@ function setSize()
     if (pInfoDom.clientHeight > domContainerInfo.clientHeight)
     {
         fontSize = window.getComputedStyle(pInfoDom).fontSize //nécessaire pour transformer 
-        fontSize = Number(fontSize.slice(0, fontSize.length-2))//"taille en px" en taille int
-        pInfoDom.style.fontSize = parseFloat(fontSize-2) + "px"//puis repasser en "taille en px"
+        fontSize = Number(fontSize.slice(0, fontSize.length-2))//"taille px" en une taille en int
+        pInfoDom.style.fontSize = parseFloat(fontSize-1) + "px"//puis repasser en "taille px"
         setSize()
     }
 }
 
- 
 function changeStyleInfo(info)
 { 
-    var domInfoContainer = document.getElementById("infoContainer")
-    console.log(info.type.id)
+
+    domInfoContainer = document.getElementById("infoContainer")
     switch(info.type.id) {
         case 1:
-            domInfoContainer.classList.add("bg-info")
+            if (domInfoContainer.classList.contains("bg-secondary"))
+            {
+                domInfoContainer.classList.remove("bg-secondary")
+            }
+            domInfoContainer.classList.add("bg-danger")
             break;
         case 2:
-            domInfoContainer.style.backgroundColor = "blue"
+            if (domInfoContainer.classList.contains("bg-danger"))
+            {
+                domInfoContainer.classList.remove("bg-danger")
+            }
+            domInfoContainer.classList.add("bg-secondary")
             break;
         default:
            break;
       }
 }
 
-/*anime.set({ //nécessaire, il faut que l'info initiallement au dessus de l'écran.
-    targets: document.getElementById("infoContainer"),
-    translateX: -(document.getElementById("infoContainer").clientWidth*2),
-})
-*/ 
+function enterScreen()
+{
+    domInfoContainer = document.getElementById("infoContainer")
+    anime({
+        targets: domInfoContainer, //anime gauche-droite
+        translateY: 0,
+        easing: 'spring(1, 80, 10, 0)',
+    })
+
+    /*
+    anime({ //anime haut-bas-droite
+        targets: domInfoContainer,
+        translateX: 0, 
+        easing: 'spring(1, 80, 10, 0)',
+    })
+    */
+}
+
+function exitScreen()
+{
+    /*
+    domInfoContainer = document.getElementById("infoContainer")
+    tl = anime.timeline({ //anime gauche-droite
+        targets: domInfoContainer
+    })
+    tl.add({
+        easing: 'easeInElastic(1, 2)',
+        translateX: domInfoContainer.clientWidth*2,
+    })
+    tl.add({
+        translateX: -domInfoContainer.clientWidth*2,
+        easing: 'steps(1)',
+    })
+    return tl
+    */
+    domInfoContainer = document.getElementById("infoContainer")
+    tl = anime.timeline({ //haut-bas-droite
+        targets: domInfoContainer
+    })
+    tl.add({
+        easing: 'easeInElastic(1, 2)',
+        translateX: domInfoContainer.clientWidth*2,
+    })
+    tl.add({
+        translateY: -domInfoContainer.clientHeight*2,
+        translateX: 0,
+        easing: 'steps(1)',
+    })
+    return tl
+    
+}
+ 
 getInformations()
 setInterval(() => {
     getInformations()
-}, 19000)
+}, 20000)
