@@ -135,4 +135,4 @@ function exitScreen()
 getInformations()
 setInterval(() => {
     getInformations()
-}, 8000)
+}, 20000)
