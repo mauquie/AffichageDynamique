@@ -21,19 +21,24 @@
                 <div class="row">
                     <div class="text-center border rounded-3 menuContainer">
                         <div class="row">
-                            <h1 class="fs-1">Pour ce midi,</h1>
+                            <h1 id="repasType" class="fs-1">Pour ce midi,</h1>
                             <h3 class="mt-2 fs-3">nous avons le plaisir de vous proposer :</h3>
                         </div>
                         <div class="row mx-5 my-3">
                             <div class="">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item fs-1 my-2 ">Melon</li>
-                                    <li class="list-group-item fs-1 my-2 ">Poulet tex mex</li>
-                                    <li class="list-group-item fs-1 my-2 ">Potatoes</li>
-                                    <li class="list-group-item fs-1 my-2 ">Eau</li>
-                                    <li class="list-group-item fs-1 my-2 ">Fromage</li>
-                                    <li class="list-group-item fs-1 my-2 ">Fruit de saison</li>
+                                <ul id="listAliment" class="list-group list-group-flush" hidden>
+                                    <li class="list-group-item fs-3 m-0 ">Melon</li>
+                                    <li class="list-group-item fs-3 m-0 ">Poulet tex mex</li>
+                                    <li class="list-group-item fs-3 m-0 ">Potatoes</li>
+                                    <li class="list-group-item fs-3 m-0 ">Eau</li>
+                                    <li class="list-group-item fs-3 m-0 ">Fromage</li>
+                                    <li class="list-group-item fs-3 m-0 ">Fruit de saison</li>
                                 </ul>
+                                <div id="messageRepasVide">
+                                    <h3 class="fs-3 mt-5">Rien malheuresement :(</h3>
+                                    <h4 class="fs-4 mt-1">Peut être que plus tard nous aurons de quoi vous satisfaire.</h4>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -77,6 +82,7 @@
             changeClocheAnimation()
         }, 30000)
     </script>
+    <script src="{% static 'JS/getMenu.js' %}"></script>
 </body>
 
 </html>

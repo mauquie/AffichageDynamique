@@ -8,4 +8,5 @@ urlpatterns = [
     path('infos', views.getInfos),
     path('sondages', views.getSurveys),
     path('displays', views.getDisplays),
+    path('menus', views.getMenus),
 ]
