@@ -10,11 +10,11 @@ function getArticles()
         domContenu.innerText = article.article
         if (article.image == "")
         {
-            domImage.hidden = true;
+            domImage.hidden = true
         }
         else
         {
-            domImage.hidden = false;
+            domImage.hidden = false
             domImage.src = "/Medias/"+article.image
         }
         if (i == articles.length-1)

@@ -29,32 +29,17 @@
         <div class="col-sm-4">
             <div class="card me-3 ms-2">
                 <div class="card-body">
-                    <table class="table">
+                    <table id="tableProfs" class="table">
                         <thead style="font-size: 1.7vw;">
                           <tr>
                             <th scope="col">Professeur</th>
                             <th scope="col">Horaire d'absence</th>
                           </tr>
                         </thead>
-                        <tbody style="font-size: 1.4vw;" >
-                          <tr>
-                            <td>Debaigt</td>
-                            <td>Lundi 4/10 8h-18h</td>
-                          </tr>
-                          <tr>
-                            <td>Delajarte</td>
-                            <td>Mardi 5/10 5h-18h</td>
-                          </tr>
-                          <tr>
-                            <td>Houardi</td>
-                            <td>Mercredi 6/10 17h-18h</td>
-                          </tr>
-                          <tr>
-                              <td>Boissac</td>
-                              <td>6/10 - 15/10</td>
-                          </tr>
+                        <tbody id="table" style="font-size: 1.4vw;" >
                         </tbody>
-                      </table>
+                    </table>
+                    <p id="textePasAbsences" style="font-size : 2vw;" hidden> Il n'y a aucuns profs absents aujourd'hui.</p>
                 </div>
             </div>
             <div class="card me-3 ms-2 mt-2 mb-3">
@@ -65,6 +50,7 @@
         </div>
     </div>
   </div>
-    <script src="{% static 'JS/affichageSelf.js' %}"></script>
+    <script src="{% static 'JS/affichageVieScolaire.js' %}"></script>
     <script src="{% static 'JS/getDisplay.js' %}"></script>
+    <script src="{% static 'JS/getProfsAbsents.js' %}"></script>
 </body>

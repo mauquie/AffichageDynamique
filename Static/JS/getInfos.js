@@ -8,24 +8,24 @@ function getInformations()
     }).then(data => {
         actualInfo = document.getElementById("infoContainer").innerText
         domInfoCachable = document.getElementById("containerCachable")
-        if (index >= data.length)
+        if (index >= data.length) //bouclage de index
         {
             index = 0
         }
-        if (data.length == 0) 
+        if (data.length == 0) //on cache s'il n'y a rien à afficher
         {
             exitScreen().finished.then(() => {
                 domInfoCachable.hidden = true
             })
         }
-        else if (actualInfo != data[index].message) //Auncune modifications à faire si l'info à afficher et l'info affichée
-        {                                           //sont les mêmes
-            exitScreen().finished.then(() => 
+        else if (actualInfo != data[index].message) //vérification de la différence entre l'info actuelle et celle
+        {                                           //à afficher, car aucune modifs à faire si ce sont les mêmes
+            exitScreen().finished.then(() => //on fait sortir la div de l'écran, puis quand l'anim est finie :
             {
-                changeInfo(data)
-                setSize()
-                changeStyleInfo(data[index])
-                enterScreen()
+                changeInfo(data) //changement de l'info
+                setSize() //adaptation de la taille du texte
+                changeStyleInfo(data[index]) //changement du background
+                enterScreen() //animation de l'entrée de la div
             })
         }
     });
@@ -38,8 +38,7 @@ function changeInfo(listeInfo)
     domInfoCachable = document.getElementById("containerCachable")
 
     domInfoCachable.hidden = false
-    information = listeInfo[index].message; 
-    domInfo.innerHTML = information
+    domInfo.innerHTML = listeInfo[index].message; 
     domInfo.style.fontSize="80px" //Taille de base de l'info, adaptée après par setSize().
 }
 
@@ -62,15 +61,15 @@ function changeStyleInfo(info)
     domInfoContainer = document.getElementById("infoContainer")
     switch(info.type.id) {
         case 1:
-            if (domInfoContainer.classList.contains("bg-secondary"))
-            {
+            if (domInfoContainer.classList.contains("bg-secondary")) //remplacement du bg gris par
+            {                                                        //le rouge
                 domInfoContainer.classList.remove("bg-secondary")
             }
             domInfoContainer.classList.add("bg-danger")
             break;
         case 2:
-            if (domInfoContainer.classList.contains("bg-danger"))
-            {
+            if (domInfoContainer.classList.contains("bg-danger"))//remplacement du bg rouge par                                                     
+            {                                                   //le gris
                 domInfoContainer.classList.remove("bg-danger")
             }
             domInfoContainer.classList.add("bg-secondary")
@@ -128,7 +127,7 @@ function exitScreen()
         translateX: 0,
         easing: 'steps(1)',
     })
-    return tl
+    return tl //return pour savoir dans getInformations quand l'animation est terminée
     
 }
  
