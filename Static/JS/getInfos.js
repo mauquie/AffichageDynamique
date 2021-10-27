@@ -80,26 +80,26 @@ function changeStyleInfo(info)
 }
 
 function enterScreen()
-{
+{/*
     domInfoContainer = document.getElementById("infoContainer")
     anime({
         targets: domInfoContainer, //anime gauche-droite
         translateY: 0,
         easing: 'spring(1, 80, 10, 0)',
     })
+    */
 
-    /*
+    
     anime({ //anime haut-bas-droite
         targets: domInfoContainer,
         translateX: 0, 
         easing: 'spring(1, 80, 10, 0)',
     })
-    */
 }
 
 function exitScreen()
 {
-    /*
+    
     domInfoContainer = document.getElementById("infoContainer")
     tl = anime.timeline({ //anime gauche-droite
         targets: domInfoContainer
@@ -112,8 +112,8 @@ function exitScreen()
         translateX: -domInfoContainer.clientWidth*2,
         easing: 'steps(1)',
     })
-    return tl
-    */
+    return tl //return pour savoir dans getInformations quand l'animation est terminée
+    /*
     domInfoContainer = document.getElementById("infoContainer")
     tl = anime.timeline({ //haut-bas-droite
         targets: domInfoContainer
@@ -128,7 +128,7 @@ function exitScreen()
         easing: 'steps(1)',
     })
     return tl //return pour savoir dans getInformations quand l'animation est terminée
-    
+    */
 }
  
 getInformations()
