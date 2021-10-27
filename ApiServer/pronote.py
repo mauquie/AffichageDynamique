@@ -1,175 +1,29 @@
 import requests
-from .keys import *
-from .models import Pronote, Repas, Aliment, PartieDuRepas, ProfAbsent
+from .models import Repas, Aliment, PartieDuRepas, ProfAbsent
 import datetime
 
-timeBetweenTwoGenerationToken = 60 * 24
-timeBetweenTwoQueries = 1
-
-def canQueryAgain():
+def refreshMenus():
     """
-        Fonction s'occupant de savoir si on peut refaire une requète à pronote ou s'il faut attendre 
-        Renvoie True quand on peut se reconnecter et False quand on ne peut pas 
+        Fonction s'occupant de rafraichir les données du menu du jour dans la base de données au cas ou il ait changé
     """
-    #Récupération de la dernière connexion à pronote si forToken est vraie, sinon recupération de la dernière requete faite à pronote
-    lastPronoteConnection = Pronote.objects.latest('last_token_query')
+    #Requete à pronote
+    requete = requests.get("http://127.0.0.1:5000/menus")
 
-    #Calcul de la dernière heure avant de pouvoir faire une requete (l'heure actuelle - le temps entre 2 requetes)
-    timeBeforeNewQuery = datetime.datetime.now(datetime.timezone.utc)
+    #S'il nous renvoie des données alors on va les traiter
+    if len(requete.json()["data"]) > 0:
+        menus = requete.json()["data"]
 
-    day = timeBeforeNewQuery.day
+        ajoutMenus(menus)
 
-    day -= 1
-    month = timeBeforeNewQuery.month
-
-    if day < 0:
-        day += 30
-        month -= 1
-
-    timeBeforeNewQuery = timeBeforeNewQuery.replace(day = day, month = month)
-
-    return lastPronoteConnection.last_query < timeBeforeNewQuery
-
-def createNewToken():
-    #Récupération des informations du compte pour la connexion
-    data = {
-        "url": PRONOTE_URL,
-        "username": PRONOTE_USERNAME,
-        "password": PRONOTE_PASSWORD,
-        "cas": PRONOTE_CAS
-    }
-
-    newPronoteToken = Pronote()
-    newPronoteToken.save()
-
-    #Connexion
-    requete = requests.post("http://127.0.0.1:21727/auth/login", json=data)
-    print("Connection to Pronote")
-    print("Result : {}\n".format(requete.json()))
-
-
-    #Si tout s'est bien passé, on enregistre et retourne le token fraichement obtenu 
-    if requete.status_code == 200:
-        token = requete.json()["token"]
-
-        newPronoteToken.token = token
-        newPronoteToken.save()
-
-        #Défini la connexion comme une connexion à ne pas fermer 
-        headers = {
-            'Content-type': 'application/json',
-            'Token': token,
-        }
-
-        query = {
-            'query': 'mutation {setKeepAlive(enabled: true)} query {menu(from: "2021-10-05"){date, meals{name}},timetable(from: "2021-10-05"){status, teacher, from, to}}'
-        }
-
-        requete = requests.post("http://127.0.0.1:21727/graphql", headers=headers, json=query)
-        print("Setting keepAlive mutation for the pronote server")
-        print("Result : {}\n".format(requete.json()))
-
-        return token
-
-def loginToPronote():
-    """
-        Fonction s'occupant de se connecter à pronote et de renvoyer le token à utiliser pour les requètes
-    """
-
-    #Récupération de la dernière connexion à pronote
-    lastPronoteConnection = Pronote.objects.latest('last_token_query')
-
-    #Si la dernière connexion à pronote était il y a trop longtemps, on peut récupérer un nouveau token
-    if canQueryAgain():
-        return createNewToken()
-
-    else: #Sinon on renvoie le token qu'on à utilisé dans la dernière requète 
-        return lastPronoteConnection.token
-
-
-def refreshInfos(isRecursive = False):
-    """
-        Fonction rafraichissant les informations de pronote dans la bdd
-        Le paramètre isRecursive permet de bloquer la création de token Pronote à l'infini s'il y a un problème
-        avec la requète. 
-    """
-    #Récupération du token pour la connexion à pronote
-    token = loginToPronote()
-
-    print("Token used : {}".format(token))
-
-    #Formatage de la date pour que pronote comprenne que veuilles le menu d'aujourd'hui
-    date = datetime.datetime.now()
-    date = date.replace(day=date.day - 1)
-
-    #Commande que l'on envoie au serveur qui récupère les menus (midi - soir) à la date d'aujourd'hui
-    #Dans la requete on demande le menu et l'emploi du temps 
-    """
-        query {
-            menu(from: "2021-10-05") {
-                date, 
-                meals {
-                    name
-                }
-            },
-            timetable(from: "2021-10-05") {
-                status, 
-                teacher, 
-                from, 
-                to
-            }
-        }
-    """
-    headers = {
-        'Content-type': 'application/json',
-        'Token': token,
-    }
+def refreshProfs():
+    #Requete à pronote
+    requete = requests.get("http://127.0.0.1:5000/edt")
     
+    #S'il nous renvoie des données alors on va les traiter
+    if len(requete.json()["data"]) > 0:
+        edt = requete.json()["data"]
 
-    query = {
-        "query": '{menu(from: "' + date.isoformat() + '"){date, meals{name}},timetable(from: "' + date.isoformat() + '"){status, teacher, from, to}}'
-    }
-
-    #Envoie de la requète vers pronote
-    requete = requests.post("http://127.0.0.1:21727/graphql", headers=headers, json=query)
-    print("Getting informations from Pronote")
-    print("Result : {}\n".format(requete.json()))
-
-    #Mise à jour de la date de la dernière requète
-    last_query = Pronote.objects.latest("last_query")
-    last_query.last_query = datetime.datetime.now(tz = datetime.timezone.utc)
-    last_query.save()
-
-    #Si le token n'est plus valide
-    if "errors" in requete.json() and requete.json()["errors"][0]["message"].split("code: ")[1].split(",")[0] == "5":
-        #Vérification que l'on a pas déjà appelé la fonction pour ne pas créer des tokens à l'infini
-        if not isRecursive:
-            createNewToken()
-            refreshInfos(True)
-
-    #Parsing des données reçu
-    elif requete.status_code == 200:
-        #Si la requète nous renvoie bien un menu (ce qu'elle ne fait pas si on est Samedi par exemple)
-        # car le samedi il n'y a pas de self
-        if len(requete.json()["data"]) > 0:
-            menus = requete.json()["data"]["menu"]
-
-            edt = requete.json()["data"]["timetable"]
-
-            #Si on a au moins 1 menu à ajouter
-            if len(menus) > 0:
-                ajoutMenus(menus)
-
-            #Si on a un emploi du temps à traiter
-            if len(edt) > 0:
-                ajoutProfsAbsents(edt)
-
-    #S'il y a un problème avec le token (Généralement l'expiration du token)
-    elif requete.status_code == 500:
-        #Vérification que l'on a pas déjà appelé la fonction pour ne pas créer des tokens à l'infini
-        if not isRecursive:
-            createNewToken()
-            refreshInfos(True)    
+        ajoutProfsAbsents(edt)
 
 
 def ajoutMenus(menus):
@@ -186,7 +40,7 @@ def ajoutMenus(menus):
         isRepasMidi = IDMenu % 2 == 0
 
         #Convertion de la date donnée par pronote(Epoch?) en une date compréhensible par la BDD 
-        dateToday = convertionDatePronoteVersDatetime(menus[0]["date"]+ 2 * 3600 * 1000)
+        dateToday = convertionDatePronoteVersDatetime(menus[0]["date"])
 
         #Vérification que le repas n'existe pas déjà dans la BDD
         repasObjects = Repas.objects.filter(repas_midi = isRepasMidi, date = dateToday)
@@ -241,7 +95,7 @@ def ajoutProfsAbsents(edt):
     #Pour chaque cours
     for cours in edt:
         #Si le profs et absents du cours
-        if cours["status"] == "Prof. absent":
+        if "status" in cours and cours["status"] == "Prof. absent":
             #Convertion des temps vers une date compréhensible par la bdd
             debut = convertionDatePronoteVersDatetime(cours["from"])
             fin = convertionDatePronoteVersDatetime(cours["to"])
@@ -258,8 +112,23 @@ def ajoutProfsAbsents(edt):
                 absence.fin = fin
                 absence.save()
 
-def convertionDatePronoteVersDatetime(epoch):
+def convertionDatePronoteVersDatetime(date):
     """
-        Converti un nombre de milliseconde en une date compréhensible par python et la bdd
+        Converti un string sous la forme "2021-10-05T09:25:00.000Z" en une date compréhensible par python et la bdd
     """
-    return datetime.datetime.fromtimestamp(epoch/1000, tz=datetime.timezone.utc)
+    #Separe la date et l'heure
+    dateAndTime = date.split("T")
+
+    #Récupère la date
+    date = dateAndTime[0].split("-")
+    day = int(date[2])
+    month = int(date[1])
+    year = int(date[0])
+
+    #Récupère l'heure
+    time = dateAndTime[1].split("Z")[0].split(":")
+    hour = int(time[0])
+    minute = int(time[1])
+
+    #Création du datetime correspondant aux valeurs
+    return datetime.datetime(year, month, day, hour, minute, tzinfo = datetime.timezone.utc)

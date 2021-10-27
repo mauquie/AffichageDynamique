@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponseBadRequest
 from .models import Article, Info, Survey, Display, Repas, ProfAbsent
 import datetime
-from .pronote import refreshInfos
+from .pronote import refreshMenus, refreshProfs
 
 def hideExpiredObjects(query):
     #Récupération de la date d'hier
@@ -141,7 +141,7 @@ def getDisplays(request)->JsonResponse:
 
 #Récupère le menu correpondant au paramètre date et retourne ses infos sous format JSON
 def getMenus(request)->JsonResponse:
-    refreshInfos()
+    refreshMenus()
 
     #Récupération du repas dans la bdd à la date donnée
     query = Repas.objects.filter(date=request.GET.get("date"))
@@ -174,14 +174,12 @@ def getMenus(request)->JsonResponse:
     return JsonResponse(infoList, safe=False)
 
 def getProfsAbs(request):
-    refreshInfos()
+    refreshProfs()
 
     #Calcul des dates d'aujourd'hui et demain
     dateToday = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
     dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
 
-    dateToday = datetime.date.fromisoformat("2021-10-05")
-    dateTomorrow = datetime.date.fromisoformat("2021-10-05")
     dateTomorrow = dateTomorrow.replace(day = dateTomorrow.day + 1)
 
     #On récupère tous les profs absents de la journée 

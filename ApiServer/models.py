@@ -68,14 +68,6 @@ class Info(models.Model):
 
 
 # Modèles correpondants à Pronote
-class Pronote(models.Model):
-    token = models.CharField(max_length=50)
-    last_query = models.DateTimeField(auto_created=True, auto_now_add=True)
-    last_token_query = models.DateTimeField(auto_created=True, auto_now_add=True)
-
-    def __str__(self):
-        return str(self.last_query)
-
 class ProfAbsent(models.Model):
     teacher = models.CharField(max_length=100)
     debut = models.DateTimeField()
@@ -163,11 +155,6 @@ class PartieDuRepasAdmin(admin.ModelAdmin):
     list_display = ('name',)
     list_filter = ('name', )
     search_fields = ['name']
-
-class PronoteAdmin(admin.ModelAdmin):
-    list_display = ('token', 'last_token_query', 'last_query')
-    list_filter = ('last_token_query', 'last_query')
-    search_fields = ['last_token_query', 'last_query']
 
 class ProfAbsentAdmin(admin.ModelAdmin):
     list_display = ('teacher', 'debut', 'fin')
