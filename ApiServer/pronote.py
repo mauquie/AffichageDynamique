@@ -3,37 +3,30 @@ from .keys import *
 from .models import Pronote, Repas, Aliment, PartieDuRepas, ProfAbsent
 import datetime
 
-timeBetweenTwoGenerationToken = 70
-timeBetweenTwoQueries = 30
+timeBetweenTwoGenerationToken = 60 * 24
+timeBetweenTwoQueries = 1
 
-def canQueryAgain(forToken=True):
+def canQueryAgain():
     """
         Fonction s'occupant de savoir si on peut refaire une requète à pronote ou s'il faut attendre 
         Renvoie True quand on peut se reconnecter et False quand on ne peut pas 
     """
     #Récupération de la dernière connexion à pronote si forToken est vraie, sinon recupération de la dernière requete faite à pronote
-    lastPronoteConnection = Pronote.objects.latest('last_token_query' if forToken else 'last_query')
+    lastPronoteConnection = Pronote.objects.latest('last_token_query')
 
     #Calcul de la dernière heure avant de pouvoir faire une requete (l'heure actuelle - le temps entre 2 requetes)
     timeBeforeNewQuery = datetime.datetime.now(datetime.timezone.utc)
 
-    minute = timeBeforeNewQuery.minute
+    day = timeBeforeNewQuery.day
 
-    #Si on veut calculer le temps avant la prochaine fois que l'on récupère un token
-    if forToken:
-        minute -= timeBetweenTwoGenerationToken 
+    day -= 1
+    month = timeBeforeNewQuery.month
 
-    else: #Ou si on veut simplement faire une nouvelle requète pour avoir de nouvelles informations
-        minute -= timeBetweenTwoQueries
+    if day < 0:
+        day += 30
+        month -= 1
 
-    hour = timeBeforeNewQuery.hour
-
-    #Si on a des minutes négatives, on enleve 1 heure (Logique)
-    if minute < 0:
-        minute = minute + 60
-        hour = hour - 1
-
-    timeBeforeNewQuery = timeBeforeNewQuery.replace(minute = minute, hour = hour)
+    timeBeforeNewQuery = timeBeforeNewQuery.replace(day = day, month = month)
 
     return lastPronoteConnection.last_query < timeBeforeNewQuery
 
@@ -61,6 +54,19 @@ def createNewToken():
         newPronoteToken.token = token
         newPronoteToken.save()
 
+        #Défini la connexion comme une connexion à ne pas fermer 
+        headers = {
+            'Content-type': 'application/json',
+            'Token': token,
+        }
+
+        query = {
+            'query': 'mutation {setKeepAlive(enabled: true)}'
+        }
+
+        requete = requests.post("http://127.0.0.1:21727/graphql", headers=headers, json=query)
+        print(requete.json())
+
         return token
 
 def loginToPronote():
@@ -69,10 +75,10 @@ def loginToPronote():
     """
 
     #Récupération de la dernière connexion à pronote
-    lastPronoteConnection = Pronote.objects.latest('last_query')
+    lastPronoteConnection = Pronote.objects.latest('last_token_query')
 
     #Si la dernière connexion à pronote était il y a trop longtemps, on peut récupérer un nouveau token
-    if canQueryAgain(True):
+    if canQueryAgain():
         return createNewToken()
 
     else: #Sinon on renvoie le token qu'on à utilisé dans la dernière requète 
@@ -85,62 +91,82 @@ def refreshInfos(isRecursive = False):
         Le paramètre isRecursive permet de bloquer la création de token Pronote à l'infini s'il y a un problème
         avec la requète. 
     """
-    #Si on peut refaire un requète vers pronote (garde-fou pour évité le ban-ip)
-    if canQueryAgain(False):
-        #Récupération du token pour la connexion à pronote
-        token = loginToPronote()
+    #Récupération du token pour la connexion à pronote
+    token = loginToPronote()
 
-        #Formatage de la date pour que pronote comprenne que veuilles le menu d'aujourd'hui
-        date = datetime.datetime.now()
-        date = date.replace(day=date.day - 1)
+    #Formatage de la date pour que pronote comprenne que veuilles le menu d'aujourd'hui
+    date = datetime.datetime.now()
+    date = date.replace(day=date.day - 1)
 
-        #Commande que l'on envoie au serveur qui récupère les menus (midi - soir) à la date d'aujourd'hui
-        query = {"query": '{menu(from: "' + date.isoformat() + '"){date, meals{name}},timetable(from: "' + date.isoformat() + '"){status, teacher, from, to}}'}
-
-        headers = {
-            'Content-type': 'application/json',
-            'Token': token,
+    #Commande que l'on envoie au serveur qui récupère les menus (midi - soir) à la date d'aujourd'hui
+    #Dans la requete on demande le menu et l'emploi du temps 
+    """
+        query {
+            menu(from: "2021-10-05") {
+                date, 
+                meals {
+                    name
+                }
+            },
+            timetable(from: "2021-10-05") {
+                status, 
+                teacher, 
+                from, 
+                to
+            }
         }
+    """
+    headers = {
+        'Content-type': 'application/json',
+        'Token': token,
+    }
+    
 
-        #Envoie de la requète vers pronote
-        requete = requests.post("http://127.0.0.1:21727/graphql", headers=headers, json=query)
-        print("Getting informations from Pronote")
+    query = {
+        "query": '{menu(from: "' + date.isoformat() + '"){date, meals{name}},timetable(from: "' + date.isoformat() + '"){status, teacher, from, to}}'
+    }
 
-        #Mise à jour de la date de la dernière requète
-        last_query = Pronote.objects.latest("last_query")
-        last_query.last_query = datetime.datetime.now(tz = datetime.timezone.utc)
-        last_query.save()
+    #Envoie de la requète vers pronote
+    requete = requests.post("http://127.0.0.1:21727/graphql", headers=headers, json=query)
+    print("Getting informations from Pronote")
 
-        #Si le token n'est plus valide
-        if "errors" in requete.json() and requete.json()["errors"][0]["message"].split("code: ")[1].split(",")[0] == "5":
-            #Vérification que l'on a pas déjà appelé la fonction pour ne pas créer des tokens à l'infini
-            if not isRecursive:
-                createNewToken()
-                refreshInfos(True)
+    print(requete.json())
 
-        #Parsing des données reçu
-        elif requete.status_code == 200:
-            #Si la requète nous renvoie bien un menu (ce qu'elle ne fait pas si on est Samedi par exemple)
-            # car le samedi il n'y a pas de self
-            if len(requete.json()["data"]) > 0:
-                menus = requete.json()["data"]["menu"]
+    #Mise à jour de la date de la dernière requète
+    last_query = Pronote.objects.latest("last_query")
+    last_query.last_query = datetime.datetime.now(tz = datetime.timezone.utc)
+    last_query.save()
 
-                edt = requete.json()["data"]["timetable"]
+    #Si le token n'est plus valide
+    if "errors" in requete.json() and requete.json()["errors"][0]["message"].split("code: ")[1].split(",")[0] == "5":
+        #Vérification que l'on a pas déjà appelé la fonction pour ne pas créer des tokens à l'infini
+        if not isRecursive:
+            createNewToken()
+            refreshInfos(True)
 
-                #Si on a au moins 1 menu à ajouter
-                if len(menus) > 0:
-                    ajoutMenus(menus)
+    #Parsing des données reçu
+    elif requete.status_code == 200:
+        #Si la requète nous renvoie bien un menu (ce qu'elle ne fait pas si on est Samedi par exemple)
+        # car le samedi il n'y a pas de self
+        if len(requete.json()["data"]) > 0:
+            menus = requete.json()["data"]["menu"]
 
-                #Si on a un emploi du temps à traiter
-                if len(edt) > 0:
-                    ajoutProfsAbsents(edt)
+            edt = requete.json()["data"]["timetable"]
 
-        #S'il y a un problème avec le token (Généralement l'expiration du token)
-        elif requete.status_code == 500:
-            #Vérification que l'on a pas déjà appelé la fonction pour ne pas créer des tokens à l'infini
-            if not isRecursive:
-                createNewToken()
-                refreshInfos(True)
+            #Si on a au moins 1 menu à ajouter
+            if len(menus) > 0:
+                ajoutMenus(menus)
+
+            #Si on a un emploi du temps à traiter
+            if len(edt) > 0:
+                ajoutProfsAbsents(edt)
+
+    #S'il y a un problème avec le token (Généralement l'expiration du token)
+    elif requete.status_code == 500:
+        #Vérification que l'on a pas déjà appelé la fonction pour ne pas créer des tokens à l'infini
+        if not isRecursive:
+            createNewToken()
+            refreshInfos(True)    
 
 
 def ajoutMenus(menus):
