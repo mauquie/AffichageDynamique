@@ -45,6 +45,7 @@ def createNewToken():
     #Connexion
     requete = requests.post("http://127.0.0.1:21727/auth/login", json=data)
     print("Connection to Pronote")
+    print("Result : {}\n".format(requete.json()))
 
 
     #Si tout s'est bien passé, on enregistre et retourne le token fraichement obtenu 
@@ -61,11 +62,12 @@ def createNewToken():
         }
 
         query = {
-            'query': 'mutation {setKeepAlive(enabled: true)}'
+            'query': 'mutation {setKeepAlive(enabled: true)} query {menu(from: "2021-10-05"){date, meals{name}},timetable(from: "2021-10-05"){status, teacher, from, to}}'
         }
 
         requete = requests.post("http://127.0.0.1:21727/graphql", headers=headers, json=query)
-        print(requete.json())
+        print("Setting keepAlive mutation for the pronote server")
+        print("Result : {}\n".format(requete.json()))
 
         return token
 
@@ -93,6 +95,8 @@ def refreshInfos(isRecursive = False):
     """
     #Récupération du token pour la connexion à pronote
     token = loginToPronote()
+
+    print("Token used : {}".format(token))
 
     #Formatage de la date pour que pronote comprenne que veuilles le menu d'aujourd'hui
     date = datetime.datetime.now()
@@ -129,8 +133,7 @@ def refreshInfos(isRecursive = False):
     #Envoie de la requète vers pronote
     requete = requests.post("http://127.0.0.1:21727/graphql", headers=headers, json=query)
     print("Getting informations from Pronote")
-
-    print(requete.json())
+    print("Result : {}\n".format(requete.json()))
 
     #Mise à jour de la date de la dernière requète
     last_query = Pronote.objects.latest("last_query")
