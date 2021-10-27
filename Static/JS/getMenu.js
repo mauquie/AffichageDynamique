@@ -11,38 +11,34 @@ function getMenus() {
     date = dateTime.getFullYear() + "-" + (dateTime.getMonth() + 1) + "-" + dateTime.getDate()
 
     //Requete vers le serveur
-    fetch("/api/menus?date=" + date).then((response) => {
+    fetch("/api/menus?date=2021-10-22" ).then((response) => {
         return response.json()
 
     }).then((data) => {
         //S'il n'y a pas de repas à afficher
         if (data.length == 0) {
-            //On cache le menu et on affiche le message
-            DOMMessageRepasVide.hidden = false
-            DOMListAliment.hidden = true
+            toggleMenu(true)
 
         } else { //S'il y a au moins un repas à afficher
-            //On affiche le menu et on cache le message
-            DOMMessageRepasVide.hidden = true
-            DOMListAliment.hidden = false
+            //On affiche le menu
+            toggleMenu(false)
 
             //On récupère l'heure actuelle
             hour = dateTime.getHours()
 
             //S'il est - 15:00 ou qu'il n'y a qu'un seul repas pour aujourd'hui on affiche le repas de midi
-            if (hour < 15 || data.length == 1) {
+            if (hour < 15) {
                 repas = data[0]
 
             } else { //Sinon on affiche le repas du soir
-                repas = data[1]
-            }
+                if (data.length > 1){
+                    repas = data[1]
 
-            //On verifie que le repas est bien pour le repas du midi
-            if (repas.midi) {
-                DOMRepasType.innerText = "Pour ce midi,"
+                } else {
+                    toggleMenu(true)
+                    return null
+                }
 
-            } else {
-                DOMRepasType.innerText = "Pour ce soir,"
             }
 
             // Pour chaque partie du repas, on assemble la liste d'aliment avec des "/" et on 
@@ -54,6 +50,39 @@ function getMenus() {
             }
         }
     })
+}
+
+function toggleMenu(toHide) {
+    /*
+        Affiche ou cache le menu en fonction du parametre toHide
+    */
+    if (toHide) {
+        //On cache le menu et on affiche le message
+        DOMMessageRepasVide.hidden = false
+        DOMListAliment.hidden = true
+
+    } else {
+        //On affiche le menu et on cache le message
+        DOMMessageRepasVide.hidden = true
+        DOMListAliment.hidden = false
+
+    }
+
+    setCorrectMenu()
+
+}
+
+function setCorrectMenu() {
+    /*
+        Affiche le bon texte de presentation du menu, avec l'heure il choisi d'afficher soit "Midi" soit "Soir"
+    */
+    hour = dateTime.getHours()
+    if (hour < 15) {
+        DOMRepasType.innerText = "Pour ce midi,"
+
+    } else {
+        DOMRepasType.innerText = "Pour ce soir,"
+    }
 }
 
 //Interval de 1mn (1000ms * 60)

@@ -179,6 +179,9 @@ def getProfsAbs(request):
     #Calcul des dates d'aujourd'hui et demain
     dateToday = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
     dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
+
+    dateToday = datetime.date.fromisoformat("2021-10-05")
+    dateTomorrow = datetime.date.fromisoformat("2021-10-05")
     dateTomorrow = dateTomorrow.replace(day = dateTomorrow.day + 1)
 
     #On récupère tous les profs absents de la journée 
