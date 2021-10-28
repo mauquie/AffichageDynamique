@@ -1,6 +1,7 @@
 const pronote = require('@dorian-eydoux/pronote-api');
 const http = require("http")
 
+
 const url = 'https://0820021c.index-education.net/pronote/';
 const username = '***';
 const password = '***';
@@ -59,37 +60,69 @@ function gestionServeur(req, res, session) {
     if (req.url == "/menus") {
 
         //On récupère les menus via la fonction getMenus avec notre session en paramètre
-        getMenus(session).then((menus) => {
+        getMenus(session)
+            .then((menus) => {
 
-            //Une fois qu'on a les menus on les renvoie sous forme JSON
-            res.writeHead(200, {
-                'Content-Type': 'application/json'
+                //Une fois qu'on a les menus on les renvoie sous forme JSON
+                res.writeHead(200, {
+                    'Content-Type': 'application/json'
+                })
+
+                res.write(JSON.stringify({
+                    'data': menus
+                }))
+
+                res.end()
             })
+            .catch(err => {
+                console.error("Ups, error : ")
+                console.error(err)
 
-            res.write(JSON.stringify({
-                'data': menus
-            }))
+                //Une fois qu'on a l'emploi du temps on le renvoie sous forme JSON
+                res.writeHead(200, {
+                    'Content-Type': 'application/json'
+                })
 
-            res.end()
-        })
+                res.write(JSON.stringify({
+                    'data': []
+                }))
+
+                res.end()
+            })
 
         //Si on veut les menus
     } else if (req.url == "/edt") {
 
         //On récupère l'emploi du temps du jours via la fonction getEdt avec notre session en paramètre
-        getEdt(session).then((edt) => {
+        getEdt(session)
+            .then((edt) => {
 
-            //Une fois qu'on a l'emploi du temps on le renvoie sous forme JSON
-            res.writeHead(200, {
-                'Content-Type': 'application/json'
+                //Une fois qu'on a l'emploi du temps on le renvoie sous forme JSON
+                res.writeHead(200, {
+                    'Content-Type': 'application/json'
+                })
+
+                res.write(JSON.stringify({
+                    'data': edt
+                }))
+
+                res.end()
             })
+            .catch(err => {
+                console.error("Ups, error : ")
+                console.error(err)
 
-            res.write(JSON.stringify({
-                'data': edt
-            }))
+                //Une fois qu'on a l'emploi du temps on le renvoie sous forme JSON
+                res.writeHead(200, {
+                    'Content-Type': 'application/json'
+                })
 
-            res.end()
-        })
+                res.write(JSON.stringify({
+                    'data': []
+                }))
+
+                res.end()
+            })
     }
 }
 
@@ -105,5 +138,6 @@ getSession()
         console.log("Serveur lancé sur le port 5000")
     })
     .catch((err) => {
+        console.log("Ups pronote connection error :")
         console.error(err)
     })
