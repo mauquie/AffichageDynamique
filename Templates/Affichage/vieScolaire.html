@@ -16,26 +16,23 @@
     {% include "./info.html" %}
     <div class="row">
         <div class="col-sm-8">
-            <div class="card ms-3 me-3">
+            <div id="article" class="card ms-3 me-3" hidden="true">
                 <div class="card-body">
-                    <h4 id="titreArticle" class="card-title" style="font-size: 2vw;"> Lorem Ipsum</h4>
+                    <h4 id="titreArticle" class="card-title" style="font-size: 2.5vw;"> Lorem Ipsum</h4>
                     <div>
                         <img id="imageArticle" src="{% static 'image.jpg'%}" width="32%" height="18%" style="float:left; margin-right: 20px;" >
-                        <p id="contenuArticle" class="card-text" style="display: inline; font-size: 1.2vw;" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin at fringilla odio. Vivamus blandit bibendum ornare. Proin turpis ipsum, laoreet eget placerat vitae, volutpat ac lorem. Curabitur in mi ullamcorper, porta erat id, sollicitudin massa. Sed sed lacinia felis, tristique condimentum nunc. Fusce eget risus nec sapien finibus lobortis. Praesent volutpat dolor ut diam aliquet, vel fermentum lectus porta. Sed elementum sollicitudin eros accumsan varius. Curabitur nec arcu eu quam maximus sodales. Fusce eu ante sagittis elit luctus facilisis. Sed molestie sem at ornare consectetur. Curabitur at tellus ut lorem hendrerit viverra. Interdum et malesuada fames ac ante ipsum primis in laoreet. </p>
+                        <p id="contenuArticle" class="card-text" style="display: inline; font-size: 2vw;" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin at fringilla odio. Vivamus blandit bibendum ornare. Proin turpis ipsum, laoreet eget placerat vitae, volutpat ac lorem. Curabitur in mi ullamcorper, porta erat id, sollicitudin massa. Sed sed lacinia felis, tristique condimentum nunc. Fusce eget risus nec sapien finibus lobortis. Praesent volutpat dolor ut diam aliquet, vel fermentum lectus porta. Sed elementum sollicitudin eros accumsan varius. Curabitur nec arcu eu quam maximus sodales. Fusce eu ante sagittis elit luctus facilisis. Sed molestie sem at ornare consectetur. Curabitur at tellus ut lorem hendrerit viverra. Interdum et malesuada fames ac ante ipsum primis in laoreet. </p>
                     </div>
                 </div>
             </div>
-            <div class="card ms-3 mt-3 me-3" hidden="true" id="carteEvenement">
-                <div class="card-body">
-                    <h3 id="titreEvenement" class="card-title" style="font-size: 2vw;">C'est la desh</h3>
-                    <p id="contenuEvenement" class="card-text"> WESH MEC T'AS VU LES INFOS ??? MICHEL DRUCKER A PRIS LE CONTRÔLE</p>
-                </div>
-            </div>
+            <div id="pasArticle" class="card ms-3 me-3 border rounded-3" style="font-size: 2.5vw;">
+                <p>Bonjour Bourdelle !</p>
+                </div>  
         </div>
         <div class="col-sm-4">
             <div class="card me-3 ms-2">
                 <div class="card-body">
-                    <table id="tableProfs" class="table">
+                    <table id="tableProfs" class="table" hidden="true">
                         <thead style="font-size: 1.7vw;">
                           <tr>
                             <th scope="col">Professeur</th>
@@ -45,12 +42,13 @@
                         <tbody id="table" style="font-size: 1.4vw;" >
                         </tbody>
                     </table>
-                    <p id="textePasAbsences" style="font-size : 2vw;" hidden> Il n'y a aucuns profs absents aujourd'hui.</p>
+                    <p id="textePasAbsences" style="font-size : 2vw;"> Il n'y a aucuns profs absents aujourd'hui.</p>
                 </div>
             </div>
-            <div class="card me-3 ms-2 mt-2 mb-3">
+            <div class="card ms-2 mt-3 me-3" hidden="true" id="carteEvenement">
                 <div class="card-body">
-                    <p style="font-size: 2vw;">Les délégués sont appelés à aller chercher les masques</p>
+                    <h3 id="titreEvenement" class="card-title" style="font-size: 2.5vw;"></h3>
+                    <p id="contenuEvenement" class="card-text" style="font-size: 2vw;"> </p>
                 </div>
             </div>
         </div>

@@ -2,10 +2,22 @@ function getArticles()
 {
     fetch("/api/articles").then((reponse)=>reponse.json()).then((data) => {        
         articles = data
-        article = articles[i]
+        console.log(articles)
+        if (articles.length == 0)
+        {
+            document.getElementById("pasArticle").hidden = false
+            document.getElementById("article").hidden = true
+            return
+        }
+        else
+        {
+            document.getElementById("pasArticle").hidden = true
+            document.getElementById("article").hidden = false
+        }
         domTitre = document.getElementById("titreArticle")
         domContenu = document.getElementById("contenuArticle")
         domImage = document.getElementById("imageArticle") 
+        article = articles[i]
         domTitre.innerText = article.title
         domContenu.innerText = article.article
         if (article.image == "")
@@ -25,4 +37,5 @@ function getArticles()
     })
 }
 i = 0
+getArticles()
 setInterval(()=>getArticles(), 5000)
