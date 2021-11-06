@@ -50,7 +50,7 @@ function affichageProfs(listeGroupesProfs)
     }
 }
 
-function bouclage() //à pour rôle de gérer la boucle, pour afficher les profs
+function bouclage() //a pour rôle de gérer la boucle, pour afficher les profs
 {
     if (indexProfs > listeGroupesProfs.length-1)
     {

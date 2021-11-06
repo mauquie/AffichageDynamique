@@ -3,9 +3,9 @@ function getArticles()
     fetch("/api/articles").then((reponse)=>reponse.json()).then((data) => {        
         articles = data
         article = articles[i]
-        domTitre = document.getElementById("titre")
-        domContenu = document.getElementById("contenu")
-        domImage = document.getElementById("image") 
+        domTitre = document.getElementById("titreArticle")
+        domContenu = document.getElementById("contenuArticle")
+        domImage = document.getElementById("imageArticle") 
         domTitre.innerText = article.title
         domContenu.innerText = article.article
         if (article.image == "")

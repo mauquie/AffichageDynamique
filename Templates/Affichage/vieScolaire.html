@@ -18,11 +18,17 @@
         <div class="col-sm-8">
             <div class="card ms-3 me-3">
                 <div class="card-body">
-                    <h4 id="titre" class="card-title" style="font-size: 2vw;"> Lorem Ipsum</h4>
+                    <h4 id="titreArticle" class="card-title" style="font-size: 2vw;"> Lorem Ipsum</h4>
                     <div>
-                        <img id="image" src="{% static 'image.jpg'%}" width="32%" height="18%" style="float:left; margin-right: 20px;" >
-                        <p id="contenu" class="card-text" style="display: inline; font-size: 1.8vw;" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin at fringilla odio. Vivamus blandit bibendum ornare. Proin turpis ipsum, laoreet eget placerat vitae, volutpat ac lorem. Curabitur in mi ullamcorper, porta erat id, sollicitudin massa. Sed sed lacinia felis, tristique condimentum nunc. Fusce eget risus nec sapien finibus lobortis. Praesent volutpat dolor ut diam aliquet, vel fermentum lectus porta. Sed elementum sollicitudin eros accumsan varius. Curabitur nec arcu eu quam maximus sodales. Fusce eu ante sagittis elit luctus facilisis. Sed molestie sem at ornare consectetur. Curabitur at tellus ut lorem hendrerit viverra. Interdum et malesuada fames ac ante ipsum primis in laoreet. </p>
+                        <img id="imageArticle" src="{% static 'image.jpg'%}" width="32%" height="18%" style="float:left; margin-right: 20px;" >
+                        <p id="contenuArticle" class="card-text" style="display: inline; font-size: 1.2vw;" >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin at fringilla odio. Vivamus blandit bibendum ornare. Proin turpis ipsum, laoreet eget placerat vitae, volutpat ac lorem. Curabitur in mi ullamcorper, porta erat id, sollicitudin massa. Sed sed lacinia felis, tristique condimentum nunc. Fusce eget risus nec sapien finibus lobortis. Praesent volutpat dolor ut diam aliquet, vel fermentum lectus porta. Sed elementum sollicitudin eros accumsan varius. Curabitur nec arcu eu quam maximus sodales. Fusce eu ante sagittis elit luctus facilisis. Sed molestie sem at ornare consectetur. Curabitur at tellus ut lorem hendrerit viverra. Interdum et malesuada fames ac ante ipsum primis in laoreet. </p>
                     </div>
+                </div>
+            </div>
+            <div class="card ms-3 mt-3 me-3" id="carteEvenement">
+                <div class="card-body">
+                    <h3 id="titreEvenement" class="card-title" style="font-size: 2vw;">C'est la desh</h3>
+                    <p id="contenuEvenement" class="card-text"> WESH MEC T'AS VU LES INFOS ??? MICHEL DRUCKER A PRIS LE CONTRÔLE</p>
                 </div>
             </div>
         </div>
@@ -50,7 +56,9 @@
         </div>
     </div>
   </div>
+    <script src="https://apis.google.com/js/api.js"></script>
     <script src="{% static 'JS/affichageVieScolaire.js' %}"></script>
     <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script src="{% static 'JS/getProfsAbsents.js' %}"></script>
+    <script src="{% static 'JS/getEvenements.js' %}"></script>
 </body>
