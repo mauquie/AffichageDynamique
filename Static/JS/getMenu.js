@@ -11,7 +11,7 @@ function getMenus() {
     date = dateTime.getFullYear() + "-" + (dateTime.getMonth() + 1) + "-" + dateTime.getDate()
 
     //Requete vers le serveur
-    fetch("/api/menus?date=2021-10-22" ).then((response) => {
+    fetch("/api/menus?date=" + date).then((response) => {
         return response.json()
 
     }).then((data) => {
