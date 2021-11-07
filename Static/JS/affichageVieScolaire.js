@@ -1,3 +1,43 @@
+DOMarticle = document.getElementById("article")
+
+function animeEntreeArticle()
+{
+    anime({ 
+        targets: DOMarticle,
+        translateX: 0, 
+        easing: 'cubicBezier(0.110, 0.015, 0.700, 0.115)',
+    })
+}
+
+function animeSortieArticle()
+{
+    animationArticle = anime({ 
+        targets: DOMarticle,
+        translateX: -1000, 
+        easing: 'cubicBezier(0.000, 0.175, 0.080, 0.770)',
+    })
+    return animationArticle
+}
+
+function changeArticle()
+{
+    domTitre = document.getElementById("titreArticle")
+    domContenu = document.getElementById("contenuArticle")
+    domImage = document.getElementById("imageArticle") 
+    toutArticle = articles[indexArticles]
+    domTitre.innerText = toutArticle.title
+    domContenu.innerText = toutArticle.article
+    if (toutArticle.image == "")
+    {
+        domImage.hidden = true
+    }
+    else
+    {
+        domImage.hidden = false
+        domImage.src = "/Medias/"+toutArticle.image
+    }
+}
+
 function getArticles()
 {
     fetch("/api/articles").then((reponse)=>reponse.json()).then((data) => {        
@@ -5,36 +45,34 @@ function getArticles()
         if (articles.length == 0)
         {
             document.getElementById("pasArticle").hidden = false
-            document.getElementById("article").hidden = true
+            DOMarticle.hidden = true
             return
         }
         else
         {
             document.getElementById("pasArticle").hidden = true
-            document.getElementById("article").hidden = false
+            DOMarticle.hidden = false
+
         }
-        domTitre = document.getElementById("titreArticle")
         domContenu = document.getElementById("contenuArticle")
-        domImage = document.getElementById("imageArticle") 
-        article = articles[i]
-        domTitre.innerText = article.title
-        domContenu.innerText = article.article
-        if (article.image == "")
+        if (domContenu.innerText != article.article)
         {
-            domImage.hidden = true
-        }
-        else
+        animeSortieArticle().finished.then(() => 
         {
-            domImage.hidden = false
-            domImage.src = "/Medias/"+article.image
+            changeArticle()
+            animeEntreeArticle()
+        })
         }
-        if (i == articles.length-1)
+        if (indexArticles == articles.length-1)
         {
-            i = -1
+            indexArticles = -1
         }
-        i++
+        indexArticles++
     })
 }
-i = 0
+
+
+
+indexArticles = 0
 getArticles()
-setInterval(()=>getArticles(), 5000)
+setInterval(()=>getArticles(), 30000)

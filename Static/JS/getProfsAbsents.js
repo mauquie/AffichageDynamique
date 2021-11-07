@@ -37,7 +37,6 @@ function prepareListe(listeProfs)
 
 function affichageProfs(listeProfs)
 {
-    debugger
     DOMtableProfs.innerText = ""
     for (i = 0; i < listeProfs.length; i++)
     {
@@ -56,7 +55,7 @@ function animeEntree()
     anime({ //anime haut-bas-droite
         targets: DOMtableProfsCachable,
         translateX: 0, 
-        easing: 'spring(1, 80, 10, 0)',
+        easing: 'cubicBezier(0.110, 0.015, 1.000, 0.115)',
     })
 }
 
@@ -65,7 +64,7 @@ function animeSortie()
     animation = anime({ //anime haut-bas-droite
         targets: DOMtableProfsCachable,
         translateX: 800, 
-        easing: 'spring(1, 80, 10, 0)',
+        easing: 'cubicBezier(0.000, 0.275, 0.080, 0.970)',
     })
     return animation
 }
@@ -76,11 +75,9 @@ function bouclage() //a pour rôle de gérer la boucle, pour afficher les profs
     {
         indexProfs = 0
     }
-    console.log(listeGroupesProfs)
     affichageProfs(listeGroupesProfs[indexProfs])
      //affichage, tour à tour, des sous listes
     indexProfs++
-    animeEntree()
 }
 
 function getProfsAbs()
@@ -100,16 +97,19 @@ function getProfsAbs()
             DOMtableProfsCachable.hidden = false
             listeProfs = prepareListe(data) //préparation pour afficher la liste (tri + changer heures)
             listeGroupesProfs = divideProfs(listeProfs) //division de la liste en sous liste de taille 8
-            bouclage()
-            interval = setInterval(()=>
+            bouclage() //bouclage avant l'interval, pour afficher immédiatement les profs absents.
+            if (listeGroupesProfs.length > 1)
             {
-                animeSortie().finished.then(()=>
+                interval = setInterval(()=>
                 {
-                bouclage()
-                animeEntree()
-                })
-            }, 15000)
-            return interval
+                    animeSortie().finished.then(()=> //anim de sortie du tableau puis :
+                    {
+                    bouclage() //changements des profs
+                    animeEntree() //anim d'entrée du tableau
+                    })
+                }, 20000)
+                return interval
+            }
         }
         })
 }
@@ -121,4 +121,4 @@ setInterval(() =>
         clearInterval(interval) //clear afin de ne pas accumuler des boucles
     }
     interval = getProfsAbs()
-}, 1000 * 15)
+}, 1000 * 60* 1)
