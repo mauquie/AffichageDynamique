@@ -25,27 +25,25 @@
                     </div>
                 </div>
             </div>
-            <div id="pasArticle" class="card ms-3 me-3 border rounded-3" style="font-size: 2.5vw;">
+            <div id="pasArticle" class="card ms-3 me-3" style="font-size: 2.5vw;">
                 <p>Bonjour Bourdelle !</p>
                 </div>  
         </div>
         <div class="col-sm-4">
-            <div class="card me-3 ms-2">
-                <div class="card-body">
-                    <table id="tableProfs" class="table" hidden="true">
-                        <thead style="font-size: 1.7vw;">
-                          <tr>
-                            <th scope="col">Professeur</th>
-                            <th scope="col">Horaire d'absence</th>
-                          </tr>
-                        </thead>
-                        <tbody id="table" style="font-size: 1.4vw;" >
-                        </tbody>
-                    </table>
-                    <p id="textePasAbsences" style="font-size : 2vw;"> Il n'y a aucuns profs absents aujourd'hui.</p>
-                </div>
+            <div id="tableProfsCachable" class="border rounded-3 p-3 mb-2 me-3 ms-2 " hidden="true">
+                <table class="table">
+                    <thead style="font-size: 1.7vw;">
+                      <tr class="border">
+                        <th scope="col">Professeur</th>
+                        <th scope="col">Horaire d'absence</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tableProfs" style="font-size: 1.4vw;" >
+                    </tbody>
+                </table>
             </div>
-            <div class="card ms-2 mt-3 me-3" hidden="true" id="carteEvenement">
+            <p id="textePasAbsences" class="border rounded-3 p-3 me-3 ms-2" style="font-size : 2vw;"> Il n'y a aucuns profs absents aujourd'hui.</p>
+            <div class="card ms-2 me-3" hidden="true" id="carteEvenement">
                 <div class="card-body">
                     <h3 id="titreEvenement" class="card-title" style="font-size: 2.5vw;"></h3>
                     <p id="contenuEvenement" class="card-text" style="font-size: 2vw;"> </p>

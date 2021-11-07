@@ -1,6 +1,7 @@
 indexProfs = 0
 DOMtextePasAbsences = document.getElementById("textePasAbsences")
 DOMtableProfs = document.getElementById("tableProfs")
+DOMtableProfsCachable = document.getElementById("tableProfsCachable")
 function divideProfs(listeProfs)
 {
     listeGroupesProfs = [] //on affiche seulement 8 profs à la fois.
@@ -34,20 +35,39 @@ function prepareListe(listeProfs)
     return listeProfs
 }
 
-function affichageProfs(listeGroupesProfs)
+function affichageProfs(listeProfs)
 {
-    table = document.getElementById("table")
-    table.innerText = ""
-    for (i = 0; i < listeGroupesProfs.length; i++)
+    debugger
+    DOMtableProfs.innerText = ""
+    for (i = 0; i < listeProfs.length; i++)
     {
-        row = table.insertRow(-1)
+        row = DOMtableProfs.insertRow(-1)
         cell1 = row.insertCell(0)
         cell2 = row.insertCell(1)
-        cell1.innerText = listeGroupesProfs[i].prof 
-        cell2.innerText = listeGroupesProfs[i].debut + "h - " + listeGroupesProfs[i].fin + "h"
+        cell1.innerText = listeProfs[i].prof 
+        cell2.innerText = listeProfs[i].debut + "h - " + listeProfs[i].fin + "h"
         cell1.style.textAlign = "center"
         cell2.style.textAlign = "center" 
     }
+}
+
+function animeEntree()
+{
+    anime({ //anime haut-bas-droite
+        targets: DOMtableProfsCachable,
+        translateX: 0, 
+        easing: 'spring(1, 80, 10, 0)',
+    })
+}
+
+function animeSortie()
+{
+    animation = anime({ //anime haut-bas-droite
+        targets: DOMtableProfsCachable,
+        translateX: 800, 
+        easing: 'spring(1, 80, 10, 0)',
+    })
+    return animation
 }
 
 function bouclage() //a pour rôle de gérer la boucle, pour afficher les profs
@@ -56,8 +76,11 @@ function bouclage() //a pour rôle de gérer la boucle, pour afficher les profs
     {
         indexProfs = 0
     }
-    affichageProfs(listeGroupesProfs[indexProfs]) //affichage, tour à tour, des sous listes
+    console.log(listeGroupesProfs)
+    affichageProfs(listeGroupesProfs[indexProfs])
+     //affichage, tour à tour, des sous listes
     indexProfs++
+    animeEntree()
 }
 
 function getProfsAbs()
@@ -68,19 +91,23 @@ function getProfsAbs()
         if (data.length == 0)
         {
             DOMtextePasAbsences.hidden = false
-            DOMtableProfs.hidden = true
+            DOMtableProfsCachable.hidden = true
             return
         }
         else
         {
             DOMtextePasAbsences.hidden = true
-            DOMtableProfs.hidden = false
+            DOMtableProfsCachable.hidden = false
             listeProfs = prepareListe(data) //préparation pour afficher la liste (tri + changer heures)
             listeGroupesProfs = divideProfs(listeProfs) //division de la liste en sous liste de taille 8
-            bouclage() //on l'appelle avant le setInterval pour que les absences s'affichent instantanément
+            bouclage()
             interval = setInterval(()=>
             {
+                animeSortie().finished.then(()=>
+                {
                 bouclage()
+                animeEntree()
+                })
             }, 15000)
             return interval
         }
@@ -94,4 +121,4 @@ setInterval(() =>
         clearInterval(interval) //clear afin de ne pas accumuler des boucles
     }
     interval = getProfsAbs()
-}, 1000 * 60 * 5)
+}, 1000 * 15)

@@ -2,7 +2,6 @@ function getArticles()
 {
     fetch("/api/articles").then((reponse)=>reponse.json()).then((data) => {        
         articles = data
-        console.log(articles)
         if (articles.length == 0)
         {
             document.getElementById("pasArticle").hidden = false
