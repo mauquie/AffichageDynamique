@@ -3,8 +3,8 @@ const http = require("http")
 
 
 const url = 'https://0820021c.index-education.net/pronote/';
-const username = '***';
-const password = '***';
+const username = 'elowan.harnisch';
+const password = 'mindstorms';
 const cas = 'ac-toulouse';
 
 
@@ -33,6 +33,7 @@ async function getMenus(session, date = new Date()) {
         @return
         list - Retourne la liste des menus à la date demandée
     */
+    date.setDate(date.getDate() - 1)
     return await session.menu(from = date)
 }
 
@@ -47,6 +48,7 @@ async function getEdt(session, date = new Date()) {
         @return
         list - Retourne la liste des cours de la date demandée
     */
+    date.setDate(date.getDate() - 1)
     return await session.timetable(from = date)
 }
 
@@ -71,7 +73,7 @@ function gestionServeur(req, res, session) {
                 res.write(JSON.stringify({
                     'data': menus
                 }))
-
+	            console.log(menus)
                 res.end()
             })
             .catch(err => {
@@ -105,7 +107,7 @@ function gestionServeur(req, res, session) {
                 res.write(JSON.stringify({
                     'data': edt
                 }))
-
+                console.log(edt)
                 res.end()
             })
             .catch(err => {
