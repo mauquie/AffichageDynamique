@@ -1,6 +1,7 @@
 import requests
 from .models import Repas, Aliment, PartieDuRepas, ProfAbsent
 import datetime
+import pytz
 
 def refreshMenus():
     """
@@ -95,7 +96,7 @@ def ajoutProfsAbsents(edt):
     #Pour chaque cours
     for cours in edt:
         #Si le profs et absents du cours
-        if "status" in cours and cours["status"] == "Prof. absent":
+        if "status" in cours and cours["status"] == "Prof. absent" and cours["hasDuplicate"] == False:
             #Convertion des temps vers une date compréhensible par la bdd
             debut = convertionDatePronoteVersDatetime(cours["from"])
             fin = convertionDatePronoteVersDatetime(cours["to"])
@@ -112,23 +113,17 @@ def ajoutProfsAbsents(edt):
                 absence.fin = fin
                 absence.save()
 
-def convertionDatePronoteVersDatetime(date):
+def convertionDatePronoteVersDatetime(dateG):
     """
         Converti un string sous la forme "2021-10-05T09:25:00.000Z" en une date compréhensible par python et la bdd
     """
-    #Separe la date et l'heure
-    dateAndTime = date.split("T")
+    #Récupération du décalage horaire en secondes 
+    offset = int(datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%z')[2])*3600
 
-    #Récupère la date
-    date = dateAndTime[0].split("-")
-    day = int(date[2])
-    month = int(date[1])
-    year = int(date[0])
+    #Formatage de la date donnée (string) en datetime compréhensible par python
+    date = datetime.datetime.strptime(dateG, "%Y-%m-%dT%H:%M:%S.%fZ")
+    
+    #Ajout du décalage horaire au nombre de secondes total pour obtenir la date donnée
+    date = datetime.datetime.utcfromtimestamp(date.timestamp() + offset)
 
-    #Récupère l'heure
-    time = dateAndTime[1].split("Z")[0].split(":")
-    hour = int(time[0])
-    minute = int(time[1])
-
-    #Création du datetime correspondant aux valeurs
-    return datetime.datetime(year, month, day, hour, minute, tzinfo = datetime.timezone.utc)
+    return date
