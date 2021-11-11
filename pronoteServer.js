@@ -3,8 +3,8 @@ const http = require("http")
 
 
 const url = 'https://0820021c.index-education.net/pronote/';
-const username = '***';
-const password = '***';
+const username = 'marc.betous';
+const password = 'itchibiegourou';
 const cas = 'ac-toulouse';
 
 
