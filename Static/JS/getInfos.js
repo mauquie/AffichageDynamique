@@ -1,4 +1,5 @@
-index=0
+indexInformations=0
+domInfoContainer = document.getElementById("infoContainer")
 
 function getInformations() 
 {
@@ -6,11 +7,11 @@ function getInformations()
         return response.json();
 
     }).then(data => {
-        actualInfo = document.getElementById("infoContainer").innerText
+        actuelleInfo = document.getElementById("infoContainer").innerText
         domInfoCachable = document.getElementById("containerCachable")
-        if (index >= data.length) //bouclage de index
+        if (indexInformations >= data.length) //bouclage de indexInformations
         {
-            index = 0
+            indexInformations = 0
         }
         if (data.length == 0) //on cache s'il n'y a rien à afficher
         {
@@ -18,18 +19,34 @@ function getInformations()
                 domInfoCachable.hidden = true
             })
         }
-        else if (actualInfo != data[index].message) //vérification de la différence entre l'info actuelle et celle
-        {                                           //à afficher, car aucune modifs à faire si ce sont les mêmes
-            exitScreen().finished.then(() => //on fait sortir la div de l'écran, puis quand l'anim est finie :
+        else 
+        {
+            if (domInfoCachable.hidden)
             {
-                changeInfo(data) //changement de l'info
-                setSize() //adaptation de la taille du texte
-                changeStyleInfo(data[index]) //changement du background
-                enterScreen() //animation de l'entrée de la div
-            })
+                domInfoCachable.hidden = false
+                anime.set(domInfoContainer, {
+                translateX: -domInfoContainer.clientWidth * 2
+                })
+                changeInfo(data)
+                setSize()
+                changeStyleInfo(data[indexInformations])
+                setTimeout(() =>{
+                    enterScreen()
+                }, 1000)
+            }
+            else if (actuelleInfo != data[indexInformations].message) //vérification de la différence entre l'info actuelle et celle
+            {                                           //à afficher, car aucune modifs à faire si ce sont les mêmes
+                exitScreen().finished.then(() => //on fait sortir la div de l'écran, puis quand l'anim est finie :
+                {
+                    changeInfo(data) //changement de l'info
+                    setSize() //adaptation de la taille du texte
+                    changeStyleInfo(data[indexInformations]) //changement du background
+                    enterScreen() //animation de l'entrée de la div
+                })
+            }
         }
     });
-    index++
+    indexInformations++
 }
 
 function changeInfo(listeInfo)
@@ -37,8 +54,7 @@ function changeInfo(listeInfo)
     domInfo = document.getElementById("information")
     domInfoCachable = document.getElementById("containerCachable")
 
-    domInfoCachable.hidden = false
-    domInfo.innerHTML = listeInfo[index].message; 
+    domInfo.innerHTML = listeInfo[indexInformations].message; 
     domInfo.style.fontSize="80px" //Taille de base de l'info, adaptée après par setSize().
 }
 
@@ -58,7 +74,6 @@ function setSize()
 function changeStyleInfo(info)
 { 
 
-    domInfoContainer = document.getElementById("infoContainer")
     switch(info.type.id) {
         case 1:
             if (domInfoContainer.classList.contains("bg-secondary")) //remplacement du bg gris par
@@ -134,4 +149,4 @@ function exitScreen()
 getInformations()
 setInterval(() => {
     getInformations()
-}, 20000)
+}, 30000)
