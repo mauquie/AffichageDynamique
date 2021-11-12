@@ -5,7 +5,7 @@ DOMtableProfsCachable = document.getElementById("tableProfsCachable")
 function divideProfs(listeProfs)
 {
     listeGroupesProfs = [] //on affiche seulement 8 profs à la fois.
-    for (i = 0; i < (listeProfs.length / 8); i++) //création de i sous listes de 8 profs
+    for (i = 0; i < (listeProfs.length / 8); i++) //donc création de i sous listes de 8 profs
     {
         listeTemp = []
         for (j = 0; j < 8 && j+(8*i) < listeProfs.length; j++) //ajoute des profs tant qu'il en reste,                                      
@@ -121,4 +121,4 @@ setInterval(() =>
         clearInterval(interval) //clear afin de ne pas accumuler des boucles
     }
     interval = getProfsAbs()
-}, 1000 * 60* 1)
+}, 1000 * 30 * 1)
