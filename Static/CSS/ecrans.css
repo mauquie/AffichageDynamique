@@ -1,0 +1,47 @@
+@font-face {
+    font-family: "DM Sans Medium";
+    src: url("/static/FONTS/DMSans-Medium.ttf");
+}
+
+body {
+    font-family: "DM Sans Medium"
+}
+
+.card {
+    background-color: #FFFFFF;
+    border: solid 3px #FF8304;
+    border-radius: 30px;
+    box-sizing: border-box;
+    box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.75);
+    padding: 10px;
+}
+
+.title {
+    text-align: center;
+    border-bottom: solid #FF830499 2px;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+.title > h1 {
+    font-style: normal;
+    font-weight: 700;
+    line-height: 47px;
+    letter-spacing: 0em;
+}
+
+.list {
+    width: 80%;
+    margin: auto;
+}
+
+.list-item {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 120%;
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 20px;
+    line-height: 25px;
+
+}

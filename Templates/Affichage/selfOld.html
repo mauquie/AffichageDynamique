@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>{{description}}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'CSS/selfPage.css' %}">
+    <link rel="stylesheet" href="{% static 'CSS/bootstrapModifier.css' %}">
+</head>
+
+<body style="overflow-y: hidden; overflow-x: hidden;">
+    {% include "./info.html" %}
+    <div class="container-fluid p-4">
+        <div class="row">
+            <div class="col-4"></div>
+            <div class="col-4">
+                <div class="row">
+                    <div class="text-center border rounded-3 menuContainer">
+                        <div class="row">
+                            <h1 id="repasType" class="fs-1">Pour ce midi,</h1>
+                            <h3 class="mt-2 fs-3">nous avons le plaisir de vous proposer :</h3>
+                        </div>
+                        <div class="row mx-5 my-3">
+                            <div class="">
+                                <ul id="listAliment" class="list-group list-group-flush" hidden>
+                                    <li class="list-group-item fs-3 m-0 ">Melon</li>
+                                    <li class="list-group-item fs-3 m-0 ">Poulet tex mex</li>
+                                    <li class="list-group-item fs-3 m-0 ">Potatoes</li>
+                                    <li class="list-group-item fs-3 m-0 ">Eau</li>
+                                    <li class="list-group-item fs-3 m-0 ">Fromage</li>
+                                    <li class="list-group-item fs-3 m-0 ">Fruit de saison</li>
+                                </ul>
+                                <div id="messageRepasVide">
+                                    <h3 class="fs-3 mt-5">Rien malheuresement :(</h3>
+                                    <h4 class="fs-4 mt-1">Peut être que plus tard nous aurons de quoi vous satisfaire.</h4>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="text-end">
+                    <div class="mx-1">
+                        {% include './weatherWidget.html'%}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <footer class="position-fixed">
+            <div class="fixed-bottom m-3">
+                <img src="{% static 'IMG/couverts.png'%}" class="rounded float-start" style="height:25%; width:25%">
+                <img id="cloche" src="{% static 'IMG/Animation Bourdelle/animSelfWaiting.png'%}" class="rounded float-end" style="height: auto;width: 58%; margin-bottom: -5%;margin-right: -15%;">
+            </div>
+        </footer>
+    </div>
+    <script src="{% static 'JS/getDisplay.js' %}"></script>
+    <script>
+        function changeClocheAnimation() {
+            //Fonction faisant la transition entre les diffférents gifs de la cloche
+
+            let cloche = document.getElementById("cloche")
+            let chemin = cloche.src.split('/')[3]
+
+            cloche.src = "/" + chemin + "/IMG/Animation Bourdelle/animSelf.png"
+
+            //A la fin de l'animation on revient sur celle de la cloche chaude
+            setTimeout(() => {
+                cloche.src = "/" + chemin + "/IMG/Animation Bourdelle/animSelfWaiting.png"
+            }, 20000)
+
+        }
+
+        setInterval(() => {
+            changeClocheAnimation()
+        }, 30000)
+    </script>
+    <script src="{% static 'JS/getMenu.js' %}"></script>
+</body>
+
+</html>
