@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "DM Sans";
+    src: url(/Static/FONTS/DMSans-Regular.ttf);
+}
+
+.text-header{
+    color: white;
+    font-size: 6vh;
+    font-family: 'DM Sans';
+    font-weight: 500;
+}
+
+.logo{
+    position: absolute;
+    top: 0.7vh;
+}

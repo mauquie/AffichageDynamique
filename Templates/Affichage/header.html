@@ -1,0 +1,12 @@
+{% block header %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'CSS/info.css' %}">
+<div class="row" style="height: 11vh; background-image: url({% static 'IMG/fondHeader.png'%});">
+    <div class="text-center">
+        <p class="d-inline fst-italic text-header"> LYCÉE POLYVALENT ANTOINE BOURDELLE </p>
+    </div>
+    <div>
+        <img class="d-inline rounded logo ms-2" src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}" height="auto" width="4%">
+    </div>
+</div>
+{% endblock %}
