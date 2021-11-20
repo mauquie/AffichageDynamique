@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <title>{{description}}</title>
+    {% load static%}
+    <script src="{% static 'JS/clockApp.js' %}"></script>
+    <script src="{% static 'JS/weatherApp.js' %}"></script>
+</head>
+
+<header>
+    <link rel="stylesheet" href="{% static 'CSS/pageHeaderFooter.css' %}">
+    <div class="row header" style="background-image: url({% static 'IMG/fondHeader.png'%});">
+        <div class="text-center">
+            <p class="d-inline fst-italic text-header"> LYCÉE POLYVALENT ANTOINE BOURDELLE </p>
+        </div>
+        <div>
+            <img class="d-inline rounded logo ms-2" src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}" height="auto" width="4%">
+        </div>
+    </div>
+</header>
+<body style="overflow-y: hidden; overflow-x: hidden;">
+    {% block content %} {% endblock %}
+</body>
+
+<footer class="footer">
+    <div class="row">
+        <div class="col-2 border-end">
+            <img class="qrcode m-2" src="{% static 'IMG/qrcode.png' %}" >
+            <div class="d-flex">
+                <p class="me-1 fw-bold">Ton avis compte !<br> Viens voter !</p>
+            </div>
+        </div>
+        <div class="col-8 border-end"></div>
+        <div class="col-2">
+            <img src="https://cdn.weatherapi.com/weather/64x64/night/143.png" class="mt-2" style="width: 8vh; height:auto">
+            <div id="myClock" class="rounded-3 fs-1 mt-1 me-2" style="float:right"></div>
+        </div>
+    </div>
+    <script>
+        showTime("myClock", false)
+
+    </script>
+</footer>
+</html>
