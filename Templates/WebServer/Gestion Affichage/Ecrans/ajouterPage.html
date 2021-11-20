@@ -3,6 +3,13 @@
 {%block content%}
 <div class="row p-3">
     <p class="fs-1 align-middle">Ajouter une page</p>
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="clickable">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="/parametres" class="clickable">Paramètres</a></li>
+            <li class="breadcrumb-item active" aria-current="Ajouter une page" class="clickable">Ajouter une page</li>
+        </ol>
+    </nav>
 </div>
 <div class="row">
     {% include './pageForm.html'%}
