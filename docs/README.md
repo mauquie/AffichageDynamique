@@ -6,7 +6,4 @@
 ##### Programmeurs :
 - [Description du fonctionnement des différents serveurs](servers.md)
 - [Documentation des api](./api/api.md)
-- Documentation de la construction des pages
-- Documentation du code côté client
-- Documentation du code côté serveur
-- Documentation de la base de données
+- [Schema de la base de données](https://docs.google.com/drawings/d/1yCdKcljLSONPLhfrOhq5kneu9itC2eBE0EqdtVylxFo/edit)
