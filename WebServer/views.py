@@ -10,7 +10,6 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 import datetime
 
-
 @login_required
 def index(request):
     ''' 
@@ -24,6 +23,7 @@ def loginView(request):
     '''
         Fonction gérant la connexion des utilisateurs
     '''
+
     if request.method == "GET":
         if request.user.is_authenticated:
             return redirect('/')
@@ -42,90 +42,17 @@ def loginView(request):
             return redirect('/')
 
         else:
-            #Si un mot de passe n'est pas rentré, il peut s'agir de la première connexion d'un utilisateur donc qu'il n'y a pas de mot de passe
-            if password == "":
-                #Essaye de trouver un utilisateur avec le même identifiant
-                try:
-                    user = models.User.objects.get(username=username)
-                
-                except models.User.DoesNotExist: #S'il ne le trouve pas
-                    messages.warning(request, "Compte introuvable")
-                    return render(request, "login.html")
-
-                else: 
-                    #S'il un utilisateur est trouvé et qu'il ne s'est pas encore connecté une seule fois
-                    if user.password == "":
-                        return redirect('/firstLogin/?username=' + username)
-                    
-                    else: 
-                        messages.warning(request, "Identifiants invalides")
-                        return render(request, "login.html")
-
-            messages.warning(request, "Identifiants invalides")
-            return render(request, "login.html")
-
-def firstLogin(request):
-    '''
-        Fonction gérant la première connexion au site internet pour chaque utilisateur
-    '''
-    if request.method == "GET":
-        #Si l'utilisateur est déjà connecté, il n'a pas à accéder à cette page
-        if request.user.is_authenticated:
-            return redirect('/')
-
-        else:
-            #Essaye de voir s'il y a les paramètres demandés pour l'authentification
+            #Essaye de trouver un utilisateur avec le même identifiant
             try:
-                username = request.GET['username']
-
-            except KeyError: #Si le pseudo n'est pas rentré
-                return redirect("/login/")
+                user = models.User.objects.get(username=username)
+            
+            except models.User.DoesNotExist: #S'il ne le trouve pas
+                messages.warning(request, "Compte introuvable")
 
             else: 
-                #Vérification de la présence des paramètres
-                try:
-                    password = request.GET['password']   
-                    passwordConfirm = request.GET['passwordConfirm'] 
+                messages.warning(request, "Mot de passe invalide")
 
-                except KeyError: #S'il manque des paramètres
-                    return render(request, "premiereConnexion.html")
-
-                else:
-                    #Si les mots de passe sont identiques
-                    if password == passwordConfirm:
-                    
-                        #Essaye de voir si l'utilisateur existe dans la base de donnée
-                        try:
-                            user = models.User.objects.get(username=username)
-
-                        except models.User.DoesNotExist:
-                            return redirect('/login/')
-
-                        else:
-                            #Si 'utilisateur n'a pas de mot de passe enregistré
-                            if user.password == "":
-                                #Définition le mot de passe du compte
-                                user.set_password(password)
-                                user.save()
-
-                                #Vérification si le mot de passe et le pseudo sont justes et que tout s'est bien passé
-                                user = authenticate(request, username=username, password=password)
-                                if user is not None:
-                                    #Connexion au compte et redirection vers l'accueil
-                                    login(request, user)
-                                    return redirect("/")
-
-                                else: 
-                                    messages.error(request, "Erreur inconnue")
-                                    return render(request, "premiereConnexion.html")
-
-                            else:
-                                return redirect('/login/')
-
-                    else:
-                        messages.warning(request, "Mots de passes non identiques")
-                        return render(request, "premiereConnexion.html")  
-
+            return render(request, "login.html")
 
 """
     Section gérant tout ce qui touche aux articles 

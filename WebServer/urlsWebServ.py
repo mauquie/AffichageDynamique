@@ -5,7 +5,6 @@ from . import views as urls
 urlpatterns = [
     path("", urls.index),
     path("login/", urls.loginView),
-    path("firstLogin/", urls.firstLogin),
     path("logout/", urls.deconnection),
     path("articles", urls.articles),
     path("articles/ajouter", urls.ajouterArticle),
@@ -31,7 +30,6 @@ urlpatterns = [
     path("parametres/pages/supprimer", urls.supprimerPage),
     path("parametres/modifierPageEcran", urls.modifierAffectation),
     path("comptes", urls.comptes),
-    path("comptes/ajouter", urls.ajouterCompte),
     path("comptes/modifier", urls.modifierCompte),
     path("comptes/toggleActive", urls.toggleActive),
     path("comptes/voir", urls.afficherComptes),

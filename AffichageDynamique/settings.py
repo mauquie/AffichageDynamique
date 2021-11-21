@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import ldap
+from django_auth_ldap.config import LDAPSearch
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,6 +53,23 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'AffichageDynamique.urls'
+
+AUTHENTICATION_BACKENDS = [
+    "django_auth_ldap.backend.LDAPBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+AUTH_LDAP_SERVER_URI = "ldap://localhost"
+AUTH_LDAP_BIND_DN = ""
+AUTH_LDAP_BIND_PASSWORD = ""
+AUTH_LDAP_USER_SEARCH = LDAPSearch(
+    "ou=people,dc=nodomain", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
+)
+AUTH_LDAP_USER_ATTR_MAP = {
+    "first_name": "givenName",
+    "last_name": "sn",
+    "email": "mail",
+}
 
 TEMPLATES = [
     {

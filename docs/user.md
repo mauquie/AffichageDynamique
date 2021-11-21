@@ -12,9 +12,7 @@ Ce document se découpe en 7 parties :
 
 ## La connexion au compte
 ![Connexion](./images/connexion.png)
-La première étape pour accéder au site internet est de se connecter. Pour le moment, si vous n'avez pas encore de compte, il faut que quelqu'un avec les permissions nécessaires créer un compte à l'aide de votre nom / prenom. 
-
-Une fois cela fait, vous pourrez vous connecter au site avec l'identifiant donné (prenom.nom) et avec un mot de passe nul. Vous arriverez sur une page vous demandant un mot de passe, c'est ici que vous allez créer le mot de passe de votre compte. Une fois fait vous pourrez vous connecter avec votre identifiant et le mot de passe que vous venez de créer.
+La première étape pour accéder au site internet est de se connecter. Pour si connecter, c'est aussi simple que bonjour, il faut utiliser les mêmes identifiants que votre session sur les ordinateurs du lycée et c'est tout. 
 
 ## Les articles
 ### Créer un article
