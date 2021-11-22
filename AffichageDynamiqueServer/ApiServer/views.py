@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse
 from .models import Article, Info, Survey, Display, Repas, ProfAbsent
+from django.contrib.auth import authenticate
 import datetime
 from .pronote import refreshMenus, refreshProfs
 
@@ -202,3 +203,22 @@ def getProfsAbs(request):
         infoList.append(json)
 
     return JsonResponse(infoList, safe=False)
+
+def postVote(request):
+    if request.method == "GET":
+        username = request.GET.get("username", "")
+        password = request.GET.get("password", "")
+        vote = request.GET.get("vote", "")
+
+        if not vote or not username or not password:
+            return JsonResponse({"code": 400,"message": "Il manque une information ! (soit vote, soit identifiants)"})
+
+        user = authenticate(request, username=username, password=password)
+
+        #Si l'utilisateur est bien reconnu
+        if user is not None:
+            #On fait voter le boug
+            pass
+
+        else:
+            return JsonResponse({"code": 403,"message": "Les identifiants sont invalides"})
