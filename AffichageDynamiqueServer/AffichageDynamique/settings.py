@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+from dotenv import load_dotenv
+load_dotenv("../.env")
+
 from pathlib import Path
 import os
 import ldap
@@ -59,9 +62,9 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-AUTH_LDAP_SERVER_URI = "ldap://localhost"
-AUTH_LDAP_BIND_DN = ""
-AUTH_LDAP_BIND_PASSWORD = ""
+AUTH_LDAP_SERVER_URI = os.getenv("AUTH_LDAP_SERVER_URI")
+AUTH_LDAP_BIND_DN = os.getenv("AUTH_LDAP_BIND_DN")
+AUTH_LDAP_BIND_PASSWORD = os.getenv("AUTH_LDAP_BIND_PASSWORD")
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
     "ou=people,dc=nodomain", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
 )
@@ -99,10 +102,10 @@ APPEND_SLASH = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'AffichageDynamiqueDB',
-        'HOST': 'localhost',
-        'USER': 'djangoServer',
-        'PASSWORD': 'B0urdelle',
+        'NAME': os.getenv("DB_NAME"),
+        'HOST': os.getenv("DB_HOST"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
         'PORT': 5432,
     }
 }
