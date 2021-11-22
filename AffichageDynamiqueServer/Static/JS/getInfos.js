@@ -1,5 +1,6 @@
 indexInformations=0
 domInfoContainer = document.getElementById("infoContainer")
+domInfo = document.getElementById("information")
 
 function getInformations() 
 {
@@ -7,41 +8,40 @@ function getInformations()
         return response.json();
 
     }).then(data => {
-        actuelleInfo = document.getElementById("infoContainer").innerText
-        domInfoCachable = document.getElementById("containerCachable")
+        actuelleInfo = domInfo.innerHTML
         if (indexInformations >= data.length) //bouclage de indexInformations
         {
             indexInformations = 0
         }
         if (data.length == 0) //on cache s'il n'y a rien à afficher
         {
-            exitScreen().finished.then(() => {
-                domInfoCachable.hidden = true
+            animeSortieInfo().finished.then(() => {
+                domInfoContainer.hidden = true
             })
         }
         else 
         {
-            if (domInfoCachable.hidden)
+            if (domInfoContainer.hidden)
             {
-                domInfoCachable.hidden = false
-                anime.set(domInfoContainer, {
-                translateX: -domInfoContainer.clientWidth * 2
-                })
+                domInfoContainer.hidden = false
+                //anime.set(domInfoContainer, {
+                //translateX: -domInfoContainer.clientWidth * 2
+                //})
                 changeInfo(data)
                 setSize()
-                changeStyleInfo(data[indexInformations])
-                setTimeout(() =>{
-                    enterScreen()
-                }, 1000)
+                //changeStyleInfo(data[indexInformations])
+                //setTimeout(() =>{
+                animeEntreeInfo()
+                //}, 1000)
             }
             else if (actuelleInfo != data[indexInformations].message) //vérification de la différence entre l'info actuelle et celle
-            {                                           //à afficher, car aucune modifs à faire si ce sont les mêmes
-                exitScreen().finished.then(() => //on fait sortir la div de l'écran, puis quand l'anim est finie :
+            {                                           //à afficher, car aucune modif à faire si ce sont les mêmes
+                animeSortieInfo().finished.then(() => //on fait sortir la div de l'écran, puis quand l'anim est finie :
                 {
                     changeInfo(data) //changement de l'info
                     setSize() //adaptation de la taille du texte
-                    changeStyleInfo(data[indexInformations]) //changement du background
-                    enterScreen() //animation de l'entrée de la div
+                    //changeStyleInfo(data[indexInformations]) //changement du background
+                    animeEntreeInfo() //animation de l'entrée de la div
                 })
             }
         }
@@ -51,9 +51,6 @@ function getInformations()
 
 function changeInfo(listeInfo)
 {
-    domInfo = document.getElementById("information")
-    domInfoCachable = document.getElementById("containerCachable")
-
     domInfo.innerHTML = listeInfo[indexInformations].message; 
     domInfo.style.fontSize="80px" //Taille de base de l'info, adaptée après par setSize().
 }
@@ -94,57 +91,26 @@ function changeStyleInfo(info)
       }
 }
 
-function enterScreen()
-{/*
-    domInfoContainer = document.getElementById("infoContainer")
+function animeEntreeInfo() {
     anime({
-        targets: domInfoContainer, //anime gauche-droite
-        translateY: 0,
-        easing: 'spring(1, 80, 10, 0)',
-    })
-    */
-
-    
-    anime({ //anime haut-bas-droite
-        targets: domInfoContainer,
-        translateX: 0, 
-        easing: 'spring(1, 80, 10, 0)',
+        targets: domInfo,
+        duration: 800,
+        opacity: [0, 1],
+        easing: "linear",
+        delay: 400
     })
 }
 
-function exitScreen()
-{
-    
-    domInfoContainer = document.getElementById("infoContainer")
-    tl = anime.timeline({ //anime gauche-droite
-        targets: domInfoContainer
+function animeSortieInfo() {
+    animationArticle = anime({
+        targets: domInfo,
+        duration: 800,
+        opacity: [1, 0],
+        easing: "linear"
     })
-    tl.add({
-        easing: 'easeInElastic(1, 2)',
-        translateX: domInfoContainer.clientWidth*2,
-    })
-    tl.add({
-        translateX: -domInfoContainer.clientWidth*2,
-        easing: 'steps(1)',
-    })
-    return tl //return pour savoir dans getInformations quand l'animation est terminée
-    /*
-    domInfoContainer = document.getElementById("infoContainer")
-    tl = anime.timeline({ //haut-bas-droite
-        targets: domInfoContainer
-    })
-    tl.add({
-        easing: 'easeInElastic(1, 2)',
-        translateX: domInfoContainer.clientWidth*2,
-    })
-    tl.add({
-        translateY: -domInfoContainer.clientHeight*2,
-        translateX: 0,
-        easing: 'steps(1)',
-    })
-    return tl //return pour savoir dans getInformations quand l'animation est terminée
-    */
+    return animationArticle
 }
+
  
 getInformations()
 setInterval(() => {

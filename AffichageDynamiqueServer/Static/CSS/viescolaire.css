@@ -1,0 +1,26 @@
+@font-face {
+    font-family: "DM Sans";
+    src: url("/static/FONTS/DMSans-Regular.ttf");
+}
+
+.card {
+    background-color: #ffffff;
+    border: solid 3px #FF8304;
+    border-radius: 30px;
+    box-sizing: border-box;
+    box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.75);
+    padding: 10px;
+    font-family: 'DM Sans';
+}
+
+.title {
+    text-align: center;
+    border-bottom: solid #FF830499 2px;
+    width: 80%;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+.liste-profs {
+    font-size: 3vh;
+}
