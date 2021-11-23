@@ -1,6 +1,6 @@
 const pronote = require('@dorian-eydoux/pronote-api');
 const http = require("http")
-const dotenv = require("dotenv").config()
+const dotenv = require("dotenv").config({path: "../.env"})
 
 const url = 'https://0820021c.index-education.net/pronote/';
 const username = process.env.PRONOTE_USERNAME;
