@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Article, Info, Survey, Display, Repas, ProfAbsent
+from .models import Article, Info, SondageAdmin, Survey, Display, Repas, ProfAbsent, Sondage, Reponse, Vote
 from django.contrib.auth import authenticate
 import datetime
 from .pronote import refreshMenus, refreshProfs
@@ -206,19 +206,54 @@ def getProfsAbs(request):
 
 def postVote(request):
     if request.method == "GET":
+        #Récupération des données transmises
         username = request.GET.get("username", "")
         password = request.GET.get("password", "")
-        vote = request.GET.get("vote", "")
+        reponseVotee = request.GET.get("vote", "")
 
-        if not vote or not username or not password:
+        #Vérification qu'il y ait tous les champs demandés
+        if not reponseVotee or not username or not password:
             return JsonResponse({"code": 400,"message": "Il manque une information ! (soit vote, soit identifiants)"})
 
+        #Vérification que le compte donné existe
         user = authenticate(request, username=username, password=password)
-
-        #Si l'utilisateur est bien reconnu
         if user is not None:
-            #On fait voter le boug
-            pass
+            #On fait voter l'utilisateur
+
+            #Vérification qu'il y a bien un sondage en cours
+            sondage = Sondage.objects.filter(est_affiche = True)
+            if len(sondage) < 1:
+                return JsonResponse({"code": 404, "message": "Aucun sondage en cours"})
+
+            else:
+                sondage = sondage[0] #On prend que le premier sondage affiché s'il y en à plusieurs (ne doit PAS arriver)
+
+                #Vérification que l'utilisateur donné n'a pas déjà voté
+                votes = Vote.objects.filter(auteur=user.id, sondage=sondage.id)
+                if len(votes) > 0:
+                    return JsonResponse({"code": 403, "message": "A déjà voté"})
+                
+
+                #Récupération des reponses possibles au sondage
+                reponsesSondage = Reponse.objects.filter(sondage = sondage.id)
+
+                #Récupération de la reponse choisi parmi elles
+                reponse = reponsesSondage.filter(pk = reponseVotee)
+                
+                #Vériication qu'il ait donné une réponse possible
+                if len(reponse) == 0:
+                    return JsonResponse({"code": 404, "message": "Mauvaise réponse"})
+
+                else:
+                    #Enregistrement du vote
+                    vote = Vote()
+                    vote.auteur = user
+                    vote.vote = reponse[0]
+                    vote.sondage = sondage
+
+                    vote.save()
+
+                    return JsonResponse({"code": 200})
 
         else:
             return JsonResponse({"code": 403,"message": "Les identifiants sont invalides"})

@@ -84,7 +84,7 @@ class PartieDuRepas(models.Model):
 
 class Aliment(models.Model):
     name = models.CharField(max_length=100)
-    partie_du_repas = models.ForeignKey(PartieDuRepas, on_delete=models.CASCADE)
+    partie_du_repas = models.ForeignKey(PartieDuRepas, on_delete=models.DO_NOTHING)
     
     def __str__(self):
         return self.name
@@ -104,7 +104,7 @@ class Repas(models.Model):
         return titre 
 
 class Sondage(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     question = models.CharField(max_length=50)
     date_creation = models.DateTimeField(auto_created=True, auto_now=True)
     date_fin = models.DateTimeField()
@@ -120,6 +120,13 @@ class Reponse(models.Model):
     def __str__(self):
         return self.text
 
+class Vote(models.Model):
+    auteur = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    vote = models.ForeignKey(Reponse, on_delete=models.CASCADE)
+    sondage = models.ForeignKey(Sondage, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.auteur + " - " + self.vote
 
 # Tous les modèles administrateurs
 
@@ -187,3 +194,8 @@ class ReponseAdmin(admin.ModelAdmin):
     list_display = ("sondage", "text")
     list_filter = ("sondage", "text")
     search_fields = ['sondage', "text"]
+
+class VoteAdmin(admin.ModelAdmin):
+    list_display = ("auteur", "vote", "sondage")
+    list_filter = ("auteur", "vote", "sondage")
+    search_fields = ['auteur', "vote", "sondage"]
