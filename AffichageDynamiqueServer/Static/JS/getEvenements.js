@@ -1,30 +1,13 @@
-domTitreEvenement = document.getElementById("titreEvenement")
+/*domTitreEvenement = document.getElementById("titreEvenement")
 domContenuEvenement = document.getElementById("contenuEvenement")
 domCarteEvenement = document.getElementById("carteEvenement")
+*/
 indexEvenement = 0
 intervalEvenements = null
 ancientEventTitre = null
 ancientEventDescription = null
 
 
-function animeEntreeEvenement()
-{
-    anime({
-        targets: domCarteEvenement,
-        translateX: 0, 
-        easing: 'cubicBezier(0.110, 0.015, 0.700, 0.115)',
-    })
-}
-
-function animeSortieEvenement()
-{
-    animationArticle = anime({ 
-        targets: domCarteEvenement,
-        translateX: 500, 
-        easing: 'cubicBezier(0.000, 0.175, 0.080, 0.770)',
-    })
-    return animationArticle
-}
 //fonction gérant l'affichage et le bon bouclage des évènements
 function affichageBouclage(events)
 {   //incrémentation de l'index et vérifications qu'il ne soit pas trop grand
@@ -33,21 +16,12 @@ function affichageBouclage(events)
     {
         indexEvenement = 0
     }
-    //on modifie l'affichage que si l'événement à afficher est différent de l'événement affiché.
-    if (ancientEventTitre != events[indexEvenement].summary || ancientEventDescription != events[indexEvenement].description)
-    { 
-        animeSortieEvenement().finished.then(()=>
-        {
-            affichageEvents(events[indexEvenement]) //affichage, tour à tour, des évènements
-            animeEntreeEvenement()
-        })
-    }
-
+    //console.log(events)
 }
 
 function getCalendar() 
 {
-    intervalEvenements = "lol"
+    intervalEvenements = null
     //Id du calendrier, trouvable dans les paramètres de google agenda.
     var calendarId = 'mbetous82@gmail.com'
     //Clef d'API, mise en place sur Console Google Cloud
@@ -60,8 +34,8 @@ function getCalendar()
         'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
     }).then(() => {
         dateMax = new Date()
-        dateMax.setDate(dateMax.getDate()+2) //on ne veut pas récupérer des événements qui auront lieu
-        dateMax.setHours(23, 59, 59)  //dans plus de 2 jours
+        dateMax.setDate(dateMax.getDate()+5) //on ne veut pas récupérer des événements qui auront lieu
+        dateMax.setHours(23, 59, 59)  //dans plus de 5 jours
         return gapi.client.calendar.events.list({
             'calendarId': calendarId, 
             'timeZone': userTimeZone,
@@ -74,12 +48,12 @@ function getCalendar()
         events = response.result.items //récupération des items, c'est à dire des événements.
         if (events.length == 0)
         {
-            domCarteEvenement.hidden = true  //on cache l'event s'il n'y en a pas
+            //domCarteEvenement.hidden = true  //on cache l'event s'il n'y en a pas
             return
         }
         else
         {
-            domCarteEvenement.hidden = false
+            //domCarteEvenement.hidden = false
             affichageBouclage(events) //on l'appelle avant le setInterval pour que l'évènement s'affiche instantanément
             intervalEvenements = setInterval(()=> //recupération de l'interval pour le clear à chaque refresh
             {      

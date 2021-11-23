@@ -8,8 +8,6 @@
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <title>{{description}}</title>
     {% load static%}
-    <script src="{% static 'JS/clockApp.js' %}"></script>
-    <script src="{% static 'JS/weatherApp.js' %}"></script>
 </head>
 
 <header>
@@ -19,7 +17,7 @@
             <p class="d-inline fst-italic text-header"> LYCÉE POLYVALENT ANTOINE BOURDELLE </p>
         </div>
         <div>
-            <img class="d-inline rounded logo ms-2" src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}" height="auto" width="4%">
+            <img class="d-inline rounded logo ms-2" src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}" height="60em" width="auto">
         </div>
     </div>
 </header>
@@ -28,22 +26,30 @@
 </body>
 
 <footer class="footer">
-    <div class="row">
-        <div class="col-2 border-end">
+    <div class="row rowFooter"id="rowFooter">
+        <div class="col-2 border-end border-danger border-3">
             <img class="qrcode m-2" src="{% static 'IMG/qrcode.png' %}" >
-            <div class="d-flex">
-                <p class="me-1 fw-bold">Ton avis compte !<br> Viens voter !</p>
+            <div>
+                <p class="me-1 mt-3 fw-bold text-vote">Ton avis compte ! Viens voter !</p>
             </div>
         </div>
-        <div class="col-8 border-end"></div>
-        <div class="col-2">
+        <div class="col-8 text-center d-flex colInfo">
+            <div id="infoContainer" class="text-center infoContainer border-3">
+                <p id="information" class="text-center information" style="font-size: 80px;"></p>
+            </div>
+        </div>
+        <div class="col-2 border-start border-danger border-3">
             <img src="https://cdn.weatherapi.com/weather/64x64/night/143.png" class="mt-2" style="width: 8vh; height:auto">
-            <div id="myClock" class="rounded-3 fs-1 mt-1 me-2" style="float:right"></div>
+            <div id="myClock" class="rounded-3 me-3 fs-1 text-center clock"></div>
         </div>
     </div>
+    <script src="{% static 'JS/clockApp.js' %}"></script>
     <script>
         showTime("myClock", false)
-
     </script>
+    <script src="{% static 'JS/getInfos.js' %}"></script>
+    <script src="{% static 'JS/weatherApp.js' %}"></script>
+    <script src="{% static 'JS/anime.min.js' %}"></script>
+
 </footer>
 </html>
