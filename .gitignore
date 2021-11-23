@@ -2,3 +2,4 @@ Medias/**
 /**/__pycache__/**
 /**/PronoteServer/node_modules/**
 .env
+/AffichageDynamiqueServer/Medias/**

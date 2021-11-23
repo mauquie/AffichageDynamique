@@ -5,18 +5,18 @@
 <div class="container-fluid pt-2 ps-4 pe-4">
     <div class="row mt-3">
         <div class="col-4">
-            <div id="listeProfsCachable" class="card">
+            <div id="listeProfsCachable"  hidden="true" class="card">
                 <p class="title fw-bold" style="font-size: 5vh;">Absences</p>
-                <ul id="listeProfs" class="text-center">
-                    <li class="list-item liste-profs m-2">8h - 15h | Michel Drucker</li>
-                    <li class="list-item liste-profs m-2">8h - 15h | Michel Drucker</li>
-                    <li class="list-item liste-profs m-2">8h - 15h | Michel Drucker</li>
-                    <li class="list-item liste-profs m-2">8h - 15h | Michel Drucker</li>
-                    <li class="list-item liste-profs m-2">8h - 15h | Michel Drucker</li>
+                <ul id="listeProfs" class="ms-3">
+                    <li class="list-item liste-profs m-2"></li>
+                    <li class="list-item liste-profs m-2"></li>
+                    <li class="list-item liste-profs m-2"></li>
+                    <li class="list-item liste-profs m-2"></li>
+                    <li class="list-item liste-profs m-2"></li>
                 </ul>
             </div>
-            <div hidden="true" class="card ms-4 me-2">
-                <p id="textePasAbsences" style="font-size : 2vw;"> Il n'y a aucun professeur absent aujourd'hui.</p>
+            <div hidden="false" id="textePasAbsences" class="card me-2">
+                <p style="font-size : 2vw;"> Il n'y a aucun professeur absent aujourd'hui.</p>
             </div>
             <div class="card ms-2 me-3" hidden="true" id="carteEvenement">
                 <div class="card-body">
@@ -29,7 +29,7 @@
             <div id="article" hidden="true" class="card">
                 <h4 id="titreArticle" class="title fw-bold" style="font-size: 2.5vw;"></h4>
                 <div>
-                    <img id="imageArticle" src="{% static 'image.jpg'%}" width="38.4%" height="21.6%" class="rounded-3" style="float:left; margin-right: 20px;" >
+                    <img id="imageArticle" src="" width="38.4%" height="21.6%" class="rounded-3" style="float:left; margin-right: 20px;" >
                     <p id="contenuArticle" style="font-size: 2.5vh;" ></p>
                 </div>
             </div>

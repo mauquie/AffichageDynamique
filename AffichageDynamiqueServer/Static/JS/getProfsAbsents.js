@@ -3,8 +3,7 @@ DOMtextePasAbsences = document.getElementById("textePasAbsences")
 DOMlisteProfs = document.getElementById("listeProfs").getElementsByTagName("li")
 DOMlisteProfsCachable = document.getElementById("listeProfsCachable")
 
-alert(DOMlisteProfs[0].innerHTML)
-/*
+
 //divise la liste des profs en une liste de groupes de 5 profs.
 function divideProfs(listeProfs)
 {
@@ -25,8 +24,11 @@ function divideProfs(listeProfs)
 function prepareListe(listeProfs)
 {
     listeProfs = listeProfs.sort((a, b)=> {   //tri des profs absents en fonction de l'heure
+        return new Date(a.fin).getHours() - new Date(b.fin).getHours() //de fin d'absence
+        })
+    listeProfs = listeProfs.sort((a, b)=> {   //puis tri des profs absents en fonction de l'heure
     return new Date(a.debut).getHours() - new Date(b.debut).getHours() //de début d'absence
-    })
+    }) //afin d'obtenir une liste triée en facteur premier l'heure de début, et en facteur second l'heure de fin
     for (i = 0; i < listeProfs.length; i++)
     {
         heureDebut = listeProfs[i].debut.slice(0, listeProfs[i].debut.length - 1) //suppresion du "Z"
@@ -43,34 +45,45 @@ function prepareListe(listeProfs)
 //remplie les li de l'affichage par les profs.
 function affichageProfs(listeProfs)
 {
-    DOMlisteProfs.innerText = ""
-    for (i = 0; i < listeProfs.length; i++)
+    for (i=0; i < 5; i++)
     {
-        row = DOMlisteProfs.insertRow(-1)
-        cell1 = row.insertCell(0)
-        cell2 = row.insertCell(1)
-        cell1.innerText = listeProfs[i].prof 
-        cell2.innerText = listeProfs[i].debut + "h - " + listeProfs[i].fin + "h"
-        cell1.style.textAlign = "center"
-        cell2.style.textAlign = "center" 
+        DOMlisteProfs[i].innerHTML = ""
     }
+    //remplie les li
+    for (i=0; i < listeProfs.length; i++)
+    {
+        DOMlisteProfs[i].style.visibility = "visible"
+        DOMlisteProfs[i].innerHTML = listeProfs[i].debut + "h - " + listeProfs[i].fin + "h | " + listeProfs[i].prof 
+    }
+    //cache les li vides
+    for (i=0; i < 5; i++)
+    {
+        if (DOMlisteProfs[i].innerHTML == "")
+        {
+            DOMlisteProfs[i].style.visibility="hidden"
+        }
+    }
+    
 }
 
-function animeEntree()
+function animeEntreeProfs()
 {
-    anime({ //anime haut-bas-droite
-        targets: DOMlisteProfsCachable,
-        translateX: 0, 
-        easing: 'cubicBezier(0.110, 0.015, 1.000, 0.115)',
+    animationArticle = anime({
+        targets: DOMlisteProfs,
+        duration: 800,
+        opacity: [0, 1],
+        easing: "linear",
+        delay: 400,
     })
 }
 
-function animeSortie()
+function animeSortieProfs()
 {
-    animation = anime({ //anime haut-bas-droite
-        targets: DOMlisteProfsCachable,
-        translateX: 800, 
-        easing: 'cubicBezier(0.000, 0.275, 0.080, 0.970)',
+    animation = anime({
+        targets: DOMlisteProfs,
+        duration: 800,
+        opacity: [1, 0],
+        easing: "linear"
     })
     return animation
 }
@@ -81,9 +94,9 @@ function bouclage() //a pour rôle de gérer la boucle, pour afficher les profs
     {
         indexProfs = 0
     }
-    affichageProfs(listeGroupesProfs[indexProfs])
-     //affichage, tour à tour, des sous listes
-    indexProfs++
+        affichageProfs(listeGroupesProfs[indexProfs])
+        //affichage, tour à tour, des sous listes
+        indexProfs++
 }
 
 function getProfsAbs()
@@ -103,13 +116,19 @@ function getProfsAbs()
             DOMlisteProfsCachable.hidden = false
             listeProfs = prepareListe(data) //préparation pour afficher la liste (tri + changer heures)
             listeGroupesProfs = divideProfs(listeProfs) //division de la liste en sous liste de taille 5
-            bouclage() //bouclage avant l'interval, pour afficher immédiatement les profs absents.
+            animeSortieProfs().finished.then(() => {
+                bouclage() //bouclage avant l'interval, pour afficher immédiatement les profs absents.
+                animeEntreeProfs()
+            }) 
             if (listeGroupesProfs.length > 1)
             {
                 interval = setInterval(()=>
                 {
-                    bouclage() //changements des profs
-                }, 20000)
+                    animeSortieProfs().finished.then(() => {
+                        bouclage()
+                        animeEntreeProfs()
+                    })
+                }, 5000)
                 return interval
             }
         }
@@ -123,5 +142,4 @@ setInterval(() =>
         clearInterval(interval) //clear afin de ne pas accumuler des boucles
     }
     interval = getProfsAbs()
-}, 1000 * 30 * 1)
-*/
+}, 1000 * 20 * 1)
