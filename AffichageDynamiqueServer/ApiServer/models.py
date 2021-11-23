@@ -103,6 +103,23 @@ class Repas(models.Model):
 
         return titre 
 
+class Sondage(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.CharField(max_length=50)
+    date_creation = models.DateTimeField(auto_created=True, auto_now=True)
+    date_fin = models.DateTimeField()
+    est_affiche = models.BooleanField()
+
+    def __str__(self):
+        return self.question
+
+class Reponse(models.Model):
+    sondage = models.ForeignKey(Sondage, on_delete=models.CASCADE)
+    text = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.text
+
 
 # Tous les modèles administrateurs
 
@@ -160,3 +177,13 @@ class ProfAbsentAdmin(admin.ModelAdmin):
     list_display = ('teacher', 'debut', 'fin')
     list_filter = ('teacher', 'debut', 'fin')
     search_fields = ['teacher']
+
+class SondageAdmin(admin.ModelAdmin):
+    list_display = ("question", "author")
+    list_filter = ('question', "author", "date_creation", "date_fin", "est_affiche")
+    search_fields = ['question', 'author']
+
+class ReponseAdmin(admin.ModelAdmin):
+    list_display = ("sondage", "text")
+    list_filter = ("sondage", "text")
+    search_fields = ['sondage', "text"]
