@@ -17,7 +17,7 @@ async function getSession() {
      */
     const session = await pronote.login(url, username, password, cas);
 
-    session.setKeepAlive(true)
+    session.setKeepAlive(false)
 
     return session
 }
