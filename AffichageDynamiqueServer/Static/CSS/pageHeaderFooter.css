@@ -12,15 +12,21 @@ body {
     font-size: 6vh;
     font-family: 'DM Sans';
     font-weight: 500;
+    line-height: 11vh;
 }
 
 .header{
     height: 11vh; 
+    background-image: url("/static/IMG/fondHeader.png");
+    background-size: contain;
 }
 
 .logo{
     position: absolute;
-    top: 1vh
+    top: 1vh;
+    height: 9vh;
+    width: auto;
+    
 }
 
 .footer{
@@ -33,16 +39,19 @@ body {
 }
 
 .qrcode{
-    height: auto;
-    width: 30%;
+    height: 9vh;
+    width: auto;
     float: left;
+    transform: translateY(1vh);
+    
 }
 
 .text-vote{
     font-family: 'DM Sans';
     position: relative;
-    top: 4vh;
-    transform: translateY(-60%);
+    top: 5.5vh;
+    transform: translateY(-50%);
+    font-size: 2vh;
 }
 
 .colInfo{
@@ -68,8 +77,15 @@ body {
     background-color: black;
 }
 
+.widget{
+    width: 8vh; 
+    height:auto;
+    transform: translateY(10%);
+}
+
 .clock{
     float:right; 
     line-height: 11vh;
+    font-size: 5vh;
     font-family: 'DM Sans';
 }

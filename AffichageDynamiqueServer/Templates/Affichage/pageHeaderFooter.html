@@ -12,12 +12,12 @@
 
 <header>
     <link rel="stylesheet" href="{% static 'CSS/pageHeaderFooter.css' %}">
-    <div class="row header" style="background-image: url({% static 'IMG/fondHeader.png'%});">
+    <div class="row header">
         <div class="text-center">
-            <p class="d-inline fst-italic text-header"> LYCÉE POLYVALENT ANTOINE BOURDELLE </p>
+            <p class="fst-italic text-header"> LYCÉE POLYVALENT ANTOINE BOURDELLE </p>
         </div>
         <div>
-            <img class="d-inline rounded logo ms-2" src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}" height="60em" width="auto">
+            <img class="d-inline rounded logo ms-2" src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}">
         </div>
     </div>
 </header>
@@ -27,10 +27,10 @@
 
 <footer class="footer">
     <div class="row rowFooter"id="rowFooter">
-        <div class="col-2 border-end border-danger border-3">
-            <img class="qrcode m-2" src="{% static 'IMG/qrcode.png' %}" >
+        <div class="col-2 border-end border-danger tryc border-3">
+                <img class="qrcode ms-3 me-3" src="{% static 'IMG/qrcode.png' %}" >
             <div>
-                <p class="me-1 mt-3 fw-bold text-vote">Ton avis compte ! Viens voter !</p>
+                <p class="me-1 fw-bold text-vote">Ton avis compte ! Viens voter !</p>
             </div>
         </div>
         <div class="col-8 text-center d-flex colInfo">
@@ -39,8 +39,8 @@
             </div>
         </div>
         <div class="col-2 border-start border-danger border-3">
-            <img src="https://cdn.weatherapi.com/weather/64x64/night/143.png" class="mt-2" style="width: 8vh; height:auto">
-            <div id="myClock" class="rounded-3 me-3 fs-1 text-center clock"></div>
+            <img src="https://cdn.weatherapi.com/weather/64x64/night/143.png" class="widget">
+            <div id="myClock" class="rounded-3 me-3 text-center clock"></div>
         </div>
     </div>
     <script src="{% static 'JS/clockApp.js' %}"></script>
