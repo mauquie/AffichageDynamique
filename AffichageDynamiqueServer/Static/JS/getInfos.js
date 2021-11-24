@@ -115,4 +115,4 @@ function animeSortieInfo() {
 getInformations()
 setInterval(() => {
     getInformations()
-}, 30000)
+}, 1000 * 30)

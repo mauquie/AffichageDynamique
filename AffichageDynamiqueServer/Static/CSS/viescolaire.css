@@ -24,3 +24,57 @@
 .liste-profs {
     font-size: 3vh;
 }
+
+.agenda{
+    height: 20vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.fleche{
+    display: flex;
+}
+
+.fleche-ligne{
+    margin-left: 2vh;
+    width: 100%;
+    transform: translateY(44%);
+    border-bottom: 3px solid #FF6046;
+}
+
+.fleche-tete{
+    width: 0;
+    height: 0;
+    border-top: 13px solid transparent;
+    border-bottom: 13px solid transparent;
+    border-left: 13px solid #FF6046;
+    position: relative;
+    transform: translateY(87%);
+}
+
+.liste-evenement{
+    display: flex;
+    margin-left: 3vh;
+}
+
+.evenement{
+    margin-left: 6vh;
+}
+
+.parallelograme {
+    width: 30vh;
+    height: 8vh;
+    -webkit-transform: skew(-15deg);
+       -moz-transform: skew(-15deg);
+    background: #FF9888;
+    position:absolute;
+    box-shadow: 2px 4px 4px 0px #00000040;
+    z-index: -9;
+
+}
+
+.text-evenement{
+    position: relative;
+    z-index: 9;
+}

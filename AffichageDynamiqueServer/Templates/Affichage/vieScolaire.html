@@ -5,7 +5,7 @@
 <div class="container-fluid pt-2 ps-4 pe-4">
     <div class="row mt-3">
         <div class="col-4">
-            <div id="listeProfsCachable"  hidden="true" class="card">
+            <div id="listeProfsCachable" hidden="true" class="card">
                 <p class="title fw-bold" style="font-size: 5vh;">Absences</p>
                 <ul id="listeProfs" class="ms-3">
                     <li class="list-item liste-profs m-2"></li>
@@ -15,27 +15,50 @@
                     <li class="list-item liste-profs m-2"></li>
                 </ul>
             </div>
-            <div hidden="false" id="textePasAbsences" class="card me-2">
+            <div hidden="false" id="textePasAbsences" class="card me-2 text-center">
                 <p style="font-size : 2vw;"> Il n'y a aucun professeur absent aujourd'hui.</p>
             </div>
             <div class="card ms-2 me-3" hidden="true" id="carteEvenement">
-                <div class="card-body">
-                    <h3 id="titreEvenement" class="card-title" style="font-size: 2.5vw;"></h3>
-                    <p id="contenuEvenement" class="card-text" style="font-size: 2vw;"> </p>
+                <div class="card">
+                    <h3 id="titreEvenement" class="card-title" style="font-size: 2.5vh;"></h3>
+                    <p id="contenuEvenement" class="card-text" style="font-size: 2vh;"> </p>
                 </div>
             </div>
         </div>
         <div class="col-8">
             <div id="article" hidden="true" class="card">
-                <h4 id="titreArticle" class="title fw-bold" style="font-size: 2.5vw;"></h4>
+                <h4 id="titreArticle" class="title fw-bold" style="font-size: 5vh;"></h4>
                 <div>
-                    <img id="imageArticle" src="" width="38.4%" height="21.6%" class="rounded-3" style="float:left; margin-right: 20px;" >
+                    <img id="imageArticle" width="38.4%" height="21.6%" class="rounded-3" style="float:left; margin-right: 20px;" >
                     <p id="contenuArticle" style="font-size: 2.5vh;" ></p>
                 </div>
             </div>
             <div id="pasArticle" class="card ms-3 me-3" style="font-size: 2.5vw;">
                 <p>Bonjour Bourdelle !</p>
-                </div>  
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-4" style="height: 20vh;"></div>
+            <div class="col-8 mt-4 agenda">
+                <div class="fleche mb-2">
+                    <div class="fleche-ligne mb-2"></div>
+                    <p class="fleche-tete mb-2"></p>
+                </div>
+                <div class="liste-evenement">
+                    <div class="x">
+                        <div class="parallelograme"></div>
+                        <p class="texte-evenement text-center" style="width: 30vh; line-height: 8vh;">lol</p>
+                    </div>
+                    <div class="evenement">
+                        <div class="parallelograme"></div>
+                        <p class="texte-evenement text-center" style="width: 30vh; line-height: 8vh;">lol</p>
+                    </div>
+                    <div class="evenement">
+                        <div class="parallelograme"></div>
+                        <p class="texte-evenement text-center" style="width: 30vh; line-height: 8vh;">lol</p>
+                    </div>
+                </div>
+            </div>
         </div>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="{% static 'JS/getArticles.js' %}"></script>
