@@ -74,7 +74,13 @@
 
 }
 
-.text-evenement{
+.texte-evenement{
     position: relative;
     z-index: 9;
+    font-family: 'DM Sans';
+    font-size: 2vh;
+    width: 30vh;
+    padding: 10px;
+    top: 4vh;
+    transform: translateY(-50%);
 }
