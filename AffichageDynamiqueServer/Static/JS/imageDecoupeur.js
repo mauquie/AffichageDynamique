@@ -36,6 +36,9 @@ class imageDecoupeur{
         *   Attributions des évenements aux différentes actions de l'utilisateur sur le contenu de la page
         */
         this.imageInput.addEventListener("change", (e) => {
+            if(this.cropper === undefined){
+                this._createCropper()
+            }
             //Récupération des images depuis l'input
             let image = imageInput.files
 
@@ -119,12 +122,9 @@ class imageDecoupeur{
             this.imageInput.click()
 
         } else {
-            if(this.cropper === undefined){
-                setTimeout(() => {
-                        this._createCropper()
-                }, 1000)
+            if (this.cropper === undefined){
+                this._createCropper()
             }
-            
         }
     }
 
@@ -132,7 +132,8 @@ class imageDecoupeur{
         /**
          *  Fonction créant le découpeur et l'initialisant dans la fenêtre Modal
          */
-        let width = this.cropperDiv.offsetWidth;
+        console.log("creation")
+        let width = window.innerWidth * 0.5;
         
         this.cropper = new Cropper(this.cropImagePreview, { //Options du découpeur
             dragMode: 'move',
@@ -143,44 +144,53 @@ class imageDecoupeur{
             autoCropArea: 1,
             toggleDragModeOnDblclick: false,
 
-            ready: function() { //Masquage du logo de chargement
-                let loadingSpiner = document.getElementById("loadingSpiner")
-                loadingSpiner.hidden = true
-            },
-
         }) 
+        
+        //Quand le cropper sera chargé
+        this.cropImagePreview.addEventListener("ready", () => {
+            //Changement du style et cache le logo de chargement
+            document.getElementsByClassName("cropper-container")[0].style.margin = "auto"
+            let loadingSpiner = document.getElementById("loadingSpiner")
+            loadingSpiner.hidden = true
+
+            //Crée une première version déjà coupée au cas ou l'utilisateur ne fait pas de 
+            //modification
+            this.saveImage()
+        })
     }
 
-    saveImage(){
+    saveImage(cropper = this.cropper){
         /**
          *  Fonction s'occupant de sauvegarder l'image dans l'input général et d'appliqué les modifications à la prévisualisation 
          */
-        let croppedCanva = this.cropper.getCroppedCanvas() //Récupération des données du découpage
+        if (cropper.ready){
+            let croppedCanva = cropper.getCroppedCanvas() //Récupération des données du découpage
 
-        if(croppedCanva !== null){ //Si il y a bien des données
+            if(croppedCanva !== null){ //Si il y a bien des données
 
-            //Exportation
+                //Exportation
 
-            croppedCanva.toBlob((blob) => {
-                //Lecture des données récupérées
-                let reader = new FileReader();
-                reader.readAsDataURL(blob);
+                croppedCanva.toBlob((blob) => {
+                    //Lecture des données récupérées
+                    let reader = new FileReader();
+                    reader.readAsDataURL(blob);
 
-                let imagePreview = this.imagePreview
-                let imageInput = this.imageInput
+                    let imagePreview = this.imagePreview
+                    let imageInput = this.imageInput
 
-                reader.onloadend = (e) => { //Application aux différents éléments 
-                    imagePreview.style.backgroundImage = "url(" + e.target.result + ")"
-                    
-                    //Transmission de la nouvelle image (découpée ou autre) à l'input de départ
-                    let file = new File([blob], imageInput.files[0].name, {type: imageInput.files[0].type, lastModified:new Date().getTime()});
-                    let container = new DataTransfer();
-                    container.items.add(file);
-                    imageInput.files = container.files;
-                }
-            })
-        } else { //Si en l'occurrence il n'y a pas de données exportées (c'est à dire que l'image a été supprimé)
-            this.imageInput.value = "" //On supprime l'image dans l'input
+                    reader.onloadend = (e) => { //Application aux différents éléments 
+                        imagePreview.style.backgroundImage = "url(" + e.target.result + ")"
+                        
+                        //Transmission de la nouvelle image (découpée ou autre) à l'input de départ
+                        let file = new File([blob], imageInput.files[0].name, {type: imageInput.files[0].type, lastModified:new Date().getTime()});
+                        let container = new DataTransfer();
+                        container.items.add(file);
+                        imageInput.files = container.files;
+                    }
+                })
+            } else { //Si en l'occurrence il n'y a pas de données exportées (c'est à dire que l'image a été supprimé)
+                this.imageInput.value = "" //On supprime l'image dans l'input
+            }
         }
         
 
