@@ -128,7 +128,7 @@ function getProfsAbs()
                         bouclage()
                         animeEntreeProfs()
                     })
-                }, 5000)
+                }, 1000 * 20)
                 return interval
             }
         }
@@ -142,4 +142,4 @@ setInterval(() =>
         clearInterval(interval) //clear afin de ne pas accumuler des boucles
     }
     interval = getProfsAbs()
-}, 1000 * 20 * 1)
+}, 1000 * 60 * 60)

@@ -34,6 +34,7 @@ function changeArticle() {
     else {
         domImage.hidden = false
         domImage.src = "/Medias/" + toutArticle.image
+        console.log(toutArticle.image)
     }
 }
 
@@ -78,4 +79,4 @@ function getArticles() {
 
 indexArticles = 0
 getArticles()
-setInterval(() => getArticles(), 60000)
+setInterval(() => getArticles(), 1000 * 60)
