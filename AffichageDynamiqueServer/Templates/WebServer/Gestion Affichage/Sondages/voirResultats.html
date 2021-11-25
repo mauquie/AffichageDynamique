@@ -1,0 +1,74 @@
+{%extends '../../base.html' %}
+
+{%block title%}{{pageTitle}}{%endblock title%}
+
+{%block content%}
+<div class="row p-3">
+    <p class="fs-1 align-middle">Modifier un sondage</p>
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="clickable">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="/parametres" class="clickable">Paramètres</a></li>
+            <li class="breadcrumb-item"><a href="/parametres/sondages" class="clickable">Sondages</a></li>
+            <li class="breadcrumb-item active" aria-current="Voir les résultats d'un sondage" class="clickable">Voir les résultats</li>
+        </ol>
+    </nav>
+</div>
+<div class="row border rounded-3 m-3 mb-5 p-4 ">
+    <div class="col-12 col-lg-5">
+        <canvas width="400" height="400" id="monGraph"></canvas>
+    </div>
+    <div class="col-12 col-lg-7">
+        <h3>Sondage : Baby foot ou bidule ?</h3>
+        <small class="text-muted">Date : du 12/05/2021 au 19/05/2021</small>
+        <p class="mt-5">Nombre de vote <span class="fst-italic">Total</span>: <span class="fw-bold">85 votes</span></p>
+        <p>Nombre de vote <span class="fst-italic">Oui</span>: <span class="fw-bold">65 votes</span></p>
+        <p>Nombre de vote <span class="fst-italic">Non</span>: <span class="fw-bold">8 votes</span></p>
+        <p>Nombre de vote <span class="fst-italic">Je ne sais pas</span>: <span class="fw-bold">12 votes</span></p>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const data = {
+        labels: [
+            'Oui',
+            'Non',
+            'Je ne sais pas'
+        ],
+        datasets: [{
+            label: 'My First Dataset',
+            data: [300, 50, 100],
+            backgroundColor: [
+                generateRandomColor(),
+                generateRandomColor(),
+                generateRandomColor()
+            ],
+            hoverOffset: 4
+        }]
+    };
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+        responsive: true,
+        width: 300,
+        height: 300,
+    };
+
+    const monGraph = new Chart(
+        document.getElementById("monGraph"),
+        config
+    )
+
+    monGraph.resize(300, 300)
+
+    function generateRandomColor(){
+        let maxVal = 0xFFFFFF; // 16777215
+        let randomNumber = Math.random() * maxVal; 
+        randomNumber = Math.floor(randomNumber);
+        randomNumber = randomNumber.toString(16);
+        let randColor = randomNumber.padStart(6, 0);   
+        return `#${randColor.toUpperCase()}`
+    }
+</script>
+{%endblock content%}

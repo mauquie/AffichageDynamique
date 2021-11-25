@@ -331,7 +331,9 @@ def toggleVisibiliteSondage(request):
     else:
         Http404()
 
-
+@permission_required('ApiServer.view_sondage')
+def voirResultatsSondage(request):
+    return render(request, "WebServer/Gestion Affichage/Sondages/voirResultats.html")
 """
     Section gérant tout ce qui touche aux informations
 """
