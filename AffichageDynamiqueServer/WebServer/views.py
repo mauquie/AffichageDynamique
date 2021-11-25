@@ -159,10 +159,7 @@ def toggleVisibiliteArticle(request):
 
         else:
             if article.expiration_date < datetime.date.today():
-                date = datetime.date.today()
-                newDate = date.replace(day=date.day + 7)
-
-                article.expiration_date = newDate
+                article.expiration_date = changeEndingDate()
 
             article.is_shown = True
 
@@ -192,17 +189,109 @@ def gestionAffichage(request):
 
 @permission_required('ApiServer.view_sondage')
 def sondages(request):
-    sondages = models.Survey.objects.all()
+    sondages = models.Sondage.objects.all()
     return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", informations=sondages))
 
 @permission_required('ApiServer.add_sondage')
 def ajouterSondage(request):
-    return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Ajouter un sondage"))
+    if request.method == "GET":
+        return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Ajouter un sondage"))
+    
+    else:
+        #Récupération des valeurs données
+        reponses = request.POST.getlist("reponses")
+        question = request.POST.get("question")
+        date_fin = request.POST.get("date_fin")
+        est_affiche = request.POST.get("est_affiche", False)
 
+        #Vérification des valeurs
+        if not question or not date_fin:
+            messages.error(request, "Veuillez verifier que toutes les informations sont présentes (Question, Date d'expiration)")
+            return redirect("/parametres/sondages/ajouter")
+
+        if len(reponses) < 2:
+            messages.error(request, "Veuillez verifier qu'il y ait au moins 2 réponses proposées")
+            return redirect("/parametres/sondages/ajouter")
+
+        #Création du sondage
+        sondage = models.Sondage()
+        sondage.question = question
+        sondage.date_fin = date_fin
+        sondage.est_affiche = est_affiche
+        sondage.author = request.user
+
+        sondage.save()
+
+        #Création des réponses associées au sondage
+        for reponse in reponses:
+            reponseModel = models.Reponse()
+            reponseModel.text = reponse
+            reponseModel.sondage = sondage
+            reponseModel.save()
+
+        messages.success(request, "Sondage ajouté !")
+        return redirect("/parametres/sondages")
+
+        
 @permission_required('ApiServer.change_sondage')
 def modifierSondage(request):
-    #To-do : Un check du groupe pour savoir si il est au même niveau ou au dessus pour avoir le droit de modifier me sondage
-    return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Modifier un sondage"))
+    if request.method == "GET":
+        #Récupération du sondage et des réponses correpondantes
+        sondage = get_object_or_404(models.Sondage, pk=request.GET.get("id"))
+        reponses = models.Reponse.objects.filter(sondage=sondage.id)
+
+        return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Modifier un sondage", informations={"sondage": sondage, "reponses": reponses}))
+
+    elif request.method == "POST":
+        #Récupération des valeurs données
+        id = request.GET.get("id")
+        reponsesList = request.POST.getlist("reponses")
+        question = request.POST.get("question")
+        date_fin = request.POST.get("date_fin")
+        est_affiche = request.POST.get("est_affiche", False)
+
+        #Vérification des valeurs
+        if not question or not date_fin:
+            messages.error(request, "Veuillez verifier que toutes les informations sont présentes (Question, Date d'expiration)")
+            return redirect("/parametres/sondages/ajouter")
+
+        if len(reponsesList) < 2:
+            messages.error(request, "Veuillez verifier qu'il y ait au moins 2 réponses proposées")
+            return redirect("/parametres/sondages/ajouter")
+
+        #Modification du sondage déjà existant
+        sondage = get_object_or_404(models.Sondage, pk=request.GET.get("id"))
+        sondage.question = question
+        sondage.date_fin = date_fin
+        sondage.est_affiche = est_affiche
+        sondage.save()
+
+        #Récuperation des réponses correspondante au sondage dans la bdd
+        reponses = list(models.Reponse.objects.filter(sondage=sondage.id))
+
+        #Suppression des réponses supprimées par l'utilisateur
+        for reponse in reponses:
+            if reponse.text not in reponsesList:
+                reponse.delete()
+
+        #Ajout des réponses restantes si elles ne sont pas déjà ajoutées
+        for reponse in reponsesList:
+            #Vérification que la reponse n'est pas déjà associée au sondage
+            dejaDansSondage = False
+            for reponsesSondage in reponses:
+                if reponsesSondage.text == reponse:
+                    dejaDansSondage = True
+
+            #Si elle ne l'est pas, on l'ajoute
+            if not dejaDansSondage:
+                reponseModel = models.Reponse()
+                reponseModel.text = reponse
+                reponseModel.sondage = sondage
+
+                reponseModel.save()
+
+        messages.success(request, "Sondage modifié !")
+        return redirect("/parametres/sondages/modifier?id="+id)
 
 
 @permission_required('ApiServer.delete_sondage')
@@ -212,7 +301,7 @@ def supprimerSondage(request):
     '''
     id = request.GET.get("id", "")
     if id:
-        sondage = get_object_or_404(models.Survey, pk=id)
+        sondage = get_object_or_404(models.Sondage, pk=id)
         sondage.delete()
         messages.success(request, "Sondage supprimé avec succés !")
 
@@ -224,18 +313,15 @@ def supprimerSondage(request):
 def toggleVisibiliteSondage(request):
     id = request.GET.get("id", "")
     if id:
-        sondage = get_object_or_404(models.Survey, pk=id)
-        if sondage.is_shown:
-            sondage.is_shown = False
+        sondage = get_object_or_404(models.Sondage, pk=id)
+        if sondage.est_affiche:
+            sondage.est_affiche = False
         
         else:
-            if sondage.expiration_date < datetime.date.today():
-                date = datetime.date.today()
-                newDate = date.replace(day=date.day + 7)
+            if sondage.date_fin < datetime.date.today():
+                sondage.date_fin = changeEndingDate()
 
-                sondage.expiration_date = newDate
-
-            sondage.is_shown = True
+            sondage.est_affiche = True
 
         sondage.save()
         
@@ -330,10 +416,7 @@ def toggleVisibiliteInformation(request):
 
         else:
             if info.expiration_date < datetime.date.today():
-                date = datetime.date.today()
-                newDate = date.replace(day=date.day + 7)
-
-                info.expiration_date = newDate
+                info.expiration_date = changeEndingDate()
 
             info.is_shown = True
             messages.success(request, "Information affichée !")
@@ -352,7 +435,7 @@ def toggleVisibiliteInformation(request):
 def comptes(request):
     #Récuperation des articles crée par l'user
     articles = models.Article.objects.all().filter(author_id = request.user.id)
-    sondages = models.Survey.objects.all().filter(author_id = request.user.id)
+    sondages = models.Sondage.objects.all().filter(author_id = request.user.id)
     return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", informations={"articles": articles, "sondages": sondages}))
 
 @permission_required('ApiServer.add_user')
@@ -412,7 +495,7 @@ def modifierCompte(request):
                 return redirect("/comptes/modifier")
 
             articles = models.Article.objects.filter(author=user)
-            sondages = models.Survey.objects.filter(author=user)
+            sondages = models.Sondage.objects.filter(author=user)
 
             if request.user.has_perm('ApiServer.change_user'):
                 canEdit = True
@@ -714,3 +797,7 @@ def createErrorMessages(request, form):
     errors = form.errors.as_data().values()
     for value in errors:
         messages.error(request, value[0].message)
+
+def changeEndingDate():
+    date = datetime.date.today() + datetime.timedelta(days=7)
+    return date

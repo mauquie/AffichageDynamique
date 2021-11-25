@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import Article, Info, SondageAdmin, Survey, Display, Repas, ProfAbsent, Sondage, Reponse, Vote
+from .models import Article, Info, SondageAdmin, Display, Repas, ProfAbsent, Sondage, Reponse, Vote
 from django.contrib.auth import authenticate
 import datetime
 from .pronote import refreshMenus, refreshProfs
@@ -90,7 +90,7 @@ def getInfos(request)->JsonResponse:
 # Récupère les sondages visibles et les retourne sous format JSON.
 def getSurveys(request)->JsonResponse:
     #Récupération de tous les sondages
-    query = Survey.objects.all()
+    query = Sondage.objects.all()
 
     #On cache tous les sondages passés
     hideExpiredObjects(query)
@@ -103,14 +103,9 @@ def getSurveys(request)->JsonResponse:
     #Formatage des données
     for entry in query:
         json = {
-            "description": entry.description,
-            "link": entry.link,
-            "creation_date": entry.creation_date,
-            "author": {
-                "first_name": entry.author.first_name,
-                "last_name": entry.author.last_name
-            }
-
+            "id": entry.id,
+            "auteur": entry.auteur.id,
+            "date_creation": entry.date_creation,
         }
 
         surveyList.append(json)

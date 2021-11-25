@@ -1,0 +1,175 @@
+{% load static %}
+{% block content %}
+<div class="border rounded-3 m-3 mb-5 p-4 ">
+    {% if informations %}
+    <div class="alert alert-secondary">
+        <div class=" my-3">
+            <label for="author">Crée par</label>
+            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.sondage.author.id}}" target="_blank" class="clickable">{{informations.sondage.author}}</a></label>
+            <label for="date">le {{informations.sondage.date_creation}}</label>
+        </div>
+    </div>
+    {%else%}
+    <div class="alert alert-warning">
+        <div class="my-3">
+            <label for="Info">Créer un sondage et l'afficher dès la mise en ligne aura pour conséquence de remplacer celui déjà affiché.</label>
+        </div>
+    </div>
+    {%endif%}
+    <form id="formulaire" enctype="multipart/form-data" action="" method="post">
+        {% csrf_token %}
+        <div class="form-group my-3">
+            <label for="question" class="form-label">Question du sondage :</label>
+            <div class="input-group has_validation">
+                <input 
+                    id="titleInput"
+                    name="question"
+                    type="text" 
+                    class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
+                    aria-describedby="AideQuestion" 
+                    placeholder="Entrer la question (il doit être court et concis)" 
+                    maxlength="50"
+                    value="{{informations.sondage.question}}"
+                >
+            </div>
+        </div>
+        <div class="form-group my-3">
+            <label for="reponse" class="form-label">Réponses au sondage :</label>
+            <div class="input-group mb-2">
+                <input type="text" class="form-control" placeholder="Créer une réponse" id="createReponseText">
+                <button class="btn btn-outline-secondary" id="createReponseButton" type="button">Créer</button>
+            </div>
+            <div id="reponsesContainer" hidden class="row m-1 border rounded-3 px-1">
+                <div class="row mt-1">
+                    <span class="fw-5">Réponses choisies :</span>
+                </div>
+                <div id="reponses" class="row">
+                    {% for reponse in informations.reponses %}
+                    <div id="reponse-{{reponse.id}}" class="col-xl-3 col-lg-6 col-12">
+                        <div class="my-3 mx-1 border border-secondary rounded-3 ">
+                            <div class="row m-2 d-flex flex-wrap align-items-center">
+                                <span id="reponseText-{{reponse.id}}" class="col-xxl-9 col-6 fs-5 fw-bold text-break">{{reponse.text}}</span>
+                                <button class="col-xxl-3 col-6 btn btn-danger d-float text-center float-end" type="button" onclick="removeReponse({{reponse.id}})">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="form-group my-3 has_validation">
+            <label for="date_fin">Date d'expiration de l'article : </label>
+            <input 
+                type="date" 
+                name="date_fin"
+                id="dateExpiration"
+                data-bs-toggle="tooltip" 
+                data-bs-html="true" 
+                title="Date du dernier jour où l'article sera affiché sur les écrans"
+                value="{{informations.sondage.date_fin|date:'Y-m-d'}}"
+                class="{% if form.date_fin.errors %}is-invalid{% endif %}"
+            > 
+        </div>
+        <div class="form-group mt-3">
+            <div class="form-check form-switch">
+                <input class="form-check-input" value="True" type="checkbox" name="est_affiche" {%if informations.sondage.est_affiche %}checked{%endif%}>
+                <label class="form-check-label"">Montrer le sondage dès la mise en ligne</label>
+            </div>
+        </div>
+        <div class="form-group mt-3">
+            <div class="row">
+                <div class="col-lg-3 btn-group"> 
+                    <button id="send" type="submit" class="btn btn-primary"
+                        data-bs-toggle="tooltip" data-bs-html="true" title="Enregistre le sondage dans la base de données.">
+                        {% if informations %}Mettre à jour !{% else %}Mettre en ligne maintenant !{%endif%}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    let reponsesDOM = document.getElementById("reponses")
+    let createButtonDOM = document.getElementById("createReponseButton")
+    let createReponseDOM = document.getElementById("createReponseText")
+    let sendButton = document.getElementById("send")
+    let formDOM = document.getElementById("formulaire")
+    let reponsesContainer = document.getElementById("reponsesContainer")
+
+
+    formDOM.addEventListener("submit", sendForm)
+    createButtonDOM.addEventListener("click", createReponse)
+
+    let indexReponse = 0
+    let nbReponse = 0
+
+    function createReponse(){
+        /**
+         * Ajoute l'element dom représentant une réponse à l'écran
+         */
+        text = createReponseDOM.value
+
+        if (text !== ""){
+            reponsesContainer.hidden = false
+
+            createReponseDOM.value = ""
+
+            reponsesDOM.innerHTML += `
+            <div id="reponse-${indexReponse}" class="col-xl-3 col-lg-6 col-12">
+                <div class="my-3 mx-1 border border-secondary rounded-3 ">
+                    <div class="row m-2 d-flex flex-wrap align-items-center">
+                        <span id="reponseText-${indexReponse}" class="col-xxl-9 col-6  fs-5 fw-bold text-break">${text}</span>
+                        <button class="btn btn-danger col-xxl-3 col-6  text-center" type="button" onclick="removeReponse(${indexReponse})">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+            `
+
+            nbReponse++
+            indexReponse++
+        }
+    }
+
+    function removeReponse(id){
+        /**
+         * Supprime l'element dom voulu représentant une réponse à l'écran
+         */
+        let reponse = document.getElementById("reponse-"+id)
+
+        reponse.parentNode.removeChild(reponse)
+
+        nbReponse--
+
+
+    }
+
+    function sendForm(e){
+        /**
+         * Envoie le formulaire au serveur en ajoutant les différentes réponses créees
+         */
+        e.preventDefault()
+
+        //Création d'un input select qui va nous servir pour faire passer nos réponses
+        let selectDOM = document.createElement("select")
+        selectDOM.name = "reponses"
+        selectDOM.multiple = true
+        selectDOM.hidden = true
+        
+        //Pour chaque réponse à l'écran, on ajoute une entrée au select, et on le selectionne
+        for(let i = 0; i < reponsesDOM.children.length; i++){
+            let reponse = reponsesDOM.children[i].children[0].children[0].children[0].textContent 
+            let optionDOM = document.createElement("option")
+            optionDOM.value = reponse
+            optionDOM.selected = true
+
+            selectDOM.appendChild(optionDOM)
+
+        }
+
+        formDOM.appendChild(selectDOM)
+        
+        //On envoie le formulaire
+        formDOM.submit()
+    }
+</script>
+{% endblock content%}

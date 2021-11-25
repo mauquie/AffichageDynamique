@@ -5,6 +5,13 @@
 {%block content%}
 <div class="row p-3">
     <p class="fs-1 align-middle">Sondages</p>
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="clickable">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="/parametres" class="clickable">Paramètres</a></li>
+            <li class="breadcrumb-item active" aria-current="Sondages" class="clickable">Sondages</li>
+        </ol>
+    </nav>
 </div>
 <div class="row">
     <div class="col-lg-8">
@@ -13,7 +20,7 @@
             <table class="table table-hover">
                 <thead class="">
                     <tr>
-                        <th scope="col">Titre</th>
+                        <th scope="col">Question</th>
                         <th scope="col">Auteur</th>
                         <th scope="col">Dernier jour à l'affiche</th>
                         <th scope="col" class="d-none d-lg-table-cell">Est affiché</th>
@@ -21,12 +28,11 @@
                 </thead>
                 <tbody class="tbody-pointer">
                     {%for sondage in informations%}
-                    <tr class="sondage-row {%if sondage.is_shown%}table-warning{%else%}showned{%endif%}" id="{{sondage.id}}">
-                        <td scope="row" class="text-break">{{sondage.description}}</td>
+                    <tr class="sondage-row {%if sondage.est_affiche%}table-warning{%else%}showned{%endif%}" id="{{sondage.id}}">
+                        <td scope="row" class="text-break">{{sondage.question}}</td>
                         <td>{{sondage.author}}</td>
-                        <td>{{sondage.expiration_date}}</td>
-                        <td class="d-none d-lg-table-cell">{%if sondage.is_shown%}Oui{%else%}Non{%endif%}</td>
-                        <td id="sondage-link-{{sondage.id}}" class="d-none">{{sondage.link}}</td>
+                        <td>{{sondage.date_fin}}</td>
+                        <td class="d-none d-lg-table-cell">{%if sondage.est_affiche%}Oui{%else%}Non{%endif%}</td>
                     </tr>
                     {%endfor%}
                 </tbody>

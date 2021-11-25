@@ -5,5 +5,14 @@
 {%block content%}
 <div class="row p-3">
     <p class="fs-1 align-middle">Modifier un sondage</p>
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/" class="clickable">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="/parametres" class="clickable">Paramètres</a></li>
+            <li class="breadcrumb-item"><a href="/parametres/sondages" class="clickable">Sondages</a></li>
+            <li class="breadcrumb-item active" aria-current="Modifier un sondage" class="clickable">Modifier un sondage</li>
+        </ol>
+    </nav>
 </div>
+{% include './form.html' with sondage=informations %}
 {%endblock content%}

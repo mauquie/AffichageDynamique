@@ -10,12 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from dotenv import load_dotenv
-load_dotenv("../.env")
-
 from pathlib import Path
-import ldap
-from django_auth_ldap.config import LDAPSearch
 
 import os
 
@@ -76,35 +71,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SondageServer.wsgi.application'
 
-AUTHENTICATION_BACKENDS = [
-    "django_auth_ldap.backend.LDAPBackend",
-    "django.contrib.auth.backends.ModelBackend",
-]
-
-AUTH_LDAP_SERVER_URI = os.getenv("AUTH_LDAP_SERVER_URI")
-AUTH_LDAP_BIND_DN = os.getenv("AUTH_LDAP_BIND_DN")
-AUTH_LDAP_BIND_PASSWORD = os.getenv("AUTH_LDAP_BIND_PASSWORD")
-AUTH_LDAP_USER_SEARCH = LDAPSearch(
-    "ou=people,dc=nodomain", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
-)
-AUTH_LDAP_USER_ATTR_MAP = {
-    "first_name": "givenName",
-    "last_name": "sn",
-    "email": "mail",
-}
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME"),
-        'HOST': os.getenv("DB_HOST"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'PORT': os.getenv("DB_PORT"),
-    }
 }
 
 

@@ -37,18 +37,6 @@ class Display(models.Model):
     code_name = models.CharField(max_length=100, default="")
     page = models.ForeignKey(Page, on_delete=models.CASCADE, null=True)
 
-
-class Survey(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    description = models.CharField(max_length=300)
-    link = models.CharField(max_length=300)
-    creation_date = models.DateField(auto_now_add=True)
-    expiration_date = models.DateField()
-    is_shown = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.description
-    
 class InfoType(models.Model):
     name = models.CharField(max_length=30)
 
@@ -106,9 +94,9 @@ class Repas(models.Model):
 class Sondage(models.Model):
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     question = models.CharField(max_length=50)
-    date_creation = models.DateTimeField(auto_created=True, auto_now=True)
-    date_fin = models.DateTimeField()
-    est_affiche = models.BooleanField()
+    date_creation = models.DateField(auto_created=True, auto_now=True)
+    date_fin = models.DateField()
+    est_affiche = models.BooleanField(default=False)
 
     def __str__(self):
         return self.question
