@@ -21,7 +21,7 @@ function divideProfs(listeProfs)
 }
 
 //prépare la liste des professeurs absents : formate les heures, trie en fonction des heures.
-function prepareListe(listeProfs)
+function prepareListeProfs(listeProfs)
 {
     listeProfs = listeProfs.sort((a, b)=> {   //tri des profs absents en fonction de l'heure
         return new Date(a.fin).getHours() - new Date(b.fin).getHours() //de fin d'absence
@@ -32,11 +32,11 @@ function prepareListe(listeProfs)
     for (i = 0; i < listeProfs.length; i++)
     {
         heureDebut = listeProfs[i].debut.slice(0, listeProfs[i].debut.length - 1) //suppresion du "Z"
-        heureDebut = new Date(heureDebut).getHours() 
+        heureDebut = (new Date(heureDebut).getHours()-2)
         listeProfs[i].debut = heureDebut //changement du dateTime du début de prof, en uniquement l'heure
 
         heureFin = listeProfs[i].fin.slice(0, listeProfs[i].fin.length - 1)
-        heureFin = new Date(heureFin).getHours() //idem pour le dateTime de la fin du prof.
+        heureFin = (new Date(heureFin).getHours()-2) //idem pour le dateTime de la fin du prof.
         listeProfs[i].fin = heureFin
     }
     return listeProfs
@@ -114,7 +114,7 @@ function getProfsAbs()
         {
             DOMtextePasAbsences.hidden = true
             DOMlisteProfsCachable.hidden = false
-            listeProfs = prepareListe(data) //préparation pour afficher la liste (tri + changer heures)
+            listeProfs = prepareListeProfs(data) //préparation pour afficher la liste (tri + changer heures)
             listeGroupesProfs = divideProfs(listeProfs) //division de la liste en sous liste de taille 5
             animeSortieProfs().finished.then(() => {
                 bouclage() //bouclage avant l'interval, pour afficher immédiatement les profs absents.
@@ -128,7 +128,7 @@ function getProfsAbs()
                         bouclage()
                         animeEntreeProfs()
                     })
-                }, 1000 * 20)
+                }, 1000 * 30)
                 return interval
             }
         }

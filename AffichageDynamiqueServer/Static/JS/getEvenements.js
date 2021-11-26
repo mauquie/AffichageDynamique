@@ -1,32 +1,57 @@
-indexEvenement = 0
+indexEvenement = 1
 intervalEvenements = null
 domEventId = "ev-"
-dom1 = document.getElementById("ev-0")
-dom2 = document.getElementById("ev-1")
-dom3 = document.getElementById("ev-2")
+domDateId = "date-"
+domEv1 = document.getElementById("ev-0")
+domEv2 = document.getElementById("ev-1")
+domEv3 = document.getElementById("ev-2")
+domDate1 = document.getElementById("date-0")
+domDate2 = document.getElementById("date-1")
+domDate3 = document.getElementById("date-2")
 
+dictMois = {
+    1 : "Jan",
+    2 : "Fev",
+    3 : "Mar",
+    4 : "Avr",
+    5 : "Mai",
+    6 : "Juin",
+    7 : "Juil",
+    8 : "Août",
+    9 : "Sep",
+    10 : "Oct",
+    11 : "Nov",
+    12 : "Dec",
+}
 
 function nettoyage()
 {
     //nettoyage des dom évènements
-    dom1.innerText = ""
-    dom2.innerText = ""
-    dom3.innerText = ""
+    domEv1.innerText = ""
+    domEv2.innerText = ""
+    domEv3.innerText = ""
+    domDate1.innerText = ""
+    domDate2.innerText = ""
+    domDate3.innerText = ""
 }
 
 //fonction gérant l'affichage et le bon bouclage des évènements
 function affichageBouclage(listeEvents, once)
 { 
-    nettoyage()
-    //si once, cela siginifie qu'il y a 3 ou moins évènements.
-    //on ne les fera donc pas tourner.
+    //si once=true, cela siginifie qu'il y a
+    // 3 (ou moins) évènements. On ne les fera donc pas tourner.
     if (once)
     {
+        nettoyage()
         for (i=0; i < listeEvents.length; i++)
         {
             domEvent = document.getElementById(domEventId + String(i))
+            domDate = document.getElementById(domDateId + String(i))
+            dateEvent = new Date(listeEvents[i].start.dateTime)
+            domDate.innerText = dateEvent.getDate() + " " + dictMois[dateEvent.getMonth()] 
             domEvent.innerText = listeEvents[i].summary
         }
+        indexEvenement = 1 //Reinitialise index des events pour la prochaine fois où il y aura > 3 events
     }
     else
     {
@@ -34,25 +59,33 @@ function affichageBouclage(listeEvents, once)
         {
             indexEvenement = 0
         }
-        domEventList = [//liste des doms à animer
-            dom1,
-            dom2,
-            dom3,
+        domEventListe = [//liste des doms à animer
+            domEv1,
+            domEv2,
+            domEv3,
         ]
-        indexDom = 0 //index pour récupérer la dom de l'event.
-        animeSortieEvent(domEventList).finished.then(()=>{ //on les cache puis :
-        for(i=indexEvenement; i < indexEvenement+3; i++)
-            { //on remplace les textes
-                domEventList[indexDom].innerText = listeEvents[i].summary
-                indexDom++//et on incrémente index DOM pour modifier au prochain tour l'évènement suivant
-            }
-        indexEvenement++
-        animeEntreeEvent(domEventList)
+        domDateListe = [
+            domDate1,
+            domDate2,
+            domDate3,
+        ]
+        indexDom = 0 //index pour récupérer les doms de l'event / la date.
+        animeSortieEvent(domEventListe).finished.then(()=>
+        { //on les cache puis :
+            nettoyage()
+            for(i=indexEvenement; i < indexEvenement+3; i++)
+                { //on remplace les textes
+                    domEventListe[indexDom].innerText = listeEvents[i].summary
+                    domDateListe[indexDom].innerText = new Date(listeEvents[i].start.dateTime).getDate()
+                    indexDom++//et on incrémente index DOM pour modifier au prochain tour l'évènement suivant
+                }
+            animeEntreeEvent(domEventListe)
+            indexEvenement++
         })
     }
 }    
 //retourne la liste des évènements à afficher.
-function prepareListe(events)
+function prepareListeEvents(events)
 {
     eventsAuj = []
     eventsTrois = []
@@ -66,10 +99,9 @@ function prepareListe(events)
     //Si aujourd'hui, il y a + de 3 events, on les fera tourner. On les récupère tous.
     if (eventsAuj.length > 3)
     {
-        console.log(eventsAuj)
         return eventsAuj
     }
-    //Sinon on affichera seulement les 3 premiers chronologiquement.
+    //Sinon on affichera seulement les 3 premiers chronologiquement, peu importe la date .
     else
     {
         i = 0
@@ -138,7 +170,7 @@ function getCalendar()
         else
         {
             document.getElementById("agenda").hidden = false
-            listeEvents = prepareListe(events)
+            listeEvents = prepareListeEvents(events)
             if (listeEvents.length < 4)
             {
                 affichageBouclage(listeEvents, true)
@@ -150,7 +182,7 @@ function getCalendar()
                 intervalEvenements = setInterval(()=> //recupération de l'interval pour le clear à chaque refresh
                 {      
                     affichageBouclage(listeEvents, false)
-                }, 6000)    
+                }, 1000 * 30)    
             }
         }
     })
@@ -165,4 +197,4 @@ setInterval(() =>
     }
     gapi.load('client', getCalendar())
     
-}, 1000 * 20)
+}, 1000 * 60 * 60)

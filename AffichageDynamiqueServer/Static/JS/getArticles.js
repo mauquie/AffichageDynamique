@@ -34,7 +34,6 @@ function changeArticle() {
     else {
         domImage.hidden = false
         domImage.src = "/Medias/" + toutArticle.image
-        console.log(toutArticle.image)
     }
 }
 
