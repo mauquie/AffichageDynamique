@@ -185,14 +185,10 @@ def getProfsAbs(request):
 
     #Poru chaque prof
     for entry in query:
-        #Convertion des heures dans le bon fuseau horaire (Paris +2:00)
-        debut = entry.debut.replace(hour = entry.debut.hour + 2)
-        fin = entry.fin.replace(hour = entry.fin.hour + 2)
-
         json = {
             "prof" : entry.teacher,
-            "debut" : debut,
-            "fin": fin,
+            "debut" : entry.debut,
+            "fin": entry.fin,
         }
 
         infoList.append(json)

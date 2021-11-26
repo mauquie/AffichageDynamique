@@ -36,36 +36,37 @@
         <div class="form-group my-3">
             <label for="reponse" class="form-label">Réponses au sondage :</label>
             <div class="input-group mb-2">
-                <input type="text" class="form-control" placeholder="Créer une réponse" id="createReponseText">
-                <button class="btn btn-outline-secondary" id="createReponseButton" type="button">Créer</button>
-            </div>
-            <div id="reponsesContainer" hidden class="row m-1 border rounded-3 px-1">
-                <div class="row mt-1">
-                    <span class="fw-5">Réponses choisies :</span>
-                </div>
-                <div id="reponses" class="row">
-                    {% for reponse in informations.reponses %}
-                    <div id="reponse-{{reponse.id}}" class="col-xl-3 col-lg-6 col-12">
-                        <div class="my-3 mx-1 border border-secondary rounded-3 ">
-                            <div class="row m-2 d-flex flex-wrap align-items-center">
-                                <span id="reponseText-{{reponse.id}}" class="col-xxl-9 col-6 fs-5 fw-bold text-break">{{reponse.text}}</span>
-                                <button class="col-xxl-3 col-6 btn btn-danger d-float text-center float-end" type="button" onclick="removeReponse({{reponse.id}})">Supprimer</button>
+                <div id="reponsesContainer" style="flex:1" class="m-1 border rounded-3 px-1">
+                    <div id="reponses" class="row">
+                        <div class="col-xl-3 col-lg-6 col-12">
+                            <div class="border rounded-3 my-3 mx-1 text-center border-secondary p-2">
+                                <input type="text" class="form-control" placeholder="Ajouter une réponse" id="createReponseText">
+                                <button class="btn btn-outline-secondary mt-1" id="createReponseButton" type="button">Ajouter</button>    
                             </div>
                         </div>
+                        {% for reponse in informations.reponses %}
+                        <div id="reponse-{{reponse.id}}" class="col-xl-3 col-lg-6 col-12">
+                            <div class="my-3 mx-1 border border-secondary rounded-3 ">
+                                <div class="row m-2 d-flex flex-wrap align-items-center">
+                                    <span id="reponseText-{{reponse.id}}" class="col-xxl-9 col-6 fs-5 fw-bold text-break">{{reponse.text}}</span>
+                                    <button class="col-xxl-3 col-6 btn btn-danger d-float text-center float-end" type="button" onclick="removeReponse({{reponse.id}})">Supprimer</button>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>
         <div class="form-group my-3 has_validation">
-            <label for="date_fin">Date d'expiration de l'article : </label>
+            <label for="date_fin">Date d'expiration du sondage : </label>
             <input 
                 type="date" 
                 name="date_fin"
                 id="dateExpiration"
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
-                title="Date du dernier jour où l'article sera affiché sur les écrans"
+                title="Date du dernier jour où le sondage sera affiché sur les écrans"
                 value="{{informations.sondage.date_fin|date:'Y-m-d'}}"
                 class="{% if form.date_fin.errors %}is-invalid{% endif %}"
             > 
@@ -156,7 +157,7 @@
         selectDOM.hidden = true
         
         //Pour chaque réponse à l'écran, on ajoute une entrée au select, et on le selectionne
-        for(let i = 0; i < reponsesDOM.children.length; i++){
+        for(let i = 1; i < reponsesDOM.children.length; i++){
             let reponse = reponsesDOM.children[i].children[0].children[0].children[0].textContent 
             let optionDOM = document.createElement("option")
             optionDOM.value = reponse

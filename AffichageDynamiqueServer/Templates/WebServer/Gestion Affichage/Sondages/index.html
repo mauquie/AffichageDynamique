@@ -46,11 +46,10 @@
                 + Ajouter un sondage
             </button>
             <h5>Sondage : <strong id="sondage-name">Aucun sondage sélectionné</strong></h5>
-            <h5>Lien : <a id="sondage-link" style="font-weight: 800;" target="_blank">Aucun sondage sélectionné</a></h5>
             <div id="actions-btn">
                 <button type="button" id="edit" class="btn btn-outline-primary" disabled>Modifier</button>
                 <button type="button" id="hide" class="btn btn-outline-warning" disabled>Cacher</button>
-                <button type="button" id="delete" class="btn btn-danger" disabled>Supprimer</button>
+                <button type="button" id="goToResults" class="btn btn-outline-secondary" disabled>Voir les resultats</button>
             </div>
         </div>
         
@@ -62,23 +61,22 @@ window.addEventListener("DOMContentLoaded", () => {
         //Récupération des éléments DOM nécessaires
         let sondages = document.getElementsByClassName("sondage-row")
         let sondageName = document.getElementById("sondage-name")
-        let sondageLink = document.getElementById("sondage-link")
         let btnHide = document.getElementById("hide")
         var btnEdit = document.getElementById("edit")
-        var btnDelete = document.getElementById("delete")
+        var btnGoToResults = document.getElementById("goToResults")
         
         //Association des lignes du tableau avec les différentes fonctions
         const Sondages = new List(sondages, sondageName, btnHide, "showned")
 
         //Modification des boutons à chaque fois que l'user change sa sélection
         document.addEventListener("selection", e => {
-            btnDelete.disabled = false;
+            btnGoToResults.disabled = false;
             btnHide.disabled = false;
             btnEdit.disabled = false;
 
             //Mise à jour des liens vers le bon objet
-            btnDelete.addEventListener("click", () => {
-                window.location = "/parametres/sondages/supprimer?id=" + e.detail.id
+            btnGoToResults.addEventListener("click", () => {
+                window.location = "/parametres/sondages/voirResultats?id=" + e.detail.id
             })
 
             btnEdit.addEventListener("click", () => {
@@ -88,10 +86,6 @@ window.addEventListener("DOMContentLoaded", () => {
             btnHide.addEventListener("click", () => {
                 window.location = "/parametres/sondages/toggleVisibilite?id=" + e.detail.id
             })
-
-            sondageLink.classList = "clickable"
-            sondageLink.innerText = "Go"
-            sondageLink.href = document.getElementById("sondage-link-" + e.detail.id).textContent
         })
     })
 </script>

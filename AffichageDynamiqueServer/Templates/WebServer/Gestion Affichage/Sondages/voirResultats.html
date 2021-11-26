@@ -19,29 +19,34 @@
         <canvas width="400" height="400" id="monGraph"></canvas>
     </div>
     <div class="col-12 col-lg-7">
-        <h3>Sondage : Baby foot ou bidule ?</h3>
-        <small class="text-muted">Date : du 12/05/2021 au 19/05/2021</small>
-        <p class="mt-5">Nombre de vote <span class="fst-italic">Total</span>: <span class="fw-bold">85 votes</span></p>
-        <p>Nombre de vote <span class="fst-italic">Oui</span>: <span class="fw-bold">65 votes</span></p>
-        <p>Nombre de vote <span class="fst-italic">Non</span>: <span class="fw-bold">8 votes</span></p>
-        <p>Nombre de vote <span class="fst-italic">Je ne sais pas</span>: <span class="fw-bold">12 votes</span></p>
+        <h3>Sondage : {{informations.sondage.question}}</h3>
+        <small class="text-muted">Date : du {{informations.sondage.date_creation}} au {{informations.sondage.date_fin}}</small>
+        <p class="mt-5 fs-5">Nombre de vote <span class="fst-italic">Total</span> : <span class="fw-bold">{{informations.totalVotes}} votes</span></p>
+        {%for reponse, idReponse in informations.reponses.items%}
+        <p>Nombre de vote <span class="fst-italic">{{reponse}}</span> : <span class="fw-bold">{{informations.votes|get_value:idReponse}} votes</span></p>
+        {%endfor%}
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    //Données pour le graph
     const data = {
         labels: [
-            'Oui',
-            'Non',
-            'Je ne sais pas'
+            {%for reponse in informations.reponses%}
+            "{{reponse}}",
+            {%endfor%}
         ],
         datasets: [{
             label: 'My First Dataset',
-            data: [300, 50, 100],
+            data: [
+                {%for IDvote, vote in informations.votes.items%}
+                {{vote}},
+                {%endfor%}
+            ],
             backgroundColor: [
+                {%for vote in informations.votes%}
                 generateRandomColor(),
-                generateRandomColor(),
-                generateRandomColor()
+                {%endfor%}
             ],
             hoverOffset: 4
         }]
@@ -51,19 +56,19 @@
         type: 'doughnut',
         data: data,
         responsive: true,
-        width: 300,
-        height: 300,
     };
 
+    //Création du graph
     const monGraph = new Chart(
         document.getElementById("monGraph"),
         config
     )
 
-    monGraph.resize(300, 300)
-
     function generateRandomColor(){
-        let maxVal = 0xFFFFFF; // 16777215
+        /**
+         * Génération d'une couleur aléatoire pour le graphique
+        */
+        let maxVal = 0xFFFFFF; 
         let randomNumber = Math.random() * maxVal; 
         randomNumber = Math.floor(randomNumber);
         randomNumber = randomNumber.toString(16);
