@@ -23,3 +23,7 @@ Ceci est la documentation de l'application [ApiServer](../servers.md#apiserver)
 >##### GET
 >Récupère les profs absents de la journée et les renvoie en JSON
 >___
+>#### `api/postVote?username={}&password={}&vote={}` -> JSON
+>##### GET
+>Post le vote d'un utilisateur dans la bdd avec comme paramètre son id, son mot de passe et l'id de la réponse au sondage choisi.
+>___

@@ -122,3 +122,36 @@ Le bouton désactiver / activer permet d'empêcher (ou d'autoriser) la connexion
 
 ### Voir le compte
 Sur cette page vous pouvez voir les informations relative au compte sélectionné et si vous avez les permissions suffisantes, vous pouvez même modifier ses informations, reinitialiser son mot de passe au cas où il l'a perdu, et supprimer son compte(On préfèrera utiliser [Désactiver / Activer](#désactiver--activer)).
+
+## Les sondages
+### Ajouter un sondage
+```
+Image de l'ajout de sondage
+```
+Pour ajouter un sondage, il faut d'abord choisir une question à laquelle les gens vont devoir répondre par des réponses préchoisies.
+
+La question peut être par exemple : `Au foyer, préférez vous un baby foot ou une table de ping pong ?`
+
+A cette réponse vous pouvez répondre par `OUI` ou par `NON`. Pour rendre cela possible, il faut crée les réponses.
+
+Il faudra taper dans la zone correpondante le texte de la réponse et appuyer sur `Ajouter`.
+
+Pour la date de péremption, c'est identique à [Une date de péremption](#une-date-de-péremption)
+
+Pour l'afficher dès la mise en ligne, c'est identique à [Afficher avec la mise en ligne](#afficher-avec-la-mise-en-ligne)
+
+### Modifier un sondage
+Identique à [Ajouter un sondage](#ajouter-un-sondage)
+
+### Gérer les sondages
+Identique à [Gérer les articles](#gérer-les-articles)
+
+### Voir les résultas
+```
+Image de l'affichage des resultats d'un sondage
+```
+Pour voir les resultats, il faut sélectionner le sondage et appuyer sur `Voir les résultats`.
+
+Une fois fait, on voit un donut apparaître avec les différentes couleurs représentants les différentes réponses possibles au sondage. (Les couleurs sont aléatoires)
+
+Sur la droite, on voit le nom du sondage, sur quelle periode il a été fait, le nombre de vote par réponse et le nombre de vote total.
