@@ -8,10 +8,12 @@
 </head>
 <body>
     <h1>Sondages</h1>
-    <form action="POST">
-        <input type="text" placeholder="username">
-        <input type="text" placeholder="password">
-        <input type="text" placeholder="id de la rep">
+    <form action="/postVote/" method="post">
+        {%csrf_token%}
+        <input type="text" name="username" placeholder="username">
+        <input type="text" name="password"  placeholder="password">
+        <input type="text" name="vote" placeholder="id de la rep">
+        <button type="submit">Envoyer</button>
     </form>
 </body>
 </html>

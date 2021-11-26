@@ -10,6 +10,12 @@ from django.contrib.auth.models import Group
 from django.contrib import messages
 import datetime
 
+from django.template.defaulttags import register
+...
+@register.filter
+def get_value(dictionary, key):
+    return dictionary.get(key)
+
 @login_required
 def index(request):
     ''' 
@@ -111,7 +117,7 @@ def modifierArticle(request):
             return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", informations=article, form=form))
 
         else:
-            raise Http404()
+            raise  Http404
 
     elif request.method == "POST":
         #Recupération de l'article choisi
@@ -145,7 +151,7 @@ def supprimerArticle(request):
         messages.success(request, "Supprimé avec succès !")
 
     else:
-        Http404()
+        raise Http404
     return redirect("/articles")
 
 @permission_required('ApiServer.change_article')
@@ -167,7 +173,7 @@ def toggleVisibiliteArticle(request):
         messages.success(request, "Modifié avec succés")
 
     else:
-        Http404()
+        raise Http404
 
     return redirect("/articles")
 
@@ -189,7 +195,7 @@ def gestionAffichage(request):
 
 @permission_required('ApiServer.view_sondage')
 def sondages(request):
-    sondages = models.Sondage.objects.all()
+    sondages = models.Sondage.objects.all().order_by("-est_affiche", "date_creation")
     return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", informations=sondages))
 
 @permission_required('ApiServer.add_sondage')
@@ -212,6 +218,13 @@ def ajouterSondage(request):
         if len(reponses) < 2:
             messages.error(request, "Veuillez verifier qu'il y ait au moins 2 réponses proposées")
             return redirect("/parametres/sondages/ajouter")
+
+        #Vérification qu'il n'y ait pas déjà des sondages affichés
+        if est_affiche:
+            potentielSondageAffiche = models.Sondage.objects.filter(est_affiche=True)
+            if len(potentielSondageAffiche) > 0:
+                potentielSondageAffiche[0].est_affiche = False
+                potentielSondageAffiche[0].save()
 
         #Création du sondage
         sondage = models.Sondage()
@@ -239,7 +252,7 @@ def modifierSondage(request):
         #Récupération du sondage et des réponses correpondantes
         sondage = get_object_or_404(models.Sondage, pk=request.GET.get("id"))
         reponses = models.Reponse.objects.filter(sondage=sondage.id)
-
+        
         return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Modifier un sondage", informations={"sondage": sondage, "reponses": reponses}))
 
     elif request.method == "POST":
@@ -249,6 +262,13 @@ def modifierSondage(request):
         question = request.POST.get("question")
         date_fin = request.POST.get("date_fin")
         est_affiche = request.POST.get("est_affiche", False)
+
+        #Vérification qu'il n'y ait pas déjà des sondages affichés
+        if est_affiche:
+            potentielSondageAffiche = models.Sondage.objects.filter(est_affiche=True)
+            if len(potentielSondageAffiche) > 0:
+                potentielSondageAffiche[0].est_affiche = False
+                potentielSondageAffiche[0].save()
 
         #Vérification des valeurs
         if not question or not date_fin:
@@ -306,7 +326,7 @@ def supprimerSondage(request):
         messages.success(request, "Sondage supprimé avec succés !")
 
     else:
-        Http404()
+        raise Http404
     return redirect("/parametres/sondages")
 
 @permission_required('ApiServer.change_sondage')
@@ -321,6 +341,12 @@ def toggleVisibiliteSondage(request):
             if sondage.date_fin < datetime.date.today():
                 sondage.date_fin = changeEndingDate()
 
+            #Vérification qu'il n'y ait pas déjà des sondages affichés
+            potentielSondageAffiche = models.Sondage.objects.filter(est_affiche=True)
+            if len(potentielSondageAffiche) > 0:
+                potentielSondageAffiche[0].est_affiche = False
+                potentielSondageAffiche[0].save()
+
             sondage.est_affiche = True
 
         sondage.save()
@@ -329,11 +355,69 @@ def toggleVisibiliteSondage(request):
         return redirect("/parametres/sondages")
     
     else:
-        Http404()
+        raise Http404
 
 @permission_required('ApiServer.view_sondage')
 def voirResultatsSondage(request):
-    return render(request, "WebServer/Gestion Affichage/Sondages/voirResultats.html")
+    id = request.GET.get("id")
+
+    if id:
+        #Récupération des valeurs
+        sondage = get_object_or_404(models.Sondage, pk=id)
+        reponses = models.Reponse.objects.filter(sondage=sondage.id)
+        votes = models.Vote.objects.filter(sondage=sondage.id)
+
+        votesDict = {}
+
+        total = 0
+        #Ajout des votes sous forme de dictionnaire
+        # Id de la reponse : Nb de vote
+        for vote in votes:
+            if vote.vote.id not in votesDict:
+                votesDict[vote.vote.id] = 1
+                
+            
+            else:
+                votesDict[vote.vote.id] += 1
+
+            total += 1        
+
+
+        reponsesDict = {}
+
+        #Création du dictionnaire contenant les réponses
+        # Reponse : id de la reponse
+        for reponse in reponses:
+            reponsesDict[reponse.text] = reponse.id
+
+            #Si il n'y a pas de vote pour cette réponse
+            #On crée une valeur dans les votes ayant pour id la reponse et
+            #comme valeur 0 car il n'y a personne qui a voté pour cette réponse 
+            if reponse.id not in votesDict:
+                votesDict[reponse.id] = 0
+
+        #Création du dictionnaire final
+        data = {
+            "sondage": {
+                "id": sondage.id,
+                "date_creation": sondage.date_creation,
+                "date_fin": sondage.date_fin,
+                "question": sondage.question,
+                "est_affiche": sondage.est_affiche,
+            },
+
+            "reponses": reponsesDict,
+
+            "votes": votesDict,
+
+            "totalVotes": total
+
+        }
+        return render(request, "WebServer/Gestion Affichage/Sondages/voirResultats.html", exInfos("Resultats", informations=data))
+
+    else:
+        raise Http404
+
 """
     Section gérant tout ce qui touche aux informations
 """
@@ -390,7 +474,7 @@ def modifierInformation(request):
 
 
     else:
-        raise Http404()
+        raise Http404
 
 
 @permission_required('ApiServer.delete_information')
@@ -402,7 +486,7 @@ def supprimerInformation(request):
         messages.success(request, "Supprimé avec succés")
 
     else:
-        Http404()
+        raise Http404
 
     return redirect("/parametres/informations")
 
@@ -663,7 +747,7 @@ def modifierEcran(request):
             return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierEcran.html', exInfos("Modifier un écran", form=form, informations=ecran))
 
     else:
-        Http404()
+        raise Http404
 
 
 def supprimerEcran(request):
@@ -707,7 +791,7 @@ def modifierPage(request):
             return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierPage.html', exInfos("Modifier une page", form=form, informations=ecran))
 
     else:
-        Http404()
+        raise Http404
 
 def supprimerPage(request):
     return redirect("/parametres")

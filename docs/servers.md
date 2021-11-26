@@ -1,12 +1,12 @@
 # Les différents serveurs 
-Pour bien fonctionner, on a crée 2 serveurs qui communique ensemble, [le serveur gérant l'affichage et sa gestion](#gestion-de-laffichage-dynamique) et [un serveur qui s'occupe de faire le lien entre Pronote et le premier serveur](#pronoteserver).
+Pour bien fonctionner, on a crée 3 serveurs qui communique ensemble, [le serveur gérant l'affichage et sa gestion](#gestion-de-laffichage-dynamique), [un serveur qui s'occupe de faire le lien entre Pronote et le premier serveur](#pronoteserver) et le dernier [serveur qui s'occupe de faire le lien entre les élèves et le serveur principal pour les sondages](#serveur-sondage).
 
 ![Schema Serveurs](./images/schemaServers.png)
 
 ## Gestion de l'affichage dynamique
 ![Affichage Dynamique](./images/AffichageDynamique.png)
 
-Le serveur est entièrement fait en python grâce au framework Django. Il est découpé en 3 applications : 
+Le serveur est entièrement fait en python grâce au framework Django. Il se lance sur le port 8080 de la machine. Il est découpé en 3 applications : 
 - [Affichage](#affichage) 
 - [WebServer](#webserver)
 - [ApiServer](#apiserver)
@@ -44,4 +44,12 @@ Le serveur tourne sur le port 5000 en http.
 
 Documentation de l'api disponible [ici](./api/pronoteServer.md)
 
-## Serveur sondage (Bientôt)
+## Serveur sondage
+
+Le serveur sondage est entièrement consacré à faire le lien entre les élèves et le [serveur AffichageDynamique](#gestion-de-laffichage-dynamique). Il sert d'intermédiaire.
+
+Il est programmé en Python (Django) et il se lance sur le port 8080 de la machine.
+
+Il a 2 vues (views), une qui donne la page de vote, et l'autre qui post les données sur le serveur AffichageDynamique à l'adresse /api/postVote.
+
+Documentation des views [ici](./api/sondageServer.md)

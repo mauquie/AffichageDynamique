@@ -23,6 +23,12 @@ WebServer
     │   │   ├──ajouter
     │   │   ├──modifier
     │   │   └──supprimer
+    │   ├──sondages
+    │   │   ├──ajouter
+    │   │   ├──modifier
+    │   │   ├──voirResultats
+    │   │   ├──toggleVisibilite
+    │   │   └──supprimer
     │   └──modifierPageEcran
     ├──comptes
     │   ├──ajouter
@@ -89,7 +95,7 @@ WebServer
 >___
 >#### `parametres/informations/supprimer?id=` -> Redirect
 >##### GET
->Supprime l'article correspondant à `id`
+>Supprime l'information correspondante à `id`
 >___
 >#### `parametres/informations/toggleVisibilite?id=` -> Redirect
 >##### GET
@@ -139,6 +145,36 @@ WebServer
 >Récupère la page pour modifier l'affectation entre un ecran et de la page qu'il affiche
 >##### POST
 >Met à jour l'affectation de la page à (aux) l'écran choisi
+>___
+#### Sondages
+>___
+>#### `parametres/sondages` -> HTML
+>##### GET
+>Liste toutes les sondages mit en ligne sur le site
+>___
+>#### `parametres/sondages/ajouter` -> HTML
+>##### GET
+>Récupère la page pour ajouter un sondage
+>##### POST
+>Poste le sondage sur le site
+>___
+>#### `parametres/sondages/modifier?id=` -> HTML
+>##### GET
+>Récupère la page pour modifier un sondage correspondant à `id`
+>##### POST
+>Poste le sondage sur le site
+>___
+>#### `parametres/sondages/supprimer?id=` -> Redirect
+>##### GET
+>Supprime le sondage correspondant à `id`
+>___
+>#### `parametres/sondages/toggleVisibilite?id=` -> Redirect
+>##### GET
+>Change la visibilite du sondage correspondante à `id`
+>___
+>#### `parametres/sondages/voirResultats?id=` -> HTML
+>##### GET
+>Donne la page affichant les resultats d'un sondage
 >___
 ### Comptes
 >___
