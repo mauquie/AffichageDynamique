@@ -92,7 +92,6 @@
 <script>
     let reponsesDOM = document.getElementById("reponses")
     let createButtonDOM = document.getElementById("createReponseButton")
-    let createReponseDOM = document.getElementById("createReponseText")
     let sendButton = document.getElementById("send")
     let formDOM = document.getElementById("formulaire")
     let reponsesContainer = document.getElementById("reponsesContainer")
@@ -107,11 +106,10 @@
         /**
          * Ajoute l'element dom représentant une réponse à l'écran
          */
+        let createReponseDOM = document.getElementById("createReponseText")
         text = createReponseDOM.value
 
         if (text !== ""){
-            reponsesContainer.hidden = false
-
             createReponseDOM.value = ""
 
             reponsesDOM.innerHTML += `
