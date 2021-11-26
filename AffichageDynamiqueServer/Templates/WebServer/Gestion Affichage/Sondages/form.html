@@ -41,7 +41,7 @@
                         <div class="col-xl-3 col-lg-6 col-12">
                             <div class="border rounded-3 my-3 mx-1 text-center border-secondary p-2">
                                 <input type="text" class="form-control" placeholder="Ajouter une réponse" id="createReponseText">
-                                <button class="btn btn-outline-secondary mt-1" id="createReponseButton" type="button">Ajouter</button>    
+                                <button class="btn btn-outline-secondary mt-1" id="createReponseButton" type="button" onclick="createReponse()">Ajouter</button>    
                             </div>
                         </div>
                         {% for reponse in informations.reponses %}
@@ -74,7 +74,7 @@
         <div class="form-group mt-3">
             <div class="form-check form-switch">
                 <input class="form-check-input" value="True" type="checkbox" name="est_affiche" {%if informations.sondage.est_affiche %}checked{%endif%}>
-                <label class="form-check-label"">Montrer le sondage dès la mise en ligne</label>
+                <label class="form-check-label">Montrer le sondage dès la mise en ligne</label>
             </div>
         </div>
         <div class="form-group mt-3">
@@ -99,7 +99,6 @@
 
 
     formDOM.addEventListener("submit", sendForm)
-    createButtonDOM.addEventListener("click", createReponse)
 
     let indexReponse = 0
     let nbReponse = 0
