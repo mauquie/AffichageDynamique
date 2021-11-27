@@ -30,16 +30,20 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    position: absolute;
+    bottom: 11vh;
+    right: 0;
 }
 
 .fleche{
     display: flex;
+    height: 1vh;
 }
 
 .fleche-ligne{
     margin-left: 2vh;
     width: 100%;
-    transform: translateY(44%);
+    transform: translateY(100%);
     border-bottom: 3px solid #FF6046;
 }
 
@@ -50,28 +54,86 @@
     border-bottom: 13px solid transparent;
     border-left: 13px solid #FF6046;
     position: relative;
-    transform: translateY(87%);
+    transform: translateY(-30%);
+}
+
+.liste-date{
+    display: flex;
+    margin-left: 16vh;
+    height: 20vh;
+    transform: translateY(-0%);
+}
+.date-premiere{
+    margin-left: 10vh;
+    height: 5vh;
+    line-height: 5vh;
+}
+
+.date{
+    margin-left: 24vh;
+    height: 5vh;
+    line-height: 5vh;
+}
+
+.barre-droite{
+    transform: translateX(-2.5vh);   
+    width: 2.6vh;
+    border-bottom: 3px solid #FF2604;
+    opacity: 1;
+    position: absolute;
+}
+
+.barre-oblique{
+    position: absolute;
+    width: 3px;
+    height: 7.4vh;
+    transform: translateX(17.2vh) translateY(-6.1vh) skew(-42deg);
+    background-color: #FF2604;
+}
+
+.parallelograme-date {
+    width: 12vh;
+    height: 5vh;
+    -webkit-transform: skew(-15deg);
+       -moz-transform: skew(-15deg);
+    background: #FF6046;
+    position:absolute;
+    box-shadow: 2px 4px 4px 0px #4d4a4a40;
+    z-index: -9;
+}
+
+.texte-date{
+    position: relative;
+    padding-left: 6vh;
+    transform: translateX(-25%);
+    z-index: 9;
+    font-family: 'DM Sans';
+    font-size: 2vh;
+    width: 12vh;
+    font-style: bold;
+    color: black;
 }
 
 .liste-evenement{
     display: flex;
     margin-left: 3vh;
+    height: 15vh;
+    transform: translateY(-2.3vh);
 }
 
 .evenement{
     margin-left: 6vh;
 }
 
-.parallelograme {
+.parallelograme-evenement {
     width: 30vh;
     height: 8vh;
     -webkit-transform: skew(-15deg);
        -moz-transform: skew(-15deg);
     background: #FF9888;
     position:absolute;
-    box-shadow: 2px 4px 4px 0px #00000040;
+    box-shadow: 2px 4px 4px 0px #4d4a4a40;
     z-index: -9;
-
 }
 
 .texte-evenement{
@@ -81,6 +143,17 @@
     font-size: 2vh;
     width: 30vh;
     padding: 10px;
-    top: 4vh;
-    transform: translateY(-50%);
+    top: 3vh;
+    height: 6vh;
+    transform: translateY(-50%) ;
+    font-style: bold;
+    color: black;   
+}
+
+.cercle{
+    height: 10px;
+    width: 10px;
+    background-color: #FF6046;
+    border-radius: 50%;
+    transform: translateX(13.8vh) translateY(20%);
 }
