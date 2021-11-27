@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-from dotenv import load_dotenv
-load_dotenv("../.env")
+from dotenv import Dotenv
+dotenv = Dotenv("../.env")
 
 from pathlib import Path
 import os
@@ -62,9 +62,9 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-AUTH_LDAP_SERVER_URI = os.getenv("AUTH_LDAP_SERVER_URI")
-AUTH_LDAP_BIND_DN = os.getenv("AUTH_LDAP_BIND_DN")
-AUTH_LDAP_BIND_PASSWORD = os.getenv("AUTH_LDAP_BIND_PASSWORD")
+AUTH_LDAP_SERVER_URI = dotenv["AUTH_LDAP_SERVER_URI"]
+AUTH_LDAP_BIND_DN = dotenv["AUTH_LDAP_BIND_DN"]
+AUTH_LDAP_BIND_PASSWORD = dotenv["AUTH_LDAP_BIND_PASSWORD"]
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
     "ou=people,dc=nodomain", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
 )
@@ -102,11 +102,11 @@ APPEND_SLASH = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME"),
-        'HOST': os.getenv("DB_HOST"),
-        'USER': os.getenv("DB_USER"),
-        'PASSWORD': os.getenv("DB_PASSWORD"),
-        'PORT': os.getenv("DB_PORT"),
+        'NAME': dotenv["DB_NAME"],
+        'HOST': dotenv["DB_HOST"],
+        'USER': dotenv["DB_USER"],
+        'PASSWORD': dotenv["DB_PASSWORD"],
+        'PORT': dotenv["DB_PORT"],
     }
 }
 
