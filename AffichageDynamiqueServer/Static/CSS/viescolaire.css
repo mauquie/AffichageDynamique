@@ -31,41 +31,45 @@
     flex-direction: column;
     justify-content: flex-end;
     position: absolute;
-    bottom: 11vh;
+    bottom: 4vh;
     right: 0;
 }
 
 .fleche{
     display: flex;
     height: 1vh;
+    transform: translateY(-250%);
 }
 
 .fleche-ligne{
+    height: 0px;
     margin-left: 2vh;
     width: 100%;
     transform: translateY(100%);
-    border-bottom: 3px solid #FF6046;
+    border-bottom: 0.5vh solid #FF6046;
 }
 
 .fleche-tete{
     width: 0;
     height: 0;
-    border-top: 13px solid transparent;
-    border-bottom: 13px solid transparent;
-    border-left: 13px solid #FF6046;
+    border-top: 2vh solid transparent;
+    border-bottom: 2vh solid transparent;
+    border-left: 2vh solid #FF6046;
     position: relative;
-    transform: translateY(-30%);
+    transform: translateY(-35%);
 }
 
 .liste-date{
     display: flex;
     margin-left: 16vh;
     height: 20vh;
-    transform: translateY(-0%);
+    transform: translateY(-27%);
+    position: absolute;
 }
 .date-premiere{
     margin-left: 10vh;
     height: 5vh;
+    transform: translateY(-44%);
     line-height: 5vh;
 }
 
@@ -73,21 +77,24 @@
     margin-left: 24vh;
     height: 5vh;
     line-height: 5vh;
+    transform: translateY(-44%);
 }
 
 .barre-droite{
-    transform: translateX(-2.5vh);   
-    width: 2.6vh;
-    border-bottom: 3px solid #FF2604;
+    z-index: -18;
+    width: 2.4vh;
+    border-bottom: 0.5vh solid #FF2604;
     opacity: 1;
     position: absolute;
+    transform: translateX(-2.1vh) translateY(2.15vh);
+    
 }
 
 .barre-oblique{
     position: absolute;
-    width: 3px;
+    width: 0.5vh;
     height: 7.4vh;
-    transform: translateX(17.2vh) translateY(-6.1vh) skew(-42deg);
+    transform: translateX(17.5vh) translateY(-8.1vh) skew(-42deg);
     background-color: #FF2604;
 }
 
@@ -151,9 +158,10 @@
 }
 
 .cercle{
-    height: 10px;
-    width: 10px;
+    height: 2vh;
+    width: 2vh;
     background-color: #FF6046;
     border-radius: 50%;
-    transform: translateX(13.8vh) translateY(20%);
+    transform: translateX(13.8vh) translateY(-75%);
+    position: absolute;
 }
