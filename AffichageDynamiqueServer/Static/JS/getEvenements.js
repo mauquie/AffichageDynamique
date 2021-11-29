@@ -10,18 +10,18 @@ domDate2 = document.getElementById("date-1")
 domDate3 = document.getElementById("date-2")
 
 dictMois = {
-    1 : "Jan",
-    2 : "Fev",
-    3 : "Mar",
-    4 : "Avr",
-    5 : "Mai",
-    6 : "Juin",
-    7 : "Juil",
-    8 : "Août",
-    9 : "Sep",
-    10 : "Oct",
-    11 : "Nov",
-    12 : "Dec",
+    0 : "Jan",
+    1 : "Fev",
+    2 : "Mar",
+    3 : "Avr",
+    4 : "Mai",
+    5 : "Juin",
+    6 : "Juil",
+    7 : "Août",
+    8 : "Sep",
+    9 : "Oct",
+    10 : "Nov",
+    11 : "Dec",
 }
 
 function nettoyage()
