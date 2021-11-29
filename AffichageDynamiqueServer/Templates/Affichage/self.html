@@ -1,50 +1,50 @@
 {% extends "Affichage/pageHeaderFooter.html" %}
 {% load static %}
 {% block content %}
-    <div class="card">
+    <link rel="stylesheet" href="{% static 'CSS/ecrans.css' %}">
+    
+    <div class="card m-4">
         <div class="container">
             <div class="row">
                 <div class="title text-center">
-                    <h1 class="fs-2">Menu</h1>
+                    <h1 class="fs-1">Menu</h1>
                 </div>
             </div>
             <div class="row">
                 <div class="col-5">
                     <div class="row">
                         <div class="title">
-                            <h1 class="fs-3">Ce midi</h1>
+                            <h1 class="fs-2">Ce midi</h1>
                         </div>
                     </div>
-                    <div class="">
-                        <ul class="list">                            
-                            <li class="list-item">Feuilleté fromage / Concombres / Tomates et Féta / hot dog/rosette </li>
-                            <li class="list-item">Bourlettes de boeuf / colin aux fruits de mer </li>
-                            <li class="list-item">Riz / Carootes persillées</li>
-                            <li class="list-item">eau</li>
-                            <li class="list-item">Fromage /Yaourt</li>
-                            <li class="list-item">Fruit de saison / Compte pommes cassis / Liégeois</li>
-                        </ul>
+                    <div id="midiList" class="">
+                        <div class="title">
+                            <h4 class="fs-4">Rien à afficher, peut être que plus tard nous aurons de quoi vous satisfaire !</h4>
+                        </div>
+                        <ul class="list"></ul>
                     </div>
                 </div>
                 <div class="col-2"></div>
                 <div class="col-5">
                     <div class="row">
                         <div class="title">
-                            <h1 class="fs-3">Ce soir</h1>
+                            <h1 class="fs-2">Ce soir</h1>
                         </div>
                     </div>
-                    <div class="">
-                        <ul class="list">                            
-                            <li class="list-item">Feuilleté fromage / Concombres / Tomates et Féta / hot dog/rosette </li>
-                            <li class="list-item">Bourlettes de boeuf / colin aux fruits de mer </li>
-                            <li class="list-item">Riz / Carootes persillées</li>
-                            <li class="list-item">eau</li>
-                            <li class="list-item">Fromage /Yaourt</li>
-                            <li class="list-item">Fruit de saison / Compte pommes cassis / Liégeois</li>
+                    <div id="soirList">
+                        <div class="title">
+                            <h4 class="fs-4">Rien à afficher, peut être que plus tard nous aurons de quoi vous satisfaire !</h4>
+                        </div>
+                        <ul class="list">
+
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="{% static 'JS/getMenu.js' %}"></script>
+    <script>
+
+    </script>
 {% endblock %}

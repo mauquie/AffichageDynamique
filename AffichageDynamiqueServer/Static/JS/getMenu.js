@@ -1,8 +1,3 @@
-//Récupération des elemens DOM
-DOMRepasType = document.getElementById("repasType")
-DOMListAliment = document.getElementById("listAliment")
-DOMMessageRepasVide = document.getElementById("messageRepasVide")
-
 function getMenus() {
     //Variable utilisé pour récupérer la date d'aujourd'hui + l'heure actuelle
     dateTime = new Date()
@@ -15,61 +10,60 @@ function getMenus() {
         return response.json()
 
     }).then((data) => {
-        //S'il n'y a pas de repas à afficher
-        if (data.length == 0) {
-            toggleMenu(true)
+        if (data.length < 1){
+            toggleMenu(true, true)
+            toggleMenu(true, false)
+        } else {
+            for (let i = 0; i < data.length; i++){
+                toggleMenu(false, data[i].midi)
+                setMenu(data[i].midi, data[i].repas)
 
-        } else { //S'il y a au moins un repas à afficher
-            //On affiche le menu
-            toggleMenu(false)
-
-            //On récupère l'heure actuelle
-            hour = dateTime.getHours()
-
-            //S'il est - 15:00 ou qu'il n'y a qu'un seul repas pour aujourd'hui on affiche le repas de midi
-            if (hour < 15) {
-                repas = data[0]
-
-            } else { //Sinon on affiche le repas du soir
-                if (data.length > 1){
-                    repas = data[1]
-
-                } else {
-                    toggleMenu(true)
-                    return null
-                }
-
-            }
-
-            // Pour chaque partie du repas, on assemble la liste d'aliment avec des "/" et on 
-            // les affiche dans la liste des aliments sur la page
-            for (let i = 0; i < Object.keys(repas.repas).length; i++) {
-                partieDuRepas = repas.repas[i + 1]
-
-                DOMListAliment.children[i].innerText = repas.repas[i + 1].join(" / ")
             }
         }
     })
 }
 
-function toggleMenu(toHide) {
+function toggleMenu(toHide, isMidi=true) {
     /*
         Affiche ou cache le menu en fonction du parametre toHide
     */
+    let menuDOM = (isMidi) ? document.getElementById("midiList") : document.getElementById("soirList")
+
     if (toHide) {
         //On cache le menu et on affiche le message
-        DOMMessageRepasVide.hidden = false
-        DOMListAliment.hidden = true
+        menuDOM.children[1].hidden = true
+        menuDOM.children[0].hidden = false
+        
 
     } else {
         //On affiche le menu et on cache le message
-        DOMMessageRepasVide.hidden = true
-        DOMListAliment.hidden = false
+        menuDOM.children[1].hidden = false
+        menuDOM.children[0].hidden = true
 
     }
 
-    setCorrectMenu()
+}
 
+function setMenu(isMidi, repas){
+    let menuDOM = (isMidi) ? document.getElementById("midiList") : document.getElementById("soirList")
+
+    let ulDOM = menuDOM.children[1]
+        
+    ulDOM.innerHTML = ""
+    ulDOM.classList = "list"
+        
+    for(let i = 1; i < 7; i++){
+        let partieDuRepas = repas[i].join(" / ")
+
+        let itemListDOM = document.createElement("li")
+
+        itemListDOM.innerText = partieDuRepas
+        itemListDOM.classList = "list-item"
+
+        ulDOM.appendChild(itemListDOM)
+    }
+
+    menuDOM.appendChild(ulDOM)
 }
 
 function setCorrectMenu() {

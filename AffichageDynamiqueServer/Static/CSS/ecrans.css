@@ -39,9 +39,9 @@ body {
 .list-item {
     font-style: normal;
     font-weight: 700;
-    font-size: 120%;
+    font-size: 150%;
     color: rgba(0, 0, 0, 0.8);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     line-height: 25px;
 
 }

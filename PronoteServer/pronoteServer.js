@@ -33,7 +33,10 @@ async function getMenus(session, date = new Date()) {
         @return
         list - Retourne la liste des menus à la date demandée
     */
+    console.log(date)
+
     date.setDate(date.getDate() - 1)
+    console.log(date)
     return await session.menu(from = date)
 }
 
