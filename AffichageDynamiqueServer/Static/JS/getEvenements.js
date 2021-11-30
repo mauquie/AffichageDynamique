@@ -24,9 +24,36 @@ dictMois = {
     11 : "Dec",
 }
 
+//fonction vérifiant que l'évènement ne dépasse pas le container, si oui : raccourcissement du texte
+function checkHeight(domEv, raccourci)
+{
+    domContainerEv = document.getElementById("container-evenement")
+    { //si le texte dépasse le container,
+        if (domEv.clientHeight > domContainerEv.clientHeight)
+        {
+            text = domEv.innerText
+            dernierEspace = text.lastIndexOf(" ") //on récupère l'index du dernier espace
+            domEv.innerText = text.substring(0, dernierEspace) //et on ne garde que le texte jusqu'à cet espace (on supprime le dernier mot)
+            checkHeight(domEv, true)//on vérifie si le texte rentre désormais.
+        }
+        else
+        {   //s'il rentre et qu'il a été raccourci,
+            if (raccourci)
+            { //on ajoute "..." et on vérifie qu'après cet ajout le texte entre encore
+                domEv.innerText += "..."
+                if (domEv.clientHeight > domContainerEv.clientHeight)
+                {//s'il ne rentre plus dans le container,
+                    checkHeight(domEv, true) //on réappelle la fonction, qui reréduira et réajoutera les "...".
+                }
+            }
+            //s'il n'a pas été raccourci et qu'il rentre, on ne touche à rien
+        }
+    }
+}
+
 function nettoyage()
 {
-    //nettoyage des dom évènements
+    //vide les dom évènements
     domEv1.innerText = ""
     domEv2.innerText = ""
     domEv3.innerText = ""
@@ -50,6 +77,7 @@ function affichageBouclage(listeEvents, once)
             dateEvent = new Date(listeEvents[i].start.dateTime)
             domDate.innerText = dateEvent.getDate() + " " + dictMois[dateEvent.getMonth()] 
             domEvent.innerText = listeEvents[i].summary
+            checkHeight(domEvent, false)
         }
         indexEvenement = 1 //Reinitialise index des events pour la prochaine fois où il y aura > 3 events
     }
@@ -77,6 +105,7 @@ function affichageBouclage(listeEvents, once)
                 { //on remplace les textes
                     domEventListe[indexDom].innerText = listeEvents[i].summary
                     domDateListe[indexDom].innerText = new Date(listeEvents[i].start.dateTime).getDate()
+                    checkHeight(domEventListe[indexDom], false)
                     indexDom++//et on incrémente index DOM pour modifier au prochain tour l'évènement suivant
                 }
             animeEntreeEvent(domEventListe)

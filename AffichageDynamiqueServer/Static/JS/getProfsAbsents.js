@@ -32,11 +32,11 @@ function prepareListeProfs(listeProfs)
     for (i = 0; i < listeProfs.length; i++)
     {
         heureDebut = listeProfs[i].debut.slice(0, listeProfs[i].debut.length - 1) //suppresion du "Z"
-        heureDebut = (new Date(heureDebut).getHours()-2)
+        heureDebut = (new Date(heureDebut).getHours())
         listeProfs[i].debut = heureDebut //changement du dateTime du début de prof, en uniquement l'heure
 
         heureFin = listeProfs[i].fin.slice(0, listeProfs[i].fin.length - 1)
-        heureFin = (new Date(heureFin).getHours()-2) //idem pour le dateTime de la fin du prof.
+        heureFin = (new Date(heureFin).getHours()) //idem pour le dateTime de la fin du prof.
         listeProfs[i].fin = heureFin
     }
     return listeProfs
