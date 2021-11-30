@@ -4,6 +4,8 @@ from .models import Article, Info, SondageAdmin, Display, Repas, ProfAbsent, Son
 from django.contrib.auth import authenticate
 import datetime
 from .pronote import refreshMenus, refreshProfs
+import pytz
+
 
 def hideExpiredObjects(query):
     #Récupération de la date d'hier
@@ -172,11 +174,13 @@ def getMenus(request)->JsonResponse:
 def getProfsAbs(request):
     refreshProfs()
 
+    offset = int(datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%z')[2])*3600*24
+
     #Calcul des dates d'aujourd'hui et demain
     dateToday = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
     dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
 
-    dateTomorrow = dateTomorrow.replace(day = dateTomorrow.day + 1)
+    dateTomorrow = datetime.datetime.utcfromtimestamp(dateTomorrow.timestamp() + offset) 
 
     #On récupère tous les profs absents de la journée 
     query = ProfAbsent.objects.filter(debut__gte=dateToday, debut__lte=dateTomorrow)
