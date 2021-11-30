@@ -12,10 +12,20 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
-import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+PROJECT_DIR = BASE_DIR.parent.__str__()
+
+#Ajoute le dossier du projet en tant que pythonpath (utile pour l'import)
+import sys
+sys.path.insert(0, PROJECT_DIR)
+
+from environ import getEnv
+dotenv = getEnv("../.env")
+
+
+import os
 
 
 # Quick-start development settings - unsuitable for production
