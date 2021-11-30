@@ -31,8 +31,36 @@
     flex-direction: column;
     justify-content: flex-end;
     position: absolute;
-    bottom: 4vh;
+    bottom: 3.5vh;
     right: 0;
+}
+
+.agenda-titre{
+    position: absolute;
+    bottom: 25vh;
+}
+
+.parallelograme-titre{
+    width: 12vh;
+    height: 5vh;
+    -webkit-transform: skew(-15deg);
+       -moz-transform: skew(-15deg);
+    background: #FF2604;
+    position:absolute;
+    box-shadow: 2px 4px 4px 0px #4d4a4a40;
+    z-index: -9;
+}
+
+.texte-titre{
+    position: relative;
+    z-index: 9;
+    font-family: 'DM Sans';
+    font-size: 2vh;
+    line-height: 5vh;
+    width: 12vh;
+    font-style: bold;
+    color: black;
+    font-weight: 900;
 }
 
 .fleche{
