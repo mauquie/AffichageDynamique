@@ -95,19 +95,24 @@ def getSurveys(request)->JsonResponse:
     query = Sondage.objects.all()
 
     #On cache tous les sondages passés
-    hideExpiredObjects(query)
+    #hideExpiredObjects(query)
 
     #Récupération des sondages qui ont survécus au tri 
-    query = query.filter(is_shown = True)
+    query = query.filter(est_affiche = True)
 
     surveyList = list()
 
     #Formatage des données
     for entry in query:
+        reponses = Reponse.objects.filter(sondage=entry.id)
+
         json = {
             "id": entry.id,
-            "auteur": entry.auteur.id,
+            "author": entry.author.id,
+            "question": entry.question,
             "date_creation": entry.date_creation,
+            "date_fin": entry.date_fin,
+            "questions": [{"id": reponse.id, "text": reponse.text} for reponse in reponses]
         }
 
         surveyList.append(json)
