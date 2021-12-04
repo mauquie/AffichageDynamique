@@ -11,10 +11,17 @@
     background: -webkit-linear-gradient(rgb(7, 133, 236),rgb(0, 150, 250));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    
+}
+
+.meteoSpan {
+    font-family: "DM Sans";
+    font-size: 5vh;
 }
 
 .tempHot {
     background: -webkit-linear-gradient(rgb(236, 7, 45), rgb(250, 71, 0));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+
 }
