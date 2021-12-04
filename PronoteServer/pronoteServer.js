@@ -17,7 +17,7 @@ async function getSession() {
      */
     const session = await pronote.login(url, username, password, cas);
 
-    session.setKeepAlive(false)
+    session.setKeepAlive(true)
 
     return session
 }
@@ -33,10 +33,7 @@ async function getMenus(session, date = new Date()) {
         @return
         list - Retourne la liste des menus à la date demandée
     */
-    console.log(date)
-
     date.setDate(date.getDate() - 1)
-    console.log(date)
     return await session.menu(from = date)
 }
 
@@ -76,23 +73,12 @@ function gestionServeur(req, res, session) {
                 res.write(JSON.stringify({
                     'data': menus
                 }))
-	            console.log(menus)
+	            console.log(generateDate() + "Menus récupérés :")
+                console.log(menus)
                 res.end()
             })
             .catch(err => {
-                console.error("Ups, error : ")
-                console.error(err)
-
-                //Une fois qu'on a l'emploi du temps on le renvoie sous forme JSON
-                res.writeHead(200, {
-                    'Content-Type': 'application/json'
-                })
-
-                res.write(JSON.stringify({
-                    'data': []
-                }))
-
-                res.end()
+                gestionError(err, res)
             })
 
         //Si on veut les menus
@@ -110,25 +96,45 @@ function gestionServeur(req, res, session) {
                 res.write(JSON.stringify({
                     'data': edt
                 }))
+                console.log(generateDate() + "Emploi du temps récupérés :")
                 console.log(edt)
                 res.end()
             })
             .catch(err => {
-                console.error("Ups, error : ")
-                console.error(err)
-
-                //Une fois qu'on a l'emploi du temps on le renvoie sous forme JSON
-                res.writeHead(200, {
-                    'Content-Type': 'application/json'
-                })
-
-                res.write(JSON.stringify({
-                    'data': []
-                }))
-
-                res.end()
+                gestionError(err, res)
             })
     }
+}
+
+function generateDate(){
+    let ts = Date.now()
+
+    let date_ob = new Date(ts);
+    let date = date_ob.getDate();
+    let month = date_ob.getMonth() + 1;
+    let year = date_ob.getFullYear();
+
+    let hours = date_ob.getHours();
+    let minutes = date_ob.getMinutes();
+    let seconds = date_ob.getSeconds();
+
+    // Affiche la date sous la forme [AAAA/MM/JJ HH:MM:SS]
+    return "[" + year + "/" + month + "/" + date + " " + hours + ":" + minutes + ":" + seconds + "]"
+}
+
+function gestionError(err, res){
+    console.error(generateDate() + "Error from pronote")
+    console.error(err)
+
+    res.writeHead(200, {
+        'Content-Type': 'application/json'
+    })
+
+    res.write(JSON.stringify({
+        'data': []
+    }))
+
+    res.end()
 }
 
 //Création de la session pronote
@@ -143,6 +149,6 @@ getSession()
         console.log("Serveur lancé sur le port 5000")
     })
     .catch((err) => {
-        console.log("Ups pronote connection error :")
+        console.error(generateDate() + "Ups pronote connection error :")
         console.error(err)
     })
