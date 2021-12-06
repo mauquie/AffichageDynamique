@@ -7,6 +7,7 @@ const username = process.env.PRONOTE_USERNAME;
 const password = process.env.PRONOTE_PASSWORD;
 const cas = 'ac-toulouse';
 
+var server = undefined;
 
 async function getSession() {
     /**
@@ -126,6 +127,11 @@ function gestionError(err, res){
     console.error(generateDate() + "Error from pronote")
     console.error(err)
 
+    if(err.code == 5){
+        console.log(genereateDate() + "Rebooting the server")
+        loadSession()
+    }
+
     res.writeHead(200, {
         'Content-Type': 'application/json'
     })
@@ -137,18 +143,25 @@ function gestionError(err, res){
     res.end()
 }
 
-//Création de la session pronote
-getSession()
-    .then((session) => {
-        //Une fois que la session est crée on peut créer le serveur web
-        var server = http.createServer((req, res) => {
-            gestionServeur(req, res, session)
-        })
+function loadSession(){
+    if (server !== undefined){
+        server.close()
+    }
+    //Création de la session pronote
+    getSession()
+        .then((session) => {
+            //Une fois que la session est crée on peut créer le serveur web
+            server = http.createServer((req, res) => {
+                gestionServeur(req, res, session)
+            })
 
-        server.listen(5000)
-        console.log("Serveur lancé sur le port 5000")
-    })
-    .catch((err) => {
-        console.error(generateDate() + "Ups pronote connection error :")
-        console.error(err)
-    })
+            server.listen(5000)
+            console.log("Serveur lancé sur le port 5000")
+        })
+        .catch((err) => {
+            console.error(generateDate() + "Ups pronote connection error :")
+            console.error(err)
+        })
+}
+
+loadSession()
