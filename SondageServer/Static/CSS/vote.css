@@ -1,0 +1,106 @@
+@font-face {
+    font-family: "DM Sans";
+    src: url("/static/FONTS/DMSans-Regular.ttf");
+}
+html{
+  overflow-x: hidden;
+  height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    height: 100%;
+    position: relative;
+    background : linear-gradient(90deg, #FFC488 71.81%, #FF845E 127.38%);
+    font-weight: 500;
+    }
+
+@media screen and (max-width: 600px) {
+    .logo{
+        top: 1vh;
+        height: 18vw;
+        width: auto;    
+    }
+    
+    .big-text{
+        font-size: 8vw;
+        line-height: 8vw;
+    }
+
+
+    .connexion-input{
+        border: 3px solid #FF8304;
+        border-radius: 9px;
+        height: 15vw;
+        padding: 10px;
+    }
+
+}
+
+@media screen and (min-width: 601px) 
+{
+    .logo{
+        top: 10vw;
+        height: 4vw;
+        width: auto;    
+    }
+
+    .big-text{
+        font-size: 3vw;
+    }
+
+    .title{
+        font-weight: 700;
+        font-size: 1.8vw;
+    }
+
+
+    .connexion-input{
+        border: 3px solid #FF8304;
+        border-radius: 9px;
+        height: 2vw;
+        padding: 10px;
+    }
+
+}
+
+.card {
+    background-color: #ffffff;
+    border: solid 3px #FF8304;
+    border-radius: 30px;
+    box-sizing: border-box;
+    box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.75);
+    padding: 10px;
+    font-family: 'DM Sans';
+}
+
+.sondage{
+    font-family: 'DM Sans';
+    color: white;
+    font-weight: 700;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.modal-bordered{
+    border: 3px solid #FF8304;
+    border-radius: 30px;
+}
+
+.text-larger{
+    font-size: 150%;
+}
+
+.text-inform{
+    font-size: 75%;
+}
+
+.connexion-submit{
+    width: 75%;
+    border: 3px solid #FF8304;
+    border-radius: 9px;
+    padding: 10px;
+    font-weight: 500;
+}
