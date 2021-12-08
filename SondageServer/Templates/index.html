@@ -10,40 +10,35 @@
     <link rel="stylesheet" href="{% static 'CSS/vote.css' %}">
     <title>Sondages</title>
 </head>
-<body style="overflow-y: hidden; overflow-x: hidden; position: relative;">
+<body style="overflow-x: hidden; position: relative;">
     <div class="container-sm d-flex ms-1 mt-2 mb-2">
         <img src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}" class="logo rounded">
-        <h1 class="text-center sondage big-text">SONDAGE</h1>
+        <h1 class="text-center sondage">SONDAGE</h1>
     </div>
-    <div class="card m-4">
+    <div class="card mt-4 mb-4 form">
         <form id="my-form" action="/postVote/" method="post">
             {%csrf_token%}
-            <div>
-                <div class="text-center title big-text mt-1">
+            <div class="mb-4">
+                <div class="text-center big-text mt-1 mb-4">
                     <p>
                         La MDL vous demande votre avis !
                     </p>
                 </div>
-                <div class="text-center">
-                    <p class="text-larger">Tu préfères le soleil ou la pluie ? </p>
-                <div class="m-4">
-                    <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off" checked>
-                    <label class="btn btn-secondary" for="option1">Checked</label>
-                </div>
-                <div class="m-4">
-                    <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" checked>
-                    <label class="btn btn-secondary" for="option2">Checked</label>
+                <div class="text-center mt-4">
+                    <p class="text-larger" id="question"></p>
+                    <div id="answers">
+                    </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center mt-0">
                 <button type="submit" class="connexion-submit text-larger">Valider mon vote</button>
             </div>
         </form>
     </div>
     <div id="modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modal-test"> 
         <div class="modal-dialog modal-lg modal-connexion">
-            <div class="modal-content modal-bordered">
-                <div class="text-center title big-text mt-1">
+            <div class="modal-content modal-bordered p-1">
+                <div class="text-center big-text mt-1">
                     <p>
                         La MDL vous demande votre avis !
                     </p>

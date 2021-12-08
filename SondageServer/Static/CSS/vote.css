@@ -9,30 +9,58 @@ html{
 
 body {
     overflow-x: hidden;
-    height: 100%;
     position: relative;
     background : linear-gradient(90deg, #FFC488 71.81%, #FF845E 127.38%);
     font-weight: 500;
     }
 
 @media screen and (max-width: 600px) {
+
     .logo{
-        top: 1vh;
         height: 18vw;
         width: auto;    
     }
+
+    .sondage{
+        font-family: 'DM Sans';
+        position: relative;
+        top: 9vw;
+        left: 32vw;
+        transform: translateY(-50%) translateX(-50%);
+        color: white;
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        font-size: 12vw;
+        font-weight: 900;
+    }
     
     .big-text{
-        font-size: 8vw;
-        line-height: 8vw;
+        font-size: 7vw;
+        line-height: 7vw;
+        font-weight: 900;
     }
 
+    .form{
+        width: 90%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 
-    .connexion-input{
+    .vote-input{
+        font-size: 3vh;
         border: 3px solid #FF8304;
         border-radius: 9px;
-        height: 15vw;
+        height: 120%;
+        width: 90%;
         padding: 10px;
+    }
+
+    .connexion-submit{
+        width: 90%;
+        border: 3px solid #FF8304;
+        border-radius: 9px;
+        padding: 10px;
+        font-weight: 500;
+        font-size: 2;
     }
 
 }
@@ -40,26 +68,49 @@ body {
 @media screen and (min-width: 601px) 
 {
     .logo{
-        top: 10vw;
-        height: 4vw;
+        height: 7vw;
         width: auto;    
     }
 
+    .sondage{
+        font-family: 'DM Sans';
+        color: white;
+        position: absolute;
+        left: 50%;
+        top: 3.5vw;
+        transform: translateX(-50%) translateY(-50%);
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        font-size: 4vw;
+        line-height: 4vw;
+        font-weight: 900;
+    }
+
     .big-text{
-        font-size: 3vw;
+        font-size: 4vw;
+        font-weight: 900;
     }
 
-    .title{
-        font-weight: 700;
-        font-size: 1.8vw;
+    .form{
+        width: 70%;
+        left: 50%;
+        transform: translateX(-50%);
     }
 
-
-    .connexion-input{
+    .vote-input{
         border: 3px solid #FF8304;
         border-radius: 9px;
-        height: 2vw;
+        height: 120%;
+        width: 40%;
         padding: 10px;
+    }
+
+    .connexion-submit{
+        width: 40%;
+        border: 3px solid #FF8304;
+        border-radius: 9px;
+        padding: 10px;
+        font-weight: 500;
+        font-size: 2;
     }
 
 }
@@ -74,14 +125,11 @@ body {
     font-family: 'DM Sans';
 }
 
-.sondage{
-    font-family: 'DM Sans';
-    color: white;
-    font-weight: 700;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+.connexion-input{
+    border: 3px solid #FF8304;
+    border-radius: 9px;
+    height: 50px;
+    padding: 10px;
 }
 
 .modal-bordered{
@@ -95,12 +143,4 @@ body {
 
 .text-inform{
     font-size: 75%;
-}
-
-.connexion-submit{
-    width: 75%;
-    border: 3px solid #FF8304;
-    border-radius: 9px;
-    padding: 10px;
-    font-weight: 500;
 }
