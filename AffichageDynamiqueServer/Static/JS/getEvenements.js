@@ -260,4 +260,4 @@ setInterval(() =>
     }
     gapi.load('client', getCalendar())
     
-}, 1000 * 9)
+}, 1000 * 60 * 60)
