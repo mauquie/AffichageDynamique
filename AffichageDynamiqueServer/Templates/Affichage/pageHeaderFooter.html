@@ -39,16 +39,10 @@
             </div>
         </div>
         <div class="col-2 border-start border-danger border-3">
-            <img src="https://cdn.weatherapi.com/weather/64x64/night/143.png" class="widget">
-            <div id="myClock" class="rounded-3 me-3 text-center clock"></div>
-        </div>
+            {% include "./weatherWidget.html" %}
+        </div> 
     </div>
-    <script src="{% static 'JS/clockApp.js' %}"></script>
-    <script>
-        showTime("myClock", false)
-    </script>
     <script src="{% static 'JS/getInfos.js' %}"></script>
-    <script src="{% static 'JS/weatherApp.js' %}"></script>
     <script src="{% static 'JS/anime.min.js' %}"></script>
 
 </footer>

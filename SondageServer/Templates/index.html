@@ -1,19 +1,62 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+    <link rel="stylesheet" href="{% static 'CSS/vote.css' %}">
     <title>Sondages</title>
 </head>
-<body>
-    <h1>Sondages</h1>
-    <form action="/postVote/" method="post">
-        {%csrf_token%}
-        <input type="text" name="username" placeholder="username">
-        <input type="text" name="password"  placeholder="password">
-        <input type="text" name="vote" placeholder="id de la rep">
-        <button type="submit">Envoyer</button>
-    </form>
+<body style="overflow-x: hidden; position: relative;">
+    <div class="container-sm d-flex ms-1 mt-2 mb-2">
+        <img src="{% static 'IMG/Logo_lycée_Bourdelle.jpg' %}" class="logo rounded">
+        <h1 class="text-center sondage">SONDAGE</h1>
+    </div>
+    <div class="card mt-4 mb-4 form">
+        <form id="my-form" action="/postVote/" method="post">
+            {%csrf_token%}
+            <div class="mb-4">
+                <div class="text-center big-text mt-1 mb-4">
+                    <p>
+                        La MDL vous demande votre avis !
+                    </p>
+                </div>
+                <div class="text-center mt-4">
+                    <p class="text-larger" id="question"></p>
+                    <div id="answers">
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-0">
+                <button type="submit" class="connexion-submit text-larger">Valider mon vote</button>
+            </div>
+        </form>
+    </div>
+    <div id="modal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modal-test"> 
+        <div class="modal-dialog modal-lg modal-connexion">
+            <div class="modal-content modal-bordered p-1">
+                <div class="text-center big-text mt-1">
+                    <p>
+                        La MDL vous demande votre avis !
+                    </p>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="text-larger">Connecte toi au plus vite pour répondre à ce sondage !</p>
+                <div class="m-4">
+                    <input form="my-form" type="text" name="username" class="connexion-input" placeholder="Identifiants">
+                </div>
+                <div class="m-4">
+                    <input form="my-form" type="password" name="password" class="connexion-input" placeholder="Mot de passe">
+                </div>
+                <p class="text-inform">(Les identifiants sont les mêmes que pour les ordinateurs au lycée)</p>
+            <div class="modal-footer d-flex justify-content-center">
+                <button type="button" class="btn connexion-submit text-larger" data-bs-dismiss="modal">Connexion</button>
+            </div>
+        </div>
+    </div>
 </body>
+<script src="{% static 'JS/vote.js' %}"></script>
 </html>
