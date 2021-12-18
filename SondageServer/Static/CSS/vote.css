@@ -143,3 +143,13 @@ body {
 .text-inform{
     font-size: 75%;
 }
+
+.no-survey{
+    position: absolute;
+    font-family: "DM Sans";
+    font-size: 4vh;
+    width: 70%;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
