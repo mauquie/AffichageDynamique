@@ -174,3 +174,5 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = "Medias/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "Medias")
+
+TWITTER_BEARER_TOKEN = dotenv["TWITTER_BEARER_TOKEN"]

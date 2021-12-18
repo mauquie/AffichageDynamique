@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+
+from ApiServer.twitter import getLastTweets
 from .models import Article, Info, SondageAdmin, Display, Repas, ProfAbsent, Sondage, Reponse, Vote
 from django.contrib.auth import authenticate
 import datetime
@@ -257,3 +259,9 @@ def postVote(request):
 
         else:
             return JsonResponse({"code": 403,"message": "Les identifiants sont invalides"})
+
+def getTweets(request):
+    #Vue renvoyant les 5 derniers tweets postés
+    tweets = getLastTweets()
+
+    return JsonResponse(tweets)

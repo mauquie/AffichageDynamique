@@ -11,4 +11,5 @@ urlpatterns = [
     path('menus', views.getMenus),
     path('profsAbs', views.getProfsAbs),
     path('postVote', views.postVote),
+    path('tweets', views.getTweets),
 ]

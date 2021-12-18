@@ -39,7 +39,10 @@
                 </div>
         </div>
         <div class="row">
-            <div class="col-4" style="height: 20vh;"></div>
+            <div class="col-4" style="height: 20vh;">
+                {% include "./twitter.html" with max_tweets=1 %}
+
+            </div>
             <div class="col-8 agenda" hidden=true id="agenda">
                 <div class="agenda-titre">
                     <div class="parallelograme-titre"></div>

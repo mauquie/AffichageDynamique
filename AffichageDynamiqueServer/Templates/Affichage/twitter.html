@@ -1,0 +1,117 @@
+{% block content %}
+<style>
+    .tweet {}
+
+    .circle {
+        border-radius: 100%;
+        border: solid 1px rgba(255, 131, 4, 0.6);
+        width:10vh;
+        height:10vh;
+        background-image: url(https://pbs.twimg.com/profile_images/961224496651886592/trk8l7uw_400x400.jpg);
+        background-size: contain;
+    }
+
+    .colored{
+        color:rgba(255, 38, 4, 0.8);
+    }
+</style>
+<div>
+    <div id="tweets" class="card">
+        <div class="title fw-bold fs-2" style="margin-bottom:10px">Le Twitter</div>
+        
+    </div>
+</div>
+<script>
+function getTweets(){
+    //Fonction récupérant les tweets depuis le serveur affichageDynamique
+    fetch("/api/tweets")
+        .then(data => {return data.json()})
+        .then(response => {
+            //Pour chaque tweet, jusqu'au max de tweet qu'on peut afficher
+            for (let i = 0; i < {{max_tweets}}; i++){
+                showTweet(response.data[i])
+            }
+        })
+        .catch(err => {
+            console.error(err)
+        })
+}
+
+function parseDate(tweetDate){
+    //Fonction renvoyant le temps entre maintenant et la date de création du tweet
+    let date = new Date()
+
+    //Différence entre les deux en milliseconds
+    let difference = Math.abs(date - new Date(tweetDate))
+
+    //Différence en secondes
+    difference /= 1000
+    //Variable contenant la différence + l'unité
+    time = difference + " secondes"
+
+    //S'il y a plus que 60secondes
+    if (difference > 60){
+        difference /= 60
+        time = Math.ceil(difference) + " minutes"
+    }
+
+    //S'il y a plus que 60minutes
+    if (difference > 60){
+        difference /= 60
+        time = Math.ceil(difference) + " heures"
+    }
+
+    //S'il y a plus que 24heures
+    if (difference > 24){
+        difference /= 24
+        time = Math.ceil(difference) + " jours"
+    }
+
+    return time
+}
+
+function parseText(text){
+    //Fonction renvoyant le texte à afficher avec les @ et les liens en surbrillance
+    text = text.replace(/@([^ ]+)/g, '<span class="colored">@$1</span>');
+    text = text.replace(/http([^ ]+)/g, '<span class="colored">http$1</span>');
+
+    return text
+}
+
+function showTweet(tweet){
+    //Fonction affichant un tweet à la fois à l'écran
+    let tweetList = document.getElementById("tweets")
+
+    let time = parseDate(tweet.created_at)    
+
+    let text = parseText(tweet.text)
+
+    tweets.innerHTML += `
+        <div class="tweet row">
+            <div class="col-3">
+                <div class="circle">
+                </div>
+            </div>
+            <div class="col-9">
+                <div>
+                    <span class="fs-5" style="font-weight:bolder;">LycéeBourdelle</span>
+                    <small class="text-muted">Il y a ${time}</small>
+                </div>
+                
+                <span style="font-weight: 500;">${text}</span>
+            </div>
+        </div>
+    `
+}
+
+getTweets()
+setInterval(()=>{
+    let tweetList = document.getElementById("tweets")
+    for (let i = i; i < tweetList.children.length; i++){
+        tweetList.removeChild(tweetList.children[i])
+    }
+    getTweets()
+}, 1000 * 60 * 15) //Mise à jour de l'écran toutes les 15mn
+
+</script>
+{% endblock %}
