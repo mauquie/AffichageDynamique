@@ -128,7 +128,7 @@ function gestionError(err, res){
     console.error(err)
 
     if(err.code == 5){
-        console.log(genereateDate() + "Rebooting the server")
+        console.log(generateDate() + "Rebooting the server")
         loadSession()
     }
 
@@ -156,7 +156,7 @@ function loadSession(){
             })
 
             server.listen(5000)
-            console.log("Serveur lancé sur le port 5000")
+            console.log(generateDate() + "Serveur lancé sur le port 5000")
         })
         .catch((err) => {
             console.error(generateDate() + "Ups pronote connection error :")
