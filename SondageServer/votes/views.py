@@ -18,6 +18,9 @@ def alreadyVoted(request):
 def missingInfo(request):
     return render(request, "missing.html")
 
+def badId(request):
+    return render(request, "bad.html")
+
 def index(request):
     url = requests.get('http://localhost:8000/api/sondages')
     data = json.loads(url.content)
@@ -40,7 +43,10 @@ def postVote(request):
         if postVoteRequest.json()["code"] == 400:
             return HttpResponseRedirect("/missing")
         elif postVoteRequest.json()["code"] == 403:
-            return HttpResponseRedirect("/already")
+            if postVoteRequest.json()["message"] == "Les identifiants sont invalides":
+                return HttpResponseRedirect("/bad")
+            elif postVoteRequest.json()["message"] == "A déjà voté":
+                return HttpResponseRedirect("/already")
         elif postVoteRequest.json()["code"] == 404:
             return HttpResponseRedirect("/expired")
         elif postVoteRequest.json()["code"] == 200:
