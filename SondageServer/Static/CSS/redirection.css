@@ -1,0 +1,85 @@
+@font-face {
+    font-family: "DM Sans";
+    src: url("/static/FONTS/DMSans-Regular.ttf");
+}
+
+.container-message{
+    font-family: "DM Sans";
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    transform: translateY(-50%) translateX(-50%);
+
+}
+
+.button{
+    border: 3px solid #FF8304;
+    border-radius: 9px;
+    padding: 10px;
+    width: min-content;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+@media screen and (max-width: 600px) {
+
+    .card {
+        background-color: #ffffff;
+        border: solid 3px #FF8304;
+        border-radius: 30px;
+        box-sizing: border-box;
+        box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.75);
+        padding: 10px;
+        width: 90%;
+    }
+
+    .title{
+        font-size:2.3em;
+    }
+    
+    .subtitle{
+        font-size: 1.2em;
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 800px){
+
+    .card {
+        background-color: #ffffff;
+        border: solid 3px #FF8304;
+        border-radius: 30px;
+        box-sizing: border-box;
+        box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.75);
+        padding: 10px;
+        width: 80%;
+    }
+    .title{
+        font-size:2em;
+    }
+    
+    .subtitle{
+        font-size: 1em;
+    }
+}
+
+@media screen and (min-width: 801px) 
+{
+    .card {
+        background-color: #ffffff;
+        border: solid 3px #FF8304;
+        border-radius: 30px;
+        box-sizing: border-box;
+        box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.75);
+        padding: 10px;
+        width: 30%;
+    }
+
+    .title{
+        font-size:2.8em;
+    }
+    
+    .subtitle{
+        font-size: 1.5em;
+    }
+}

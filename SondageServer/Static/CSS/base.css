@@ -1,0 +1,57 @@
+@font-face {
+    font-family: "DM Sans";
+    src: url("/static/FONTS/DMSans-Regular.ttf");
+}
+
+html{
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    height: 100%;
+    overflow-x: hidden;
+    position: relative;
+    background : linear-gradient(90deg, #FFC488 71.81%, #FF845E 127.38%);
+    font-weight: 500;
+}
+
+@media screen and (max-width: 600px) {
+    .logo{
+        height: 18vw;
+        width: auto;    
+    }
+
+    .sondage{
+        font-family: 'DM Sans';
+        position: relative;
+        top: 9vw;
+        left: 32vw;
+        transform: translateY(-50%) translateX(-50%);
+        color: white;
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        font-size: 12vw;
+        font-weight: 900;
+    }
+}
+
+@media screen and (min-width: 601px) 
+{
+    .logo{
+        height: 7vw;
+        width: auto;    
+    }
+
+    .sondage{
+        font-family: 'DM Sans';
+        color: white;
+        position: absolute;
+        left: 50%;
+        top: 3.5vw;
+        transform: translateX(-50%) translateY(-50%);
+        text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        font-size: 4vw;
+        line-height: 4vw;
+        font-weight: 900;
+    }
+}

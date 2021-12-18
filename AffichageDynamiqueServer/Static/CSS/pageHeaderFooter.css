@@ -39,10 +39,10 @@ body {
 }
 
 .qrcode{
-    height: 8vh;
+    height: 9vh;
     width: auto;
     float: left;
-    transform: translateY(1vh);
+    transform: translateY(0.6vh);
     
 }
 
@@ -52,6 +52,7 @@ body {
     top: 5vh;
     transform: translateY(-50%);
     font-size: 1.8vh;
+    font-weight: 900;
 }
 
 .colInfo{
@@ -68,6 +69,7 @@ body {
     position: relative;    
     top: 5vh;
     transform: translateY(-50%);
+    font-weight: 700;
 }
 
 .colHeure{

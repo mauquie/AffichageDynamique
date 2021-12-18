@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'CSS/redirection.css' %}">
+<div class="text-center container-message card">
+    <h1 class="mt-4 title">Merci de tant d'implication mais...</h1>
+    <p class="ms-4 mt-4 me-4 subtitle"> Vous ne pouvez tout de même pas voter deux fois !</p>
+    <p class="ms-4 me-4 subtitle"> Essayez de revenir un peu plus tard</p>
+</div>
+{% endblock %}

@@ -18,9 +18,13 @@ from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
 
-from votes.views import index, postVote
+from votes.views import index, postVote, missingInfo, alreadyVoted, successVote, surveyExpired
 
 urlpatterns = [
     path('', index),
     path('postVote/', postVote),
+    path('missing/', missingInfo),
+    path('already/', alreadyVoted),
+    path('success/', successVote),
+    path('expired/', surveyExpired),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

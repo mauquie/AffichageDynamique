@@ -24,6 +24,38 @@ dictMois = {
     11 : "Dec",
 }
 
+//fonction qui affiche / cache les cases vides d'évènements
+function displayEventsContainer(listeEvents)
+{
+    domDateContainer1 = document.getElementById("date-first")
+    domDateContainer2 = document.getElementById("date-second")
+    domDateContainer3 = document.getElementById("date-third")
+    domEvContainer1 = document.getElementById("ev-first")
+    domEvContainer2 = document.getElementById("ev-second")
+    domEvContainer3 = document.getElementById("ev-third")
+    domListeDate = document.getElementById("liste-date")
+    domListeEv = document.getElementById("liste-evenement")
+    listDateContainers = [domDateContainer1, domDateContainer2, domDateContainer3]
+    listeEvContainers = [domEvContainer1, domEvContainer2, domEvContainer3]
+    if (listeEvents.length > 0)
+    {
+        for (i=2; i >= listeEvents.length; i--)
+        {
+            listDateContainers[i].hidden = true
+            listeEvContainers[i].hidden = true
+        }
+        for (i=listeEvents.length-1; i >= 0; i--)
+        {
+            listDateContainers[i].hidden = false
+            listeEvContainers[i].hidden = false
+        }
+        domListeDate.style.transform = "translateX(" + 17*(3-listeEvents.length) + "vh) translateY(-27%)"
+        domListeEv.style.transform = "translateX(" + 17*(3-listeEvents.length) + "vh) translateY(-2.3vh)"
+    }
+
+
+}
+
 //fonction vérifiant que l'évènement ne dépasse pas le container, si oui : raccourcissement du texte
 function checkHeight(domEv, raccourci)
 {
@@ -56,7 +88,7 @@ function nettoyage()
     //vide les dom évènements
     domEv1.innerText = ""
     domEv2.innerText = ""
-    domEv3.innerText = ""
+    domEv3.innerText = ""   
     domDate1.innerText = ""
     domDate2.innerText = ""
     domDate3.innerText = ""
@@ -179,15 +211,11 @@ function getCalendar()
         //Doc du calendriers, nécessaire pour le fonctionnement.
         'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
     }).then(() => {
-        dateMax = new Date()
-        dateMax.setDate(dateMax.getDate()+5) //on ne veut pas récupérer des événements qui auront lieu
-        dateMax.setHours(23, 59, 59)  //dans plus de 5 jours
         return gapi.client.calendar.events.list({
             'calendarId': calendarId, 
             'timeZone': userTimeZone,
             'singleEvents': true, //Permet d'obtenir les évènements récurrents en tant qu'évènements uniques.
             'timeMin': (new Date()).toISOString(), //Évite de donner les évènements passés.
-            'timeMax': dateMax.toISOString(),
             'orderBy': 'startTime'
         })
     }).then(response => {
@@ -202,14 +230,17 @@ function getCalendar()
             listeEvents = prepareListeEvents(events)
             if (listeEvents.length < 4)
             {
+                displayEventsContainer(listeEvents)
                 affichageBouclage(listeEvents, true)
                 return
             }
             else
             {
+                displayEventsContainer(listeEvents)
                 affichageBouclage(listeEvents, false)
                 intervalEvenements = setInterval(()=> //recupération de l'interval pour le clear à chaque refresh
                 {      
+                    displayEventsContainer(listeEvents)
                     affichageBouclage(listeEvents, false)
                 }, 1000 * 30)    
             }
