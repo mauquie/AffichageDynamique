@@ -3,10 +3,14 @@
 <div class="border rounded-3 m-3 mb-5 p-4 ">
     {% if informations %}
     <div class="alert alert-secondary">
-        <div class=" my-3">
+        <div class=" mt-3">
             <label for="author">Crée par</label>
             <label class="fw-bold"><a href="/comptes/modifier?id={{informations.sondage.author.id}}" target="_blank" class="clickable">{{informations.sondage.author}}</a></label>
             <label for="date">le {{informations.sondage.date_creation}}</label>
+        </div>
+        <div class=" my-3">
+            <label>Voir les résultats</label>
+            <label class="fw-bold"><a href="/parametres/sondages/voirResultats?id={{informations.sondage.id}}" target="" class="clickable">ici</a></label>
         </div>
     </div>
     {%else%}

@@ -116,7 +116,7 @@
                             <table class="table table-hover">
                                 <thead class="">
                                     <tr>
-                                        <th scope="col">Description</th>
+                                        <th scope="col">Question</th>
                                         <th scope="col">Dernier jour à l'affiche</th>
                                         <th scope="col">Est affiché</th>
                                     </tr>
@@ -124,11 +124,11 @@
                                 <tbody class="tbody-pointer">
 
                                     {%for sondage in informations.sondages %}
-                                    <tr class="sondage-row {%if sondage.is_shown%}table-warning{%endif%}" id="{{sondage.id}}" 
+                                    <tr class="sondage-row {%if sondage.est_affiche%}table-warning{%endif%}" id="{{sondage.id}}" 
                                         onclick="window.location = '/parametres/sondages/modifier?id={{sondage.id}}'">
-                                        <td scope="row">{{sondage.description}}</td>
-                                        <td>{{sondage.expiration_date}}</td>
-                                        <td>{%if sondage.is_shown%}Oui{%else%}Non{%endif%}</td>
+                                        <td scope="row">{{sondage.question}}</td>
+                                        <td>{{sondage.date_fin}}</td>
+                                        <td>{%if sondage.est_affiche%}Oui{%else%}Non{%endif%}</td>
                                     </tr>
                                     {%endfor%}
                                 </tbody>
