@@ -36,10 +36,11 @@ function getWeatherInfos() {
 
                 }
 
+
                 //Pour toutes les heures à partir de currentHour jusque la fin de la liste
                 for (let i = currentHour; i < data.forecast.forecastday[jour].hour.length; i++) {
-                    //Si on a déjà 12 cartes affichées on coupe la boucle
-                    if (nbCardsShown == 12) {
+                    //Si on a déjà 5 cartes affichées on coupe la boucle
+                    if (nbCardsShown == 5) {
                         break;
 
                     } else if (nbCardsShown == 0) {
@@ -96,21 +97,15 @@ function addWeatherCard(temp, time, imgLink, firstOne = false) {
     temp = temp + "°C"
 
     //Ajout d'une carte correspondante à une heure
-    cardList.innerHTML += '\
-        <li class="list-group-item col-1" style="border: none;background:none; ">\
-            <div class="card text-center" style="">\
-                <div class="card-header">\
-                    <span class="' + tempClass + ' fs-5">' + temp + '</span>\
-                </div>\
-                <div class="card-body">\
-                    <img src="https:' + imgLink + '" style="width: 8vh; height:auto">\
-                </div>\
-                <div class="card-footer text-muted fs-6">\
-                    ' + time + '\
-                </div>\
-            </div>\
-        </li>\
-    '
+    cardList.innerHTML += `\
+        <div class="col-2 mx-2 weatherCard text-center">
+            <span class="fs-4 d-flex justify-content-center">${time}</span>
+            <hr>
+            <img src="${imgLink}" alt="" style="max-width: 100%">
+            <hr>
+            <span class="fs-4 d-flex justify-content-center ${tempClass}">${temp}</span>
+        </div>
+    `
 }
 
 //Première éxécution de la fonction quand la page a chargé
