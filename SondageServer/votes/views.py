@@ -36,7 +36,7 @@ def postVote(request):
         password = request.POST.get("password")
         vote = request.POST.get("vote")
 
-        postVoteRequest = requests.request(method="get", url="localhost:8000/api/postVote?vote={}&username={}&password={}".format(vote, username, password))
+        postVoteRequest = requests.request(method="get", url="http://localhost:8000/api/postVote?vote={}&username={}&password={}".format(vote, username, password))
         if postVoteRequest.json()["code"] == 400:
             return HttpResponseRedirect("/missing")
         elif postVoteRequest.json()["code"] == 403:
