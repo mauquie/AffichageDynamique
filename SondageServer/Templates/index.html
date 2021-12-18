@@ -2,7 +2,9 @@
 {% load static %}
 {% block content %}
     <div id="no-survey">
-        <p>Il n'y a aucun sondage actuellement, essayez de revenir plus tard !</p>
+        <div class="card no-survey text-center">
+            <p>Il n'y a aucun sondage actuellement, essayez de revenir plus tard !</p>
+        </div>
     </div>
     <div id="my-card" class="card mt-4 mb-4 form" hidden=true>
         <form id="my-form" action="/postVote/" method="post">
@@ -47,5 +49,9 @@
         </div>
     </div>
 <link rel="stylesheet" href="{% static 'CSS/vote.css' %}">
+<script>
+    var data = "{{data}}"
+    data = data.replace(/&quot;/g, "\"")
+</script>
 <script src="{% static 'JS/vote.js' %}"></script>
 {% endblock %}

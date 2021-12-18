@@ -27,10 +27,10 @@
 
 <footer class="footer">
     <div class="row rowFooter"id="rowFooter">
-        <div class="col-2 border-end border-danger tryc border-3">
-                <img class="qrcode ms-3 me-3" src="{% static 'IMG/qrcode.png' %}" >
+        <div class="col-2 border-end border-danger tryc border-3" id="">
+            <img class="qrcode ms-3 me-3" id="qrcode" src="{% static 'IMG/qrcode.png' %}" >
             <div>
-                <p class="me-1 text-vote">Ton avis compte ! Viens voter !</p>
+                <p class="me-1 text-vote" id="text-survey">Ton avis compte ! Viens voter !</p>
             </div>
         </div>
         <div class="col-8 text-center d-flex colInfo">
@@ -44,6 +44,33 @@
     </div>
     <script src="{% static 'JS/getInfos.js' %}"></script>
     <script src="{% static 'JS/anime.min.js' %}"></script>
+    <script>
+        fetch("http://localhost:8000/api/sondages").then((reponse) => reponse.json()).then((data) => {
+            if (data.length == 0)
+            {
+                document.getElementById("qrcode").hidden = true
+                document.getElementById("text-survey").hidden = true
 
+            }
+            else
+            {
+                document.getElementById("sondages").hidden = false
+                document.getElementById("text-survey").hidden = false
+            }
+        })
+        setInterval(() =>
+        {
+            fetch("/api/sondages").then((reponse) => reponse.json()).then((data) => {
+                if (data.length ==0)
+                {
+                    document.getElementById("sondages").hidden = true
+                }
+                else
+                {
+                    document.getElementById("sondages").hidden = false
+                }
+            })
+        },1000 * 60 * 60 * 2)
+    </script>
 </footer>
 </html>
