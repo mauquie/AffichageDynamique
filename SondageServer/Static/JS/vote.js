@@ -31,7 +31,6 @@ if (data.length == 0)
 }
 else
 {
-    data = JSON.parse(data)
     document.getElementById("no-survey").hidden = true
     document.getElementById("my-card").hidden = false
     DOMquestion.innerText = data[0].question
