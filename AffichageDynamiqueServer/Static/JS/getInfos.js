@@ -52,7 +52,7 @@ function getInformations()
 function changeInfo(listeInfo)
 {
     domInfo.innerHTML = listeInfo[indexInformations].message; 
-    domInfo.style.fontSize="80px" //Taille de base de l'info, adaptée après par setSize().
+    domInfo.style.fontSize="25px" //Taille de base de l'info, adaptée après par setSize().
 }
 
 function setSize()
@@ -63,7 +63,7 @@ function setSize()
     {
         fontSize = window.getComputedStyle(pInfoDom).fontSize //nécessaire pour transformer 
         fontSize = Number(fontSize.slice(0, fontSize.length-2))//"taille px" en une taille en int
-        pInfoDom.style.fontSize = parseFloat(fontSize-1) + "px"//puis repasser en "taille px"
+        pInfoDom.style.fontSize = parseFloat(fontSize-0.02) + "vh"//puis repasser en "taille px"
         setSize()
     }
 }
