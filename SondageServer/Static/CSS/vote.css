@@ -103,6 +103,10 @@ body {
         padding: 10px;
     }
 
+    .vote-input:hover{
+        color: black;
+    }
+
     .connexion-submit{
         width: 40%;
         border: 3px solid #FF8304;
@@ -110,6 +114,8 @@ body {
         padding: 10px;
         font-weight: 500;
         font-size: 2;
+        background-color: #ff57247e;
+        color: black;
     }
 
 }
