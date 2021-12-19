@@ -8,23 +8,33 @@ def refreshMenus():
         Fonction s'occupant de rafraichir les données du menu du jour dans la base de données au cas ou il ait changé
     """
     #Requete à pronote
-    requete = requests.get("http://127.0.0.1:5000/menus")
+    try:
+        requete = requests.get("http://127.0.0.1:5000/menus")
 
-    #S'il nous renvoie des données alors on va les traiter
-    if len(requete.json()["data"]) > 0:
-        menus = requete.json()["data"]
+    except requests.ConnectionError:
+        print("Impossible connection to pronoteServer, check if it's on.")
 
-        ajoutMenus(menus)
+    else:
+        #S'il nous renvoie des données alors on va les traiter
+        if len(requete.json()["data"]) > 0:
+            menus = requete.json()["data"]
+
+            ajoutMenus(menus)
 
 def refreshProfs():
     #Requete à pronote
-    requete = requests.get("http://127.0.0.1:5000/edt")
+    try:
+        requete = requests.get("http://127.0.0.1:5000/edt")
     
-    #S'il nous renvoie des données alors on va les traiter
-    if len(requete.json()["data"]) > 0:
-        edt = requete.json()["data"]
+    except requests.ConnectionError:
+        print("Impossible connection to pronoteServer, check if it's on.")
 
-        ajoutProfsAbsents(edt)
+    else:
+        #S'il nous renvoie des données alors on va les traiter
+        if len(requete.json()["data"]) > 0:
+            edt = requete.json()["data"]
+
+            ajoutProfsAbsents(edt)
 
 
 def ajoutMenus(menus):

@@ -41,6 +41,7 @@ class MeteoGetter:
         #Mise à jour de la derniere date où on a recup les data
         self.lastQuery = datetime.datetime.now()
         
+        print("Getting weather's data")
         meteoRes = requests.get("http://api.openweathermap.org/data/2.5/onecall?lat=44.0833&lon=1.5&exclude=daily,minutely&units=metric&appid=" + self.apiKey)
         
         #Mise à jour des données de la classe
