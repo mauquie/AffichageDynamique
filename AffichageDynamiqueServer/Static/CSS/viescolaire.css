@@ -40,8 +40,9 @@
     color: #000000;
 }
 
-.liste-profs {
-    font-size: 3vh;
+.prof-list {
+    font-size: 2.5vh;
+    margin-top: -20px;
 }
 
 .agenda{
