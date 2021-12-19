@@ -16,13 +16,13 @@ class MeteoGetter:
     """
     def __init__(self):
         #Récupération de l'heure + data actuelle mais en enlevant les minutes
-        self.lastQuery = datetime.datetime.now()
-        self.lastQuery = self.lastQuery.timestamp() - (self.lastQuery.minute * 60)
-
         self.apiKey = "ad46a56c32405526362b69fed3971632"
         self.lastData = {}
 
         self._fetchMeteo() #Récupération des données pour éviter d'attendre 55mn
+
+        self.lastQuery = datetime.datetime.now()
+        self.lastQuery = self.lastQuery.timestamp() - (self.lastQuery.minute * 60)
 
     def _canQuery(self):
         # Vérification qu'on peut faire la mise à jour des données
@@ -30,16 +30,18 @@ class MeteoGetter:
         # (Ce qui revient à 1 appel toutes les heures)
 
         #Vérification de la différence de temps entre la dernière fois qu'on a get et mtn
-        diff = datetime.datetime.now() - self.lastQuery
-        
-        if(diff.seconds > 60 * 60): #1 Requete toutes les 60 minutes
+        diff = datetime.datetime.now().timestamp() - self.lastQuery
+
+        if(diff > 60 * 60): #1 Requete toutes les 60 minutes
             return True
+
+        return False
 
     def _fetchMeteo(self):
         #Récupération des données depuis l'api de openweatherapi
 
         #Mise à jour de la derniere date où on a recup les data
-        self.lastQuery = datetime.datetime.now()
+        self.lastQuery = datetime.datetime.now().timestamp()
         
         print("Getting weather's data")
         meteoRes = requests.get("http://api.openweathermap.org/data/2.5/onecall?lat=44.0833&lon=1.5&exclude=daily,minutely&units=metric&appid=" + self.apiKey)
