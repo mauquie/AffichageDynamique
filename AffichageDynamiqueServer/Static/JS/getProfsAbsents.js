@@ -20,6 +20,25 @@ function divideProfs(listeProfs)
     return listeGroupesProfs
 }
 
+function showLi()
+{
+    for (i=0; i<DOMlisteProfs.length; i++)
+    {
+        DOMlisteProfs[i].hidden = false
+    }
+}
+
+function hideEmptyLi()
+{
+    for (i=0; i<DOMlisteProfs.length; i++)
+    {
+        if (DOMlisteProfs[i].innerHTML == "")
+        {
+            DOMlisteProfs[i].hidden = true
+        }
+    }
+}
+
 //prépare la liste des professeurs absents : formate les heures, trie en fonction des heures.
 function prepareListeProfs(listeProfs)
 {
@@ -62,8 +81,7 @@ function affichageProfs(listeProfs)
         {
             DOMlisteProfs[i].style.visibility="hidden"
         }
-    }
-    
+    }    
 }
 
 function animeEntreeProfs()
@@ -117,16 +135,20 @@ function getProfsAbs()
             listeProfs = prepareListeProfs(data) //préparation pour afficher la liste (tri + changer heures)
             listeGroupesProfs = divideProfs(listeProfs) //division de la liste en sous liste de taille 5
             animeSortieProfs().finished.then(() => {
+                showLi() //réaffiche tous les li
                 bouclage() //bouclage avant l'interval, pour afficher immédiatement les profs absents.
                 animeEntreeProfs()
+                hideEmptyLi() //cache les li qui sont vides
             }) 
             if (listeGroupesProfs.length > 1)
             {
                 interval = setInterval(()=>
                 {
                     animeSortieProfs().finished.then(() => {
+                        showLi()
                         bouclage()
                         animeEntreeProfs()
+                        hideEmptyLi()
                     })
                 }, 1000 * 30)
                 return interval

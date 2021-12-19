@@ -21,6 +21,15 @@
     margin-bottom: 30px;
 }
 
+.bonjour{
+    background: linear-gradient(100.5deg, #FF8304 2.01%, #FF2604 66.14%);
+    font-size: 4vh;
+    /* Mask the color to the text, and remove the rest  */
+    -webkit-background-clip: text;
+    /* Make the text fill color value transparent so the masked background color comes through */
+    -webkit-text-fill-color: transparent;
+}
+
 .content-no-article{
     font-family: 'DM Sans';
     font-size: 2.5vh;
