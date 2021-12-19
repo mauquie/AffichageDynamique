@@ -44,6 +44,7 @@
     </div>
     <script src="{% static 'JS/getInfos.js' %}"></script>
     <script src="{% static 'JS/anime.min.js' %}"></script>
+    <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script>
         fetch("http://localhost:8000/api/sondages").then((reponse) => reponse.json()).then((data) => {
             if (data.length == 0)

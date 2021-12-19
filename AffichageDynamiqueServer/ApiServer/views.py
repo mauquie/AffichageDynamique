@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from AffichageDynamiqueServer.ApiServer.meteo import MeteoGetter
 
 from ApiServer.twitter import getLastTweets
 from .models import Article, Info, SondageAdmin, Display, Repas, ProfAbsent, Sondage, Reponse, Vote
@@ -8,6 +9,7 @@ import datetime
 from .pronote import refreshMenus, refreshProfs
 import pytz
 
+meteoGetter = MeteoGetter()
 
 def hideExpiredObjects(query):
     #Récupération de la date d'hier
@@ -265,3 +267,8 @@ def getTweets(request):
     tweets = getLastTweets()
 
     return JsonResponse(tweets)
+
+def getMeteo(request):
+    meteo = meteoGetter.getMeteoData()
+
+    return JsonResponse(meteo)
