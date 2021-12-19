@@ -3,18 +3,21 @@
 <link rel="stylesheet" href="{% static 'CSS/meteo.css' %}">
 
 {% block weatherWidget %}
-<div class="d-inline-block" style="height: 10vh;">
-    <div style="transform:translateY(25%)">
-        <span id="weatherTemp" class="meteoSpan align-middle"></span>
-        <img id="weatherImage" class="d-inline-block align-middle" style="width: 5.5vh; height:auto; margin-top: -8px !important;">
-        <span class="rounded-3 text-center align-middle clock" id="myClock"></span>
+<div class="d-flex justify-content-center align-items-center" style="height: 10vh;">
+    <div class="">
+        <!-- <span id="weatherTemp" class="meteoSpan align-middle me-2"></span> -->
+        <img id="weatherImage" class="d-inline-block align-middle me-2" style="opacity: 0.8;">
+        <span class="rounded-3 text-center align-middle clock ms-2" id="myClock"></span>
     </div>
 
 </div>
 
-<script src="{% static 'JS/weatherWidget.js' %}"></script>
+<script src="{% static 'JS/weatherApp.js' %}"></script>
 <script src="{% static 'JS/clockApp.js' %}"></script>
 <script>
     showTime('myClock')
+
+    //Initialisation du widget meteo
+    var weatherApp = new WeatherApp()
 </script>
 {% endblock %}
