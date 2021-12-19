@@ -12,6 +12,7 @@ class WeatherApp{
      */
     constructor(){
         this.data = {}
+        this.todaysWeather = {}
 
         //Dictionnaire contenant les liens vers les images (jour) correspondant à la météo
         this.weatherDayIcons = {
@@ -96,7 +97,8 @@ class WeatherApp{
                 console.error(err);
             })
             .then(data => {
-                this.data = data["data"]
+                this.data = data["hourly"]
+                this.todaysWeather = data["today"]
             })
     }
 
@@ -166,5 +168,14 @@ class WeatherApp{
                 <span class="fs-4 d-flex justify-content-center ${tempClass}" style="3vh !important">${temp}</span>
             </div>
         `
+    }
+
+    getTodaysWeather(){
+        /**
+         * Retourne la météo moyenne de la journée
+         * 
+         * @returns {dict} - Météo d'aujourd'hui
+         */
+        return this.todaysWeather
     }
 }

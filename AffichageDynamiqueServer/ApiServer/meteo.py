@@ -44,10 +44,13 @@ class MeteoGetter:
         self.lastQuery = datetime.datetime.now().timestamp()
         
         print("Getting weather's data")
-        meteoRes = requests.get("http://api.openweathermap.org/data/2.5/onecall?lat=44.0833&lon=1.5&exclude=daily,minutely&units=metric&appid=" + self.apiKey)
+        meteoRes = requests.get("http://api.openweathermap.org/data/2.5/onecall?lat=44.0833&lon=1.5&exclude=current,minutely&units=metric&appid=" + self.apiKey)
         
         #Mise à jour des données de la classe
-        self.lastData = {"data": meteoRes.json()["hourly"]}
+        self.lastData = {
+            "hourly": meteoRes.json()["hourly"],
+            "today": meteoRes.json()["daily"][0]
+        }
     
     def getMeteoData(self):
         #Méthode s'occupant de renvoyer les données qd elles sont demandées par les écrans
