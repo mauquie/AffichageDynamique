@@ -43,10 +43,12 @@ class WeatherApp{
         //Appel des fonctions de création de la bar météo et du création du widget
         this._createWeatherBar()
         this._createWeatherWidget()
+        this._addMeteoText()
 
         setInterval(() => {
             this._createWeatherBar()
             this._createWeatherWidget()
+            this._addMeteoText()
             console.log("reload meteo")
         }, 1000 * 60) // Toutes les minutes
     }
@@ -135,6 +137,48 @@ class WeatherApp{
             domImage.src = imgLink
         })
     }
+
+    _addMeteoText(){
+        /**
+         * Ajout du texte lié à la météo dans l'article par défaut
+         */
+        //création dictionnaire liant météo et texte
+        let dictTextMeteo = {
+            "clear sky": "rayonnante !",
+            "few clouds": "nuageuse",
+            "scattered clouds": "nuageuse",
+            "broken clouds": "nuageuse",
+            "rain": "pluvieuse malheureusement",
+            "shower rain": "déluvienne, sortez vos parapluies !",
+            "thunderstorm": "orageuse malheureusement",
+            "snow": "enneigée brrrrrrr",
+            "mist": "brumeuse malheureusement"
+        }
+        //création dictionnaire liant météo et couleur
+        let dictColourMeteo = {
+            "clear sky": "red",
+            "few clouds": "gray",
+            "scattered clouds": "gray",
+            "broken clouds": "gray",
+            "rain": "blue",
+            "shower rain": "dark-blue",
+            "thunderstorm": "yellow",
+            "snow": "white",
+            "mist": "gray",
+        }
+        //Récupération du texte à colorer
+        this._getData().then(() => {
+            //Récupération du texte lié à la météo
+            let meteoText = document.getElementById("text-meteo")
+            //Récupération de la moyenne météorologique du jour
+            let weather = this.getTodaysWeather()
+            //Modification du texte et de sa couleur lié à la météo dans l'article par défaut
+            meteoText.innerText = dictTextMeteo[weather.weather[0].description]
+            meteoText.style.color = dictColourMeteo[weather.weather[0].description]
+        })
+    }
+
+
 
     _addCard(temp, time, imgLink){
         /**
