@@ -43,7 +43,6 @@ body {
     width: auto;
     float: left;
     transform: translateY(0.6vh);
-    
 }
 
 .text-vote{
@@ -61,7 +60,7 @@ body {
 }
 
 .infoContainer{
-    height: 60%;
+    height: 80%;
 }
 
 
@@ -85,6 +84,6 @@ body {
 }
 
 .clock{
-    font-size: 5vh;
+    font-size: 6.5vh;
     font-family: 'DM Sans';
 }

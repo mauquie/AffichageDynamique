@@ -1,6 +1,31 @@
 DOMarticle = document.getElementById("article")
 DOMPasArticle = document.getElementById("pasArticle")
 
+days = {
+    0 : "dimanche",
+    1 : "lundi",
+    2 : "mardi",
+    3 : "mercredi",
+    4 : "jeudi",
+    5 : "vendredi",
+    6 : "samedi",
+}
+
+months = {
+    0 : "janvier",
+    1 : "février",
+    2 : "mars",
+    3 : "avril",
+    4 : "mai",
+    5 : "juin",
+    6 : "juillet",
+    7 : "août",
+    8 : "septembre",
+    9 : "octobre",
+    10 : "novembre",
+    11 : "décembre",
+}
+
 //fade in de l'article
 function animeEntreeArticle(domElement) {
     anime({
@@ -10,6 +35,15 @@ function animeEntreeArticle(domElement) {
         easing: "linear",
         delay: 400
     })
+}
+
+//fonction ajoutant la date du jour à l'article d'aujourd'hui
+function setDefaultArticle()
+{
+    date = new Date()
+    text = `Nous sommes le ${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} `
+    text += "et la journée s'annonce plutôt "
+    document.getElementById("text-no-article").innerText = text
 }
 
 //fade out de l'article
@@ -65,9 +99,15 @@ function getArticles() {
         if (articles.length == 0 && !DOMarticle.hidden) {
             animeSortieArticle(DOMarticle).finished.then(() => {
                 DOMarticle.hidden = true
-                animeEntreeArticle(DOMPasArticle)
                 DOMPasArticle.hidden = false
+                setDefaultArticle()
+                animeEntreeArticle(DOMPasArticle)
             })
+            return
+        }
+        else if (articles.length == 0)
+        {
+            setDefaultArticle()
             return
         }
         else if (articles.length >= 1) {   //gestion de l'incrémentation et du bon bouclage

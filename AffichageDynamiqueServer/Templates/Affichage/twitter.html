@@ -9,6 +9,7 @@
         height:10vh;
         background-image: url(https://pbs.twimg.com/profile_images/961224496651886592/trk8l7uw_400x400.jpg);
         background-size: contain;
+        margin: auto
     }
 
     .colored{
@@ -71,11 +72,30 @@ function parseDate(tweetDate){
 }
 
 function parseText(text){
-    //Fonction renvoyant le texte à afficher avec les @ et les liens en surbrillance
+    /**
+     * Fonction renvoyant le texte à afficher avec les @ et les liens en surbrillance
+     * et le découpant à max 280 caractères
+     * 
+     * @param text {string} - texte à modifier
+     */ 
     text = text.replace(/@([^ ]+)/g, '<span class="colored">@$1</span>');
     text = text.replace(/http([^ ]+)/g, '<span class="colored">http$1</span>');
 
-    return text
+    let newText = []
+
+    //S'il est plus long que 280 caractères
+    if (text.length > 280){
+        //Pour les 280 caractères on ajoute le caractère à la liste newText
+        for (let i = 0; i < 280; i++){
+            newText.push(text[i])
+        }
+
+        newText.push("...")
+        //On reforme le text
+        newText = newText.join("")
+    }
+
+    return newText
 }
 
 function showTweet(tweet){
@@ -94,11 +114,11 @@ function showTweet(tweet){
             </div>
             <div class="col-9">
                 <div>
-                    <span class="fs-5" style="font-weight:bolder;">LycéeBourdelle</span>
-                    <small class="text-muted">Il y a ${time}</small>
+                    <span style="font-weight:bolder; font-size:2.7vh">LycéeBourdelle</span>
+                    <small class="text-muted" style="font-size:1.9vh">Il y a ${time}</small>
                 </div>
                 
-                <span style="font-weight: 500;">${text}</span>
+                <p class="lh-sm mt-1" style="font-weight: 500; font-size:2vh">${text}</p>
             </div>
         </div>
     `
@@ -107,7 +127,7 @@ function showTweet(tweet){
 getTweets()
 setInterval(()=>{
     let tweetList = document.getElementById("tweets")
-    for (let i = i; i < tweetList.children.length; i++){
+    for (let i = 0; i < tweetList.children.length; i++){
         tweetList.removeChild(tweetList.children[i])
     }
     getTweets()

@@ -3,25 +3,34 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'CSS/viescolaire.css' %}">
 <div class="container-fluid pt-2 ps-4 pe-4">
-    <div class="row mt-3">
+    <div class="row mt-0">
         <div class="col-4">
-            <div id="listeProfsCachable" hidden="true" class="card">
-                <p class="title fw-bold" style="font-size: 5vh;">Absences</p>
-                <ul id="listeProfs" class="ms-3">
-                    <li class="list-item liste-profs m-2"></li>
-                    <li class="list-item liste-profs m-2"></li>
-                    <li class="list-item liste-profs m-2"></li>
-                    <li class="list-item liste-profs m-2"></li>
-                    <li class="list-item liste-profs m-2"></li>
-                </ul>
-            </div>
-            <div hidden="false" id="textePasAbsences" class="card me-2 text-center">
-                <p style="font-size : 4vh;"> Il n'y a aucun professeur absent aujourd'hui.</p>
-            </div>
-            <div class="card ms-2 me-3" hidden="true" id="carteEvenement">
-                <div class="card">
-                    <h3 id="titreEvenement" class="card-title" style="font-size: 2.5vh;"></h3>
-                    <p id="contenuEvenement" class="card-text" style="font-size: 2vh;"> </p>
+            <div class="row">
+                <div class="col-12">
+                    <div id="listeProfsCachable" hidden="true" class="card">
+                        <p class="title fw-bold" style="font-size: 5vh;">Absences</p>
+                        <div class="prof-list">
+                            <ul id="listeProfs" class="ms-3">
+                                <li class="list-item liste-profs m-2"></li>
+                                <li class="list-item liste-profs m-2"></li>
+                                <li class="list-item liste-profs m-2"></li>
+                                <li class="list-item liste-profs m-2"></li>
+                                <li class="list-item liste-profs m-2"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div hidden="false" id="textePasAbsences" class="card text-center">
+                        <p style="font-size : 4vh;"> Il n'y a aucun professeur absent aujourd'hui.</p>
+                    </div>
+                    <div class="card ms-2 me-3" hidden="true" id="carteEvenement">
+                        <div class="card">
+                            <h3 id="titreEvenement" class="card-title" style="font-size: 2.5vh;"></h3>
+                            <p id="contenuEvenement" class="card-text" style="font-size: 2vh;"> </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    {% include "./twitter.html" with max_tweets=1 %}
                 </div>
             </div>
         </div>
@@ -34,15 +43,13 @@
                 </div>
             </div>
             <div id="pasArticle" class="card ms-3 me-3" style="font-size: 2.5vw;">
-                <p>Bonjour Bourdelle !</p>
+                <h4 class="title bonjour fw-bold">Bonjour !</h4>
+                <p class="text-center content-no-article"><span id="text-no-article"></span><span id="text-meteo"></span></p>
+                <p class="text-center content-no-article">Rien que pour vous, les prévisions météo des 6 prochaines heures :</p>
                 {% include "./meteoBar.html" %}
                 </div>
         </div>
         <div class="row">
-            <div class="col-4" style="height: 20vh;">
-                {% include "./twitter.html" with max_tweets=1 %}
-
-            </div>
             <div class="col-8 agenda" hidden=true id="agenda">
                 <div class="agenda-titre">
                     <div class="parallelograme-titre"></div>
@@ -99,7 +106,6 @@
         </div>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="{% static 'JS/getArticles.js' %}"></script>
-    <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script src="{% static 'JS/getProfsAbsents.js' %}"></script>
     <script src="{% static 'JS/getEvenements.js' %}"></script>
     </div>

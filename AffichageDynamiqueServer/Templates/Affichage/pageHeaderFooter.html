@@ -35,7 +35,7 @@
         </div>
         <div class="col-8 text-center d-flex colInfo">
             <div id="infoContainer" class="text-center infoContainer border-3">
-                <p id="information" class="text-center information" style="font-size: 80px;"></p>
+                <p id="information" class="text-center information" style="font-size: 25vh;"></p>
             </div>
         </div>
         <div class="col-2 border-start border-danger border-3">
@@ -44,6 +44,7 @@
     </div>
     <script src="{% static 'JS/getInfos.js' %}"></script>
     <script src="{% static 'JS/anime.min.js' %}"></script>
+    <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script>
         fetch("http://localhost:8000/api/sondages").then((reponse) => reponse.json()).then((data) => {
             if (data.length == 0)
@@ -65,7 +66,6 @@
                 {
                     document.getElementById("qrcode").hidden = true
                     document.getElementById("text-survey").hidden = true
-
                 }
                 else
                 {
