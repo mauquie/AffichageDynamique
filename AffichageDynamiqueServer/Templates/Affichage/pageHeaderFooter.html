@@ -54,20 +54,23 @@
             }
             else
             {
-                document.getElementById("sondages").hidden = false
+                document.getElementById("qrcode").hidden = false
                 document.getElementById("text-survey").hidden = false
             }
         })
         setInterval(() =>
         {
             fetch("/api/sondages").then((reponse) => reponse.json()).then((data) => {
-                if (data.length ==0)
+                if (data.length == 0)
                 {
-                    document.getElementById("sondages").hidden = true
+                    document.getElementById("qrcode").hidden = true
+                    document.getElementById("text-survey").hidden = true
+
                 }
                 else
                 {
-                    document.getElementById("sondages").hidden = false
+                    document.getElementById("qrcode").hidden = false
+                    document.getElementById("text-survey").hidden = false
                 }
             })
         },1000 * 60 * 60 * 2)
