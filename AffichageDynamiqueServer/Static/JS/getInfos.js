@@ -53,9 +53,6 @@ function changeInfo(listeInfo)
 {
     domInfo.innerHTML = listeInfo[indexInformations].message; 
     domInfo.style.fontSize="4vh" //Taille de base de l'info, adaptée après par setSize().
-
-    console.log(listeInfo[indexInformations].type)
-
     if (listeInfo[indexInformations].type.id == 1){
         domInfo.style.color = "#dc3545"
         domInfo.style.textShadow = "1px 1px 4px rgba(0, 0, 0, 0.3)"
