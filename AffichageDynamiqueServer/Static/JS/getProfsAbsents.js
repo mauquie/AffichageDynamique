@@ -49,7 +49,6 @@ function affichageProfs(listeProfs)
 
 function scrolling(len, occurencesNumber)
 {  
-    console.log(len/Math.abs(len))
     DOMlisteProfsContainer.scrollBy(0, len/Math.abs(len))
     occurencesNumber++
     if (occurencesNumber >= Math.abs(len))
@@ -118,7 +117,7 @@ function getProfsAbs()
             intervalScroll = setInterval(() =>
             {
                 scrollingHandler(listeProfs)
-            }, 5000)
+            }, 10000)
         }
         else
         {
