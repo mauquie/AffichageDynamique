@@ -117,7 +117,7 @@ function getProfsAbs()
             intervalScroll = setInterval(() =>
             {
                 scrollingHandler(listeProfs)
-            }, 10000)
+            }, 7000)
         }
         else
         {
