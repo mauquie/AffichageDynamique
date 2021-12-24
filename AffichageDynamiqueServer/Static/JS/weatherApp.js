@@ -221,11 +221,11 @@ class WeatherApp{
         //Ajout d'une carte correspondante à une heure
         cardList.innerHTML += `\
             <div class="col-2 mx-2 weatherCard text-center">
-                <span class="d-flex justify-content-center" style="font-size: 5vh">${time}</span>
+                <span class="d-flex justify-content-center" style="font-size: 4vh">${time}</span>
                 <hr>
                 <img class="my-2" src="${imgLink}" alt="" style="width: 6vh; opacity: 0.8">
                 <hr>
-                <span class="d-flex justify-content-center ${tempClass}" style="font-size: 5vh">${temp}</span>
+                <span class="d-flex justify-content-center ${tempClass}" style="font-size: 4vh">${temp}</span>
             </div>
         `
     }
