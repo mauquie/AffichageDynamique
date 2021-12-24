@@ -7,15 +7,10 @@
         <div class="col-4">
             <div class="row">
                 <div class="col-12">
-                    <div id="listeProfsCachable" hidden="true" class="card">
+                    <div id="listeProfsCachable" class="card pb-3">
                         <p class="title fw-bold" style="font-size: 5vh;">Absences</p>
-                        <div class="prof-list">
+                        <div class="prof-list" id="prof-list">
                             <ul id="listeProfs" class="ms-3">
-                                <li class="list-item liste-profs m-2"></li>
-                                <li class="list-item liste-profs m-2"></li>
-                                <li class="list-item liste-profs m-2"></li>
-                                <li class="list-item liste-profs m-2"></li>
-                                <li class="list-item liste-profs m-2"></li>
                             </ul>
                         </div>
                     </div>
@@ -106,8 +101,8 @@
         </div>
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="{% static 'JS/getArticles.js' %}"></script>
-    <script src="{% static 'JS/getProfsAbsents.js' %}"></script>
     <script src="{% static 'JS/getEvenements.js' %}"></script>
+    <script src="{% static 'JS/getProfsAbsents.js' %}"></script>
     </div>
 </div>
 {% endblock %}

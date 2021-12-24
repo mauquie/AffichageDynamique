@@ -1,43 +1,11 @@
-indexProfs = 0
+indexProfs = 1
 DOMtextePasAbsences = document.getElementById("textePasAbsences")
-DOMlisteProfs = document.getElementById("listeProfs").getElementsByTagName("li")
+DOMlisteProfs = document.getElementById("listeProfs")
+DOMlisteProfsContainer = document.getElementById("prof-list")
 DOMlisteProfsCachable = document.getElementById("listeProfsCachable")
+intervalScroll = null
+direction = "down"
 
-
-//divise la liste des profs en une liste de groupes de 5 profs.
-function divideProfs(listeProfs)
-{
-    listeGroupesProfs = [] //on affiche seulement 5 profs à la fois.
-    for (i = 0; i < (listeProfs.length / 5); i++) //donc création de i sous listes de 5 profs
-    {
-        listeTemp = []
-        for (j = 0; j < 5 && j+(5*i) < listeProfs.length; j++) //ajoute des profs tant qu'il en reste,                                      
-        {                                            //et tant que la sous liste contient - de 5 profs.
-            listeTemp.push(listeProfs[j+(5*i)]) 
-        }
-        listeGroupesProfs.push(listeTemp) //ajout de la sous liste dans une liste mère
-    }
-    return listeGroupesProfs
-}
-
-function showLi()
-{
-    for (i=0; i<DOMlisteProfs.length; i++)
-    {
-        DOMlisteProfs[i].hidden = false
-    }
-}
-
-function hideEmptyLi()
-{
-    for (i=0; i<DOMlisteProfs.length; i++)
-    {
-        if (DOMlisteProfs[i].innerHTML == "")
-        {
-            DOMlisteProfs[i].hidden = true
-        }
-    }
-}
 
 //prépare la liste des professeurs absents : formate les heures, trie en fonction des heures.
 function prepareListeProfs(listeProfs)
@@ -64,57 +32,66 @@ function prepareListeProfs(listeProfs)
 //remplie les li de l'affichage par les profs.
 function affichageProfs(listeProfs)
 {
-    for (i=0; i < 5; i++)
+    DOMlisteProfsLI = document.getElementById("listeProfs").getElementsByTagName("li")
+    while (DOMlisteProfsLI.length != 0)
     {
-        DOMlisteProfs[i].innerHTML = ""
+        DOMlisteProfsLI[0].remove()
     }
-    //remplie les li
-    for (i=0; i < listeProfs.length; i++)
+
+    for (i=0; i<listeProfs.length; i++)
     {
-        DOMlisteProfs[i].style.visibility = "visible"
-        DOMlisteProfs[i].innerHTML = listeProfs[i].debut + "h - " + listeProfs[i].fin + "h | " + listeProfs[i].prof 
+        listProfElemDOM = document.createElement("li")
+        listProfElemDOM.innerText = listeProfs[i].debut + "h - " + listeProfs[i].fin + "h | " + listeProfs[i].prof
+        listProfElemDOM.classList = "list-item liste-profs"
+        DOMlisteProfs.appendChild(listProfElemDOM)
     }
-    //cache les li vides
-    for (i=0; i < 5; i++)
+}
+
+function scrolling(len, occurencesNumber)
+{  
+    console.log(len/Math.abs(len))
+    DOMlisteProfsContainer.scrollBy(0, len/Math.abs(len))
+    occurencesNumber++
+    if (occurencesNumber >= Math.abs(len))
     {
-        if (DOMlisteProfs[i].innerHTML == "")
+        return
+    }
+    delay = setTimeout(() => {
+        scrolling(len, occurencesNumber)
+    }, 10)
+}
+
+//a pour rôle de gérer le scrolling, pour afficher tous les profs
+function scrollingHandler(listeProfs) 
+{//Le scrolling se fait une longueur de liste par une longueur de liste
+    if (listeProfs.length > 5) //Si la liste est > que 5 profs, il faut scroll
+    {
+        if (direction=="down") //Si on descendait au tour précédant,
         {
-            DOMlisteProfs[i].style.visibility="hidden"
+            if (DOMlisteProfsContainer.scrollTop*1.3 > DOMlisteProfsContainer.scrollHeight-DOMlisteProfsContainer.clientHeight) //Et si on est presque arrivé en bas du scrolling,
+            {
+                scrolling(DOMlisteProfsContainer.clientHeight*((listeProfs.length%5)/5), 0)//alors on descend de juste ce qu'il faut,
+                direction = "up" //et on change la direction
+            }
+            else //Sinon, c'est qu'il faut encore descendre, donc
+            {
+                scrolling(DOMlisteProfsContainer.clientHeight+window.innerHeight/330, 0)//on descend 
+            }
         }
-    }    
-}
-
-function animeEntreeProfs()
-{
-    animationArticle = anime({
-        targets: DOMlisteProfs,
-        duration: 800,
-        opacity: [0, 1],
-        easing: "linear",
-        delay: 400,
-    })
-}
-
-function animeSortieProfs()
-{
-    animation = anime({
-        targets: DOMlisteProfs,
-        duration: 800,
-        opacity: [1, 0],
-        easing: "linear"
-    })
-    return animation
-}
-
-function bouclage() //a pour rôle de gérer la boucle, pour afficher les profs
-{
-    if (indexProfs > listeGroupesProfs.length-1)
-    {
-        indexProfs = 0
+        else if (direction == "up")
+        {
+            if (DOMlisteProfsContainer.scrollTop == 0)//Si on est remonté tout en haut donc
+            {
+                scrolling(DOMlisteProfsContainer.clientHeight+window.innerHeight/330, 0)//on descend,
+                direction = "down" //on change la direction
+            }
+            else
+            {//sinon il faut continuer à remonter alors
+                scrolling(-DOMlisteProfsContainer.clientHeight-window.innerHeight/330, 0)//on monte
+            }
+        }//les + et - windowHeight sont des ajustements nécessaires, plus l'écran est grand,
+        //plus il y avait un décalage dans le scrolling.
     }
-        affichageProfs(listeGroupesProfs[indexProfs])
-        //affichage, tour à tour, des sous listes
-        indexProfs++
 }
 
 function getProfsAbs()
@@ -128,33 +105,29 @@ function getProfsAbs()
             DOMlisteProfsCachable.hidden = true
             return
         }
+        else if (data.length > 5)
+        {
+            DOMtextePasAbsences.hidden = true
+            DOMlisteProfsCachable.hidden = false
+            listeProfs = prepareListeProfs(data) //préparation pour afficher la liste (tri + changer heures)
+            affichageProfs(listeProfs)
+            if (intervalScroll)
+            {
+                clearInterval(intervalScroll)
+            }
+            intervalScroll = setInterval(() =>
+            {
+                scrollingHandler(listeProfs)
+            }, 5000)
+        }
         else
         {
             DOMtextePasAbsences.hidden = true
             DOMlisteProfsCachable.hidden = false
             listeProfs = prepareListeProfs(data) //préparation pour afficher la liste (tri + changer heures)
-            listeGroupesProfs = divideProfs(listeProfs) //division de la liste en sous liste de taille 5
-            animeSortieProfs().finished.then(() => {
-                showLi() //réaffiche tous les li
-                bouclage() //bouclage avant l'interval, pour afficher immédiatement les profs absents.
-                animeEntreeProfs()
-                hideEmptyLi() //cache les li qui sont vides
-            }) 
-            if (listeGroupesProfs.length > 1)
-            {
-                interval = setInterval(()=>
-                {
-                    animeSortieProfs().finished.then(() => {
-                        showLi()
-                        bouclage()
-                        animeEntreeProfs()
-                        hideEmptyLi()
-                    })
-                }, 1000 * 30)
-                return interval
-            }
+            affichageProfs(listeProfs)
         }
-        })
+    })
 }
 interval = getProfsAbs()
 setInterval(() => 
@@ -164,4 +137,4 @@ setInterval(() =>
         clearInterval(interval) //clear afin de ne pas accumuler des boucles
     }
     interval = getProfsAbs()
-}, 1000 * 60 * 60)
+}, 1000 * 21)

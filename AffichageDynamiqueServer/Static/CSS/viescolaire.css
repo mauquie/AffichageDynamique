@@ -18,7 +18,7 @@
     border-bottom: solid #FF830499 2px;
     width: 80%;
     margin: auto;
-    margin-bottom: 30px;
+    margin-bottom: 3.5vh;
 }
 
 .bonjour{
@@ -42,7 +42,20 @@
 
 .prof-list {
     font-size: 2.5vh;
-    margin-top: -20px;
+    height: 24vh;
+    padding: 0;
+    margin: 0;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.prof-list::-webkit-scrollbar{
+    display: none;
+}
+
+.list-item{
+    margin: 1vh;
 }
 
 .agenda{
@@ -114,6 +127,7 @@
     transform: translateY(-27%);
     position: absolute;
 }
+
 .date-premiere{
     margin-left: 10vh;
     height: 5vh;
