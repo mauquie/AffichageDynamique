@@ -16,28 +16,53 @@ class WeatherApp{
 
         //Dictionnaire contenant les liens vers les images (jour) correspondant à la météo
         this.weatherDayIcons = {
-            "clear sky": "sun--v2.png",
-            "few clouds": "partly-cloudy-day--v2.png",
-            "scattered clouds": "cloud.png",
-            "broken clouds": "cloud.png",
-            "rain": "partly-cloudy-rain--v2.png",
-            "shower rain": "rain--v2.png",
-            "thunderstorm": "cloud-lighting--v2.png",
-            "snow": "snow.png",
-            "mist": "fog-night--v2.png"
+            "01": "sun--v2.png",
+            "02": "partly-cloudy-day--v2.png",
+            "03": "cloud.png",
+            "04": "cloud.png",
+            "10": "partly-cloudy-rain--v2.png",
+            "09": "rain--v2.png",
+            "11": "cloud-lighting--v2.png",
+            "13": "snow.png",
+            "50": "fog-night--v2.png"
         }
 
         //Dictionnaire contenant les liens vers les images (nuit) correspondant à la météo
         this.weatherNightIcons = {
-            "clear sky": "bright-moon--v2.png",
-            "few clouds": "partly-cloudy-night--v1.png",
-            "scattered clouds": "cloud.png",
-            "broken clouds": "cloud.png",
-            "rain": "rainy-night.png",
-            "shower rain": "rain--v2.png",
-            "thunderstorm": "cloud-lighting--v2.png",
-            "snow": "snow.png",
-            "mist": "fog-night--v1.png"
+            "01": "bright-moon--v2.png",
+            "02": "partly-cloudy-night--v1.png",
+            "03": "cloud.png",
+            "04": "cloud.png",
+            "10": "rainy-night.png",
+            "09": "rain--v2.png",
+            "11": "cloud-lighting--v2.png",
+            "13": "snow.png",
+            "50": "fog-night--v1.png"
+        }
+
+        //création dictionnaire liant météo et texte
+        this.dictTextMeteo = {
+            "01": "rayonnante !",
+            "02": "nuageuse",
+            "03": "nuageuse",
+            "04": "nuageuse",
+            "10": "pluvieuse malheureusement",
+            "09": "déluvienne, sortez vos parapluies !",
+            "11": "orageuse malheureusement",
+            "13": "enneigée brrrrrrr",
+            "50": "brumeuse malheureusement"
+        }
+        //création dictionnaire liant météo et couleur
+        this.dictColourMeteo = {
+            "01": "red",
+            "02": "gray",
+            "03": "gray",
+            "04": "gray",
+            "10": "blue",
+            "09": "dark-blue",
+            "11": "yellow",
+            "13": "white",
+            "50": "gray",
         }
 
         //Appel des fonctions de création de la bar météo et du création du widget
@@ -110,13 +135,26 @@ class WeatherApp{
          * 
          * @param weatherDescription {string} - Description de la météo
          * @param icon {string} - Chaine de caractère donnée correspondante à l'icone de la météo
+         * 
+         * @returns string - Url de l'icone correspondante
          */
         if (icon.includes("n")){
-            return `https://img.icons8.com/ios-glyphs/60/000000/${this.weatherNightIcons[weatherDescription]}`
+            return `https://img.icons8.com/ios-glyphs/60/000000/${this.weatherNightIcons[this._getIconNumber(icon)]}`
         
         } else {
-            return `https://img.icons8.com/ios-glyphs/60/000000/${this.weatherDayIcons[weatherDescription]}`
+            return `https://img.icons8.com/ios-glyphs/60/000000/${this.weatherDayIcons[this._getIconNumber(icon)]}`
         }
+    }
+
+    _getIconNumber(icon){
+        /**
+         * Fonction retournant le nombre correspondant à l'icone donnée par l'API
+         * 
+         * @param icon {string} - Chaine de caractère donnée correspondante à l'icone de la météo (ex : 01n.png)
+         * 
+         * @returns string - Chaine de caractère des nombres donnés par icon (ex: 01)
+         */
+        return [icon[0], icon[1]].join("")
     }
 
     _createWeatherWidget(){
@@ -142,39 +180,17 @@ class WeatherApp{
         /**
          * Ajout du texte lié à la météo dans l'article par défaut
          */
-        //création dictionnaire liant météo et texte
-        let dictTextMeteo = {
-            "clear sky": "rayonnante !",
-            "few clouds": "nuageuse",
-            "scattered clouds": "nuageuse",
-            "broken clouds": "nuageuse",
-            "rain": "pluvieuse malheureusement",
-            "shower rain": "déluvienne, sortez vos parapluies !",
-            "thunderstorm": "orageuse malheureusement",
-            "snow": "enneigée brrrrrrr",
-            "mist": "brumeuse malheureusement"
-        }
-        //création dictionnaire liant météo et couleur
-        let dictColourMeteo = {
-            "clear sky": "red",
-            "few clouds": "gray",
-            "scattered clouds": "gray",
-            "broken clouds": "gray",
-            "rain": "blue",
-            "shower rain": "dark-blue",
-            "thunderstorm": "yellow",
-            "snow": "white",
-            "mist": "gray",
-        }
         //Récupération du texte à colorer
         this._getData().then(() => {
             //Récupération du texte lié à la météo
             let meteoText = document.getElementById("text-meteo")
+
             //Récupération de la moyenne météorologique du jour
-            let weather = this.getTodaysWeather()
+            let weatherIcon = this._getIconNumber(this.todaysWeather.weather[0].icon)
+            
             //Modification du texte et de sa couleur lié à la météo dans l'article par défaut
-            meteoText.innerText = dictTextMeteo[weather.weather[0].description]
-            meteoText.style.color = dictColourMeteo[weather.weather[0].description]
+            meteoText.innerText = this.dictTextMeteo[weatherIcon]
+            meteoText.style.color = this.dictColourMeteo[weatherIcon]
         })
     }
 
