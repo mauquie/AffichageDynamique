@@ -27,10 +27,15 @@
 
 <footer class="footer">
     <div class="row rowFooter"id="rowFooter">
-        <div class="col-2 border-end border-danger tryc border-3" id="">
-            <img class="qrcode ms-3 me-3" id="qrcode" src="{% static 'IMG/qrcode.png' %}" >
-            <div>
-                <p class="me-1 text-vote" id="text-survey">Ton avis compte ! Viens voter !</p>
+        <div class="col-2 border-end border-danger border-3 skewed-left" id="">
+            <div class="skewed-right">
+                <img class="qrcode ms-3 me-3" id="qrcode" hidden="true" src="{% static 'IMG/qrcode.png' %}" >
+                <div>
+                    <p class="me-1 text-vote" id="text-survey" hidden="true">Ton avis compte ! Viens voter !</p>
+                </div>
+                <div>
+                    <p class="text-vote-default">Aucun sondage pour le moment</p>
+                </div>
             </div>
         </div>
         <div class="col-8 text-center d-flex colInfo">
@@ -38,14 +43,17 @@
                 <p id="information" class="text-center information" style="font-size: 4vh;"></p>
             </div>
         </div>
-        <div class="col-2 border-start border-danger border-3">
+        <div class="col-2 border-start border-danger border-3 skewed-right">
+            <div class="skewed-left">
             {% include "./weatherWidget.html" %}
+            </div>
         </div> 
     </div>
     <script src="{% static 'JS/getInfos.js' %}"></script>
     <script src="{% static 'JS/anime.min.js' %}"></script>
     <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script>
+        //permet d'afficher/cacher le texte par défaut, le texte de vote et le qrcode
         fetch("/api/sondages").then((reponse) => reponse.json()).then((data) => {
             if (data.length == 0)
             {

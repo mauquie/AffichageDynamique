@@ -54,6 +54,28 @@ body {
     font-weight: 900;
 }
 
+.text-vote-default{
+    font-family: 'DM Sans';
+    position: relative;
+    top: 5vh;
+    left: 1vh;
+    transform: translateY(-50%);
+    font-size: 2.5vh;
+    font-weight: 900;
+    color: black;
+}
+
+.skewed-left{
+    -webkit-transform: skew(-15deg);
+    -moz-transform: skew(-15deg);
+
+}
+
+.skewed-right{
+    -webkit-transform: skew(15deg);
+    -moz-transform: skew(15deg);
+}
+
 .colInfo{
     display: flex;
     justify-content: center;
