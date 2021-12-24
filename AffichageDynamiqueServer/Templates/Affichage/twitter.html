@@ -127,7 +127,7 @@ function showTweet(tweet){
 getTweets()
 setInterval(()=>{
     let tweetList = document.getElementById("tweets")
-    for (let i = 0; i < tweetList.children.length; i++){
+    for (let i = 1; i < tweetList.children.length; i++){
         tweetList.removeChild(tweetList.children[i])
     }
     getTweets()
