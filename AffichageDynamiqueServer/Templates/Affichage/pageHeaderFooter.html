@@ -34,11 +34,11 @@
                     <p class="me-1 text-vote" id="text-survey" hidden="true">Ton avis compte ! Viens voter !</p>
                 </div>
                 <div>
-                    <p class="text-vote-default">Aucun sondage pour le moment</p>
+                    <p class="text-vote-default" id="text-survey-default">Aucun sondage pour le moment</p>
                 </div>
             </div>
         </div>
-        <div class="col-8 text-center d-flex colInfo">
+        <div class="col-8 text-center d-flex colInfo pe-3 ps-3">
             <div id="infoContainer" class="text-center infoContainer border-3">
                 <p id="information" class="text-center information" style="font-size: 4vh;"></p>
             </div>
@@ -59,12 +59,14 @@
             {
                 document.getElementById("qrcode").hidden = true
                 document.getElementById("text-survey").hidden = true
+                document.getElementById("text-survey-default").hidden = false
 
             }
             else
             {
                 document.getElementById("qrcode").hidden = false
                 document.getElementById("text-survey").hidden = false
+                document.getElementById("text-survey-default").hidden = true
             }
         })
         setInterval(() =>
@@ -81,7 +83,7 @@
                     document.getElementById("text-survey").hidden = false
                 }
             })
-        },1000 * 60 * 60 * 2)
+        },1000 * 60 * 5)
     </script>
 </footer>
 </html>
