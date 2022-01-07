@@ -136,4 +136,4 @@ setInterval(() =>
         clearInterval(interval) //clear afin de ne pas accumuler des boucles
     }
     interval = getProfsAbs()
-}, 1000 * 60 * 20)
+}, 1000 * 15)

@@ -61,7 +61,7 @@ class WeatherApp{
             "10": "blue",
             "09": "dark-blue",
             "11": "yellow",
-            "13": "white",
+            "13": "#BDB9B9",
             "50": "gray",
         }
 
