@@ -143,4 +143,4 @@ function getArticles() {
 
 indexArticles = 0
 getArticles()
-setInterval(() => getArticles(), 1000 * 60)
+setInterval(() => getArticles(), 1000 * 15)

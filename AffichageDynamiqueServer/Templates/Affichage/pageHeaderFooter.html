@@ -54,13 +54,14 @@
     <script src="{% static 'JS/getDisplay.js' %}"></script>
     <script>
         //permet d'afficher/cacher le texte par défaut, le texte de vote et le qrcode
-        fetch("/api/sondages").then((reponse) => reponse.json()).then((data) => {
+        function changeSurveyQrcode()
+        {
+            fetch("/api/sondages").then((reponse) => reponse.json()).then((data) => {
             if (data.length == 0)
             {
                 document.getElementById("qrcode").hidden = true
                 document.getElementById("text-survey").hidden = true
                 document.getElementById("text-survey-default").hidden = false
-
             }
             else
             {
@@ -69,21 +70,12 @@
                 document.getElementById("text-survey-default").hidden = true
             }
         })
+        }
+        changeSurveyQrcode()
         setInterval(() =>
         {
-            fetch("/api/sondages").then((reponse) => reponse.json()).then((data) => {
-                if (data.length == 0)
-                {
-                    document.getElementById("qrcode").hidden = true
-                    document.getElementById("text-survey").hidden = true
-                }
-                else
-                {
-                    document.getElementById("qrcode").hidden = false
-                    document.getElementById("text-survey").hidden = false
-                }
-            })
-        },1000 * 60 * 5)
+            changeSurveyQrcode()
+        },1000 * 15)
     </script>
 </footer>
 </html>
