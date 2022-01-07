@@ -53,12 +53,12 @@ function parseDate(tweetDate){
     switch(true){ 
         //S'il y a plus que 24heures
         case difference > 60 * 60 * 24:
-            time = Math.ceil(difference / 60 * 60 * 24) + " jours"
+            time = Math.ceil(difference / (60 * 60 * 24)) + " jours"
             break;
 
         //S'il y a plus que 60minutes
         case difference > 60 * 60:
-            time = Math.ceil(difference / 60 * 60) + " heures"
+            time = Math.ceil(difference / (60 * 60)) + " heures"
             break;
 
 
