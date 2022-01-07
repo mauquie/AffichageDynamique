@@ -50,22 +50,26 @@ function parseDate(tweetDate){
     //Variable contenant la différence + l'unité
     time = difference + " secondes"
 
-    //S'il y a plus que 60secondes
-    if (difference > 60){
-        difference /= 60
-        time = Math.ceil(difference) + " minutes"
-    }
+    switch(true){ 
+        //S'il y a plus que 24heures
+        case difference > 60 * 60 * 24:
+            time = Math.ceil(difference / 60 * 60 * 24) + " jours"
+            break;
 
-    //S'il y a plus que 60minutes
-    if (difference > 60){
-        difference /= 60
-        time = Math.ceil(difference) + " heures"
-    }
+        //S'il y a plus que 60minutes
+        case difference > 60 * 60:
+            time = Math.ceil(difference / 60 * 60) + " heures"
+            break;
 
-    //S'il y a plus que 24heures
-    if (difference > 24){
-        difference /= 24
-        time = Math.ceil(difference) + " jours"
+
+        //S'il y a plus que 60secondes
+        case difference > 60:
+            time = Math.ceil(difference / 60) + " minutes"
+            break;
+    
+        default:
+            console.log("here")
+            break;
     }
 
     return time
@@ -81,21 +85,21 @@ function parseText(text){
     text = text.replace(/@([^ ]+)/g, '<span class="colored">@$1</span>');
     text = text.replace(/http([^ ]+)/g, '<span class="colored">http$1</span>');
 
-    let newText = []
+    let newText = text.split("")
 
     //S'il est plus long que 280 caractères
     if (text.length > 280){
+        newText = []
         //Pour les 280 caractères on ajoute le caractère à la liste newText
         for (let i = 0; i < 280; i++){
             newText.push(text[i])
         }
 
         newText.push("...")
-        //On reforme le text
-        newText = newText.join("")
+        
     }
-
-    return newText
+    //On reforme le text
+    return newText = newText.join("")
 }
 
 function showTweet(tweet){
@@ -131,7 +135,7 @@ setInterval(()=>{
         tweetList.removeChild(tweetList.children[i])
     }
     getTweets()
-}, 1000 * 60 * 15) //Mise à jour de l'écran toutes les 15mn
+}, 1000 * 20) //Mise à jour de l'écran toutes les 15mn
 
 </script>
 {% endblock %}
