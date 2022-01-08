@@ -23,9 +23,9 @@
     </div>
 </div>
 <script>
-function getTweets(){
+async function getTweets(){
     //Fonction récupérant les tweets depuis le serveur affichageDynamique
-    fetch("/api/tweets")
+    await fetch("/api/tweets")
         .then(data => {return data.json()})
         .then(response => {
             //Pour chaque tweet, jusqu'au max de tweet qu'on peut afficher
@@ -98,12 +98,18 @@ function parseText(text){
         newText.push("...")
         
     }
+
     //On reforme le text
     return newText = newText.join("")
 }
 
 function showTweet(tweet){
-    //Fonction affichant un tweet à la fois à l'écran
+    /**
+     * Fonction ajoutant un tweet à l'écran
+     * 
+     * @param tweet {dict} - Dictionnaire contenant toutes les informations sur un tweet
+     * 
+     */
     let tweetList = document.getElementById("tweets")
 
     let time = parseDate(tweet.created_at)    
@@ -130,11 +136,15 @@ function showTweet(tweet){
 
 getTweets()
 setInterval(()=>{
-    let tweetList = document.getElementById("tweets")
-    for (let i = 1; i < tweetList.children.length; i++){
-        tweetList.removeChild(tweetList.children[i])
-    }
-    getTweets()
+    getTweets().then(() => {
+        //Suppression des anciens tweets affichés
+        let tweetList = document.getElementById("tweets")
+        for (let i = 1; i < tweetList.children.length; i++){
+            tweetList.removeChild(tweetList.children[i])
+        }
+    })
+
+    
 }, 1000 * 20) //Mise à jour de l'écran toutes les 15mn
 
 </script>
