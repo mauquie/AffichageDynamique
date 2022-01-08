@@ -147,8 +147,6 @@ function getArticles() {
             }
             else if (contentArticle != articles[indexArticles].article) //si l'article à afficher est
             { //différent de l'article affiché, on le change
-                alert(domContenu.innerHTML)
-                alert(articles[indexArticles].article)
                 animeSortieArticle(DOMarticle).finished.then(() => {
                     changeArticle()
                     animeEntreeArticle(DOMarticle)
