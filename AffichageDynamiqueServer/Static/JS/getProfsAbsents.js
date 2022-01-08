@@ -67,10 +67,20 @@ function scrollingHandler(listeProfs)
     {
         if (direction=="down") //Si on descendait au tour précédant,
         {
-            if (DOMlisteProfsContainer.scrollTop*1.3 > DOMlisteProfsContainer.scrollHeight-DOMlisteProfsContainer.clientHeight) //Et si on est presque arrivé en bas du scrolling,
+            if ((DOMlisteProfsContainer.scrollTop + DOMlisteProfsContainer.clientHeight*2.2) >= DOMlisteProfsContainer.scrollHeight) //Et si on est presque arrivé en bas du scrolling,
             {
-                scrolling(DOMlisteProfsContainer.clientHeight*((listeProfs.length%5)/5), 0)//alors on descend de juste ce qu'il faut,
-                direction = "up" //et on change la direction
+                 //disjonction de cas : on multiplie la hauteur à descendre par le module de la longueur de la liste par module/5,
+                //mais si le module vaut 0 (ex : si on a 10 de longeur), alors on multiplie la hauteur à descendre par 1 (et pas 0).
+                if (listeProfs.length%5 == 0)
+                {
+                    scrolling(DOMlisteProfsContainer.clientHeight + window.innerHeight/330, 0)//alors on descend de juste ce qu'il faut,
+                    direction = "up"
+                }
+                else
+                {
+                    scrolling(DOMlisteProfsContainer.clientHeight*((listeProfs.length%5)/5), 0)//alors on descend de juste ce qu'il faut,
+                    direction = "up" //et on change la direction
+                }
             }
             else //Sinon, c'est qu'il faut encore descendre, donc
             {

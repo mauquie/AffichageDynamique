@@ -1,5 +1,6 @@
 DOMarticle = document.getElementById("article")
 DOMPasArticle = document.getElementById("pasArticle")
+contentArticle = null
 
 days = {
     0 : "dimanche",
@@ -68,7 +69,7 @@ function checkHeightArticle()
 {
     //si l'article dépasse 53% de l'écran...
     DOMarticle = document.getElementById("article")
-    if ((DOMarticle.clientHeight/window.innerHeight) > 0.53)
+    if ((DOMarticle.clientHeight/window.innerHeight) > 0.50)
     {   
         domContenu = document.getElementById("contenuArticle")//on récupère le texte de l'article,
         DOMpageNumber = document.getElementById("pageNumber")//et le nombre de sa page,
@@ -92,6 +93,7 @@ function changeArticle() {
     toutArticle = articles[indexArticles]
     domTitre.innerText = toutArticle.title
     domContenu.innerText = toutArticle.article
+    contentArticle = toutArticle.article
 
     if (toutArticle.image == "") {
         domImage.hidden = true
@@ -140,11 +142,13 @@ function getArticles() {
                     DOMarticle.hidden = false
                     setTimeout(() => {
                         checkHeightArticle() //timeOut pour laisser à l'article le temps de se charger, afin qu'il ait une taille
-                    }, 20);                
+                    }, 100);                
                 })
             }
-            else if (domContenu.innerText != articles[indexArticles].article) //si l'article à afficher est
+            else if (contentArticle != articles[indexArticles].article) //si l'article à afficher est
             { //différent de l'article affiché, on le change
+                alert(domContenu.innerHTML)
+                alert(articles[indexArticles].article)
                 animeSortieArticle(DOMarticle).finished.then(() => {
                     changeArticle()
                     animeEntreeArticle(DOMarticle)
