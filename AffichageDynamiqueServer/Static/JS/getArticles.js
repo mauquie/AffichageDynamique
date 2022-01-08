@@ -57,7 +57,13 @@ function animeSortieArticle(domElement) {
     return animationArticle
 }
 
-//fonction vérifiant que l'article ne dépasse pas sur l'agenda, si oui : rétrecissement du texte
+//fonction remettant les tailles par défaut du texte de l'article et du nombre de page
+function resetHeights()
+{
+    document.getElementById("contenuArticle").style.fontSize = "2.5vh"
+    document.getElementById("pageNumber").style.fontSize = "2vh"
+}
+
 function checkHeightArticle()
 {
     //si l'article dépasse 53% de l'écran...
@@ -65,10 +71,15 @@ function checkHeightArticle()
     if ((DOMarticle.clientHeight/window.innerHeight) > 0.53)
     {   
         domContenu = document.getElementById("contenuArticle")//on récupère le texte de l'article,
-        fontSize = domContenu.style.fontSize
-        fontSize = fontSize.substring(0, fontSize.length-2)
-        fontSize -= 0.01
-        domContenu.style.fontSize = fontSize + "vh"//on rétrécie le texte et
+        DOMpageNumber = document.getElementById("pageNumber")//et le nombre de sa page,
+        fontSizeContent = domContenu.style.fontSize//on récupère leur font size
+        fontSizeNumber = DOMpageNumber.style.fontSize 
+        fontSizeContent = fontSizeContent.substring(0, fontSizeContent.length-2) //dont on ne garde que le nombre
+        fontSizeNumber = fontSizeNumber.substring(0, fontSizeNumber.length-2) 
+        fontSizeNumber -= 0.01
+        fontSizeContent -= 0.01 //on rétrécie le texte et
+        DOMpageNumber.style.fontSize = fontSizeNumber + "vh"
+        domContenu.style.fontSize = fontSizeContent + "vh"
         checkHeightArticle()//on vérifie si le texte rentre désormais.
     }
 }
@@ -89,6 +100,9 @@ function changeArticle() {
         domImage.hidden = false
         domImage.src = "/Medias/" + toutArticle.image
     }
+    DOMpageNumber = document.getElementById("pageNumber")
+    DOMpageNumber.innerText = String(indexArticles+1) + "/" + String(articles.length)
+    resetHeights()//on reset les tailles aux tailles maximales
 }
 
 //fonction main gérant le fetch des données, et appelant les diverses fontions.
@@ -124,7 +138,9 @@ function getArticles() {
                     changeArticle() //on change l'article,
                     animeEntreeArticle(DOMarticle)//et on affiche le nouveau.
                     DOMarticle.hidden = false
-                    checkHeightArticle()
+                    setTimeout(() => {
+                        checkHeightArticle() //timeOut pour laisser à l'article le temps de se charger, afin qu'il ait une taille
+                    }, 20);                
                 })
             }
             else if (domContenu.innerText != articles[indexArticles].article) //si l'article à afficher est

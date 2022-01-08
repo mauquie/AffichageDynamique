@@ -40,6 +40,15 @@
     color: #000000;
 }
 
+.pageNumber{
+    font-weight: 700;
+    font-family: 'DM Sans';
+    font-size: 2vh;
+    margin: 0;
+    padding: 0.2vh;
+    float: right;
+}
+
 .prof-list {
     font-size: 2.5vh;
     height: 24vh;
