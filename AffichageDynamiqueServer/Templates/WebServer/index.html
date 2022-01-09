@@ -15,7 +15,7 @@
                 <h2>Actions rapides :</h2>
             </div>
             <div class="row g-2">
-                {% if perms.ApiServer.view_article %}
+                {% if perms.ApiServer.view_articles %}
                 <div class="col-lg-6 col-12">
                     <a href="articles" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -31,7 +31,7 @@
                         </div>
                     </a>
                 </div>
-                {% if perms.ApiServer.add_article %}
+                {% if perms.ApiServer.add_articles %}
                 <div class="col-lg-6 col-12">
                     <a href="articles/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -50,7 +50,7 @@
                 <h2>Mon compte :</h2>
             </div>
             <div class="row g-2">
-                {% if perms.Apiserver.view_article %}
+                {% if perms.ApiServer.add_articles %}
                 <div class="col-lg-6 col-12">
                     <a href="comptes" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -63,6 +63,13 @@
                     <a href="comptes/modifier" class="clickable">
                         <div class="p-3 border rounded-1">
                             <h5>Modifier mes informations</h5>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <a href="/logout/" class="clickable" >
+                        <div class="p-3 border rounded-1">
+                            <h5>Me déconnecter</h5>
                         </div>
                     </a>
                 </div>

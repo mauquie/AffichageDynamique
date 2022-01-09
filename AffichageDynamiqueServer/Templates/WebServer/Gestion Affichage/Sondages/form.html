@@ -5,12 +5,12 @@
     <div class="alert alert-secondary">
         <div class=" mt-3">
             <label for="author">Crée par</label>
-            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.sondage.author.id}}" target="_blank" class="clickable">{{informations.sondage.author}}</a></label>
-            <label for="date">le {{informations.sondage.date_creation}}</label>
+            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.survey.author.id}}" target="_blank" class="clickable">{{informations.survey.author}}</a></label>
+            <label for="date">le {{informations.survey.date_creation}}</label>
         </div>
         <div class=" my-3">
             <label>Voir les résultats</label>
-            <label class="fw-bold"><a href="/parametres/sondages/voirResultats?id={{informations.sondage.id}}" target="" class="clickable">ici</a></label>
+            <label class="fw-bold"><a href="/parametres/sondages/voirResultats?id={{informations.survey.id}}" target="" class="clickable">ici</a></label>
         </div>
     </div>
     {%else%}
@@ -23,22 +23,22 @@
     <form id="formulaire" enctype="multipart/form-data" action="" method="post">
         {% csrf_token %}
         <div class="form-group my-3">
-            <label for="question" class="form-label">Question du sondage :</label>
+            <label for="subject" class="form-label">Sujet du sondage :</label>
             <div class="input-group has_validation">
                 <input 
                     id="titleInput"
-                    name="question"
+                    name="subject"
                     type="text" 
-                    class="form-control {% if form.title.errors %}is-invalid{% endif %}" 
+                    class="form-control {% if form.subject.errors %}is-invalid{% endif %}" 
                     aria-describedby="AideQuestion" 
                     placeholder="Entrer la question (il doit être court et concis)" 
                     maxlength="50"
-                    value="{{informations.sondage.question}}"
+                    value="{{informations.survey.subject}}"
                 >
             </div>
         </div>
         <div class="form-group my-3">
-            <label for="reponse" class="form-label">Réponses au sondage :</label>
+            <label for="reponse" class="form-label">Réponses possibles du sondage :</label>
             <div class="input-group mb-2">
                 <div id="reponsesContainer" style="flex:1" class="m-1 border rounded-3 px-1">
                     <div id="reponses" class="row">
@@ -48,12 +48,12 @@
                                 <button class="btn btn-outline-secondary mt-1" id="createReponseButton" type="button" onclick="createReponse()">Ajouter</button>    
                             </div>
                         </div>
-                        {% for reponse in informations.reponses %}
-                        <div id="reponse-{{reponse.id}}" class="col-xl-3 col-lg-6 col-12">
+                        {% for answer in informations.answers %}
+                        <div id="reponse-{{answer.id}}" class="col-xl-3 col-lg-6 col-12">
                             <div class="my-3 mx-1 border border-secondary rounded-3 ">
                                 <div class="row m-2 d-flex flex-wrap align-items-center">
-                                    <span id="reponseText-{{reponse.id}}" class="col-xxl-9 col-6 fs-5 fw-bold text-break">{{reponse.text}}</span>
-                                    <button class="col-xxl-3 col-6 btn btn-danger d-float text-center float-end" type="button" onclick="removeReponse({{reponse.id}})">Supprimer</button>
+                                    <span id="reponseText-{{answer.id}}" class="col-xxl-9 col-6 fs-5 fw-bold text-break">{{answer.answer}}</span>
+                                    <button class="col-xxl-3 col-6 btn btn-danger d-float text-center float-end" type="button" onclick="removeReponse({{answer.id}})">Supprimer</button>
                                 </div>
                             </div>
                         </div>
@@ -63,21 +63,21 @@
             </div>
         </div>
         <div class="form-group my-3 has_validation">
-            <label for="date_fin">Date d'expiration du sondage : </label>
+            <label for="date_end">Date d'expiration du sondage : </label>
             <input 
                 type="date" 
-                name="date_fin"
+                name="date_end"
                 id="dateExpiration"
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
                 title="Date du dernier jour où le sondage sera affiché sur les écrans"
-                value="{{informations.sondage.date_fin|date:'Y-m-d'}}"
-                class="{% if form.date_fin.errors %}is-invalid{% endif %}"
+                value="{{informations.survey.date_end|date:'Y-m-d'}}"
+                class="{% if form.date_end.errors %}is-invalid{% endif %}"
             > 
         </div>
         <div class="form-group mt-3">
             <div class="form-check form-switch">
-                <input class="form-check-input" value="True" type="checkbox" name="est_affiche" {%if informations.sondage.est_affiche %}checked{%endif%}>
+                <input class="form-check-input" value="True" type="checkbox" name="is_shown" {%if informations.survey.is_shown %}checked{%endif%}>
                 <label class="form-check-label">Montrer le sondage dès la mise en ligne</label>
             </div>
         </div>
@@ -153,7 +153,7 @@
 
         //Création d'un input select qui va nous servir pour faire passer nos réponses
         let selectDOM = document.createElement("select")
-        selectDOM.name = "reponses"
+        selectDOM.name = "answers"
         selectDOM.multiple = true
         selectDOM.hidden = true
         

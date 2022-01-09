@@ -4,3 +4,4 @@ Medias/**
 .env
 /AffichageDynamiqueServer/Medias/**
 .vscode/
+data.json

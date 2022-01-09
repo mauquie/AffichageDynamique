@@ -18,7 +18,7 @@
     <div class="col-lg-6 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
-                <h2>Votre compte :</h2>
+                <h2>Mon compte :</h2>
             </div>
             <div class="row g-2">
                 <div class="col-lg-6 col-12">
@@ -31,21 +31,20 @@
                 <div class="col-lg-6 col-12">
                     <a href="/logout/" class="clickable" >
                         <div class="p-3 border rounded-1">
-                            <h5>Se déconnecter</h5>
+                            <h5>Me déconnecter</h5>
                         </div>
                     </a>
                 </div>
             </div>
         </div>
     </div>  
-    {% if perms.ApiServer.view_user %}
+    {% if perms.auth.manage_accounts %}
     <div class="col-lg-5 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Gérer d'autres comptes :</h2>
             </div>
             <div class="row g-2">
-                {% if perms.ApiServer.view_user %}
                 <div class="col-12">
                     <a href="/comptes/voir" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -53,12 +52,11 @@
                         </div>
                     </a>
                 </div>
-                {% endif %}
             </div>
         </div>
     </div>  
     {% endif %}
-    {% if perms.ApiServer.add_article %}
+    {% if perms.ApiServer.add_articles %}
     <div class="col-lg-5 col-11 m-3">
         <div class="border rounded-3">
             <div class="row" >
@@ -85,7 +83,7 @@
                                         {% for article in informations.articles %}
                                         <tr class="article-row {% if article.is_shown %}table-warning{% else %}showed{%endif%}" id="id_article" onclick="window.location = '/articles/modifier?id={{article.id}}'">
                                             <td scope="row">{{article.title}}</td>
-                                            <td>{{article.expiration_date}}</td>
+                                            <td>{{article.date_end}}</td>
                                             <td>{% if article.is_shown %}Oui{%else%}Non{%endif%}</td>
                                         </tr>
                                         {%endfor%}
@@ -100,7 +98,7 @@
         </div>
     </div>
     {% endif %}
-    {% if perms.ApiServer.add_survey %}
+    {% if perms.ApiServer.add_surveys %}
     <div class="col-lg-6 col-11 m-3">
         <div class="border rounded-3">
             <div class="row">
@@ -123,12 +121,12 @@
                                 </thead>
                                 <tbody class="tbody-pointer">
 
-                                    {%for sondage in informations.sondages %}
-                                    <tr class="sondage-row {%if sondage.est_affiche%}table-warning{%endif%}" id="{{sondage.id}}" 
-                                        onclick="window.location = '/parametres/sondages/modifier?id={{sondage.id}}'">
-                                        <td scope="row">{{sondage.question}}</td>
-                                        <td>{{sondage.date_fin}}</td>
-                                        <td>{%if sondage.est_affiche%}Oui{%else%}Non{%endif%}</td>
+                                    {%for survey in informations.surveys %}
+                                    <tr class="sondage-row {%if survey.is_shown%}table-warning{%endif%}" id="{{survey.id}}" 
+                                        onclick="window.location = '/parametres/sondages/modifier?id={{survey.id}}'">
+                                        <td scope="row">{{survey.subject}}</td>
+                                        <td>{{survey.date_end}}</td>
+                                        <td>{%if survey.is_shown%}Oui{%else%}Non{%endif%}</td>
                                     </tr>
                                     {%endfor%}
                                 </tbody>

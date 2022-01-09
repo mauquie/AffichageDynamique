@@ -32,8 +32,8 @@
                     {% for user in informations.users %}
                     <tr class="user-row {% if user.is_active != True %}table-danger{%endif%}"
                       id="{{user.id}}">
-                        <td scope="row">{{user.last_name}}</td>
-                        <td>{{user.first_name}}</td>
+                        <td scope="row" class="text-uppercase">{{user.last_name}}</td>
+                        <td class="text-capitalize">{{user.first_name}}</td>
                         <td>{%for group in user.groups.all%}{{group}}{%if group != user.groups.all.0%}, {%endif%}{% endfor %}</td>
                         <td class="d-none d-lg-block">{% if user.is_active %}Oui{%else%}Non{%endif%}</td>
                     </tr>

@@ -28,7 +28,7 @@
                                     </svg>
                                 </a>
                             </li>
-                            {% if perms.ApiServer.view_article %}
+                            {% if perms.ApiServer.view_articles %}
                             <li class="nav-item">
                                 <a href="/articles" class="nav-link {% ifequal pageTitle "Gérer les articles" %}active{% endifequal%}" title="Gérer les articles">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -38,7 +38,7 @@
                                 </a>
                             </li>
                             {% endif %}
-                            {% if perms.ApiServer.manage_screens %}
+                            {% if perms.auth.manage_screens %}
                             <li class="nav-item">
                                 <a href="/parametres" class="nav-link {% ifequal pageTitle "Gestion de l'affichage" %}active{% endifequal%}" title="Paramètres de l'affichage">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">

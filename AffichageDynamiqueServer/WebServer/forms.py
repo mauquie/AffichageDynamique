@@ -4,14 +4,14 @@ from django.contrib.auth.models import Group
 
 class UserForm(forms.ModelForm):
     class Meta:
-        model = models.User
+        model = models.Users
         fields = ["first_name", "last_name", "username"]
 
     groups = forms.ModelChoiceField(queryset=Group.objects.all(), initial=1, widget=forms.Select(attrs={'class': 'form-select my-2'}))
 
 class changeOwnAccount(forms.ModelForm):
     class Meta:
-        model = models.User
+        model = models.Users
         fields = ["username", "email", "profile_picture"]
 
     email = forms.CharField(required=False)
@@ -19,30 +19,30 @@ class changeOwnAccount(forms.ModelForm):
 
 class changeOthersAccount(forms.ModelForm):
     class Meta:
-        model = models.User
-        fields = ["username", "first_name", "last_name", "email", "profile_picture"]
+        model = models.Users
+        fields = ["username", "first_name", "last_name", "email", "profile_picture", "groups"]
 
     email = forms.CharField(required=False)
     profile_picture = forms.ImageField(required=False)
 
 class ArticleForm(forms.ModelForm):
     class Meta: 
-        model = models.Article
-        fields = ["title", "article", "image", "expiration_date", "is_shown"]
+        model = models.Articles
+        fields = ["title", "content", "image", "date_end", "is_shown"]
 
     image = forms.ImageField(required=False, widget=forms.FileInput(attrs={"class": "form-control", "id": "imageInput", "hidden": ""}))
 
 class InformationForm(forms.ModelForm):
     class Meta:
-        model = models.Info
-        fields = ["type", "message", "expiration_date", "is_shown"]
+        model = models.Informations
+        fields = ["type", "message", "date_end", "is_shown"]
 
 class ScreenForm(forms.ModelForm):
     class Meta:
-        model = models.Display
+        model = models.Screens
         fields = ["name", "code_name"]
 
 class PageForm(forms.ModelForm):
     class Meta:
-        model = models.Page
+        model = models.Pages
         fields = ["description", "filename"]

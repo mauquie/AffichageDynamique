@@ -1,8 +1,18 @@
 {%block content%}
 <div class="border rounded-3 m-3 mb-5 p-4 ">
+    {% if informations.info %}
+    <div class="alert alert-secondary">
+        <div class="form-group my-3">
+            <label for="author">Ecrit par</label>
+            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.info.author.id}}" target="_blank" class="clickable">{{informations.info.author}}</a></label>
+            <label for="date">le {{informations.info.date_creation}}</label>
+        </div>
+    </div>
+    {%endif%}
+
     <form id="formulaire" action="#" method="post">
         {% csrf_token %}
-        <div class="form-group my-3">
+        <div class="form-group my-3 mt-0">
             <label for="typeInformation">Type de l'information</label>
             <select class="form-select my-2 {% if form.type.errors %}is-invalid{% endif %}" aria-label="select information" name="type">
                 {% for infotype in informations.infotypes %}
@@ -22,16 +32,16 @@
             >{{informations.info.message}}</textarea>
             <small id="compteurCaractereInformationContenu" class="form-text text-muted">Max. 150 caractères</small>
         </div>
-        <div class="form-group my-3" {% if form.expiration_date.errors %}style="color: red"{% endif %}>
+        <div class="form-group my-3" {% if form.date_end.errors %}style="color: red"{% endif %}>
             <label for="dateExpiration">Date d'expiration de l'information : </label>
             <input 
                 type="date" 
-                name="expiration_date"
+                name="date_end"
                 id="dateExpiration"
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
                 title="Date du dernier jour où l'information sera affiché sur les écrans"
-                value="{{informations.info.expiration_date|date:'Y-m-d'}}"
+                value="{{informations.info.date_end|date:'Y-m-d'}}"
             > 
         </div>
         <div class="form-group mt-3">

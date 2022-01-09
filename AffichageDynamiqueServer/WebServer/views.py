@@ -16,6 +16,11 @@ from django.template.defaulttags import register
 def get_value(dictionary, key):
     return dictionary.get(key)
 
+@register.filter(name="get_group")
+def get_group(user):
+    print(user.groups.values_list('name', flat=True))
+    return list(user.groups.values_list('name', flat=True))[0]
+
 @login_required
 def index(request):
     ''' 
@@ -50,7 +55,7 @@ def loginView(request):
         else:
             #Essaye de trouver un utilisateur avec le même identifiant
             try:
-                user = models.User.objects.get(username=username)
+                user = models.Users.objects.get(username=username)
             
             except models.User.DoesNotExist: #S'il ne le trouve pas
                 messages.warning(request, "Compte introuvable")
@@ -65,17 +70,17 @@ def loginView(request):
 
 """
 
-@permission_required('ApiServer.view_article')
+@permission_required('ApiServer.view_articles')
 def articles(request):
     '''
         Fonction appelée quand on veut intéragir d'une quelconque façon avec les articles (ajouter, modifier, supprimer)
         Elle contient une liste des 5 derniers articles postés avec des boutons pour modifier et supprimer un article
         et un autre lien pour créer un article.
     '''
-    articles = models.Article.objects.all()
+    articles = models.Articles.objects.all().order_by("-is_shown", "-date_last_modif")
     return render(request, 'WebServer/Articles/index.html', exInfos("Articles", informations=articles))
 
-@permission_required('ApiServer.add_article')
+@permission_required('ApiServer.add_articles')
 def ajouterArticle(request):
     '''
         Fonction appelé quand on veut écrire un article.
@@ -89,8 +94,8 @@ def ajouterArticle(request):
 
         if form.is_valid():
             record = form.save(commit=False)
-            record.author = models.User.objects.filter(pk=request.user.pk)[0]
-            record.last_edit_by = models.User.objects.filter(pk=request.user.pk)[0]
+            record.author = models.Users.objects.filter(pk=request.user.pk)[0]
+            record.user_last_modif = models.Users.objects.filter(pk=request.user.pk)[0]
             
             record.save()
 
@@ -102,7 +107,7 @@ def ajouterArticle(request):
             createErrorMessages(request, form)
             return render(request, "WebServer/Articles/ajouter.html", exInfos("Ajouter un article", form=form))
 
-@permission_required('ApiServer.change_article')
+@permission_required('ApiServer.change_articles')
 def modifierArticle(request):
     '''
         Fonction appelé quand on veut modifier un article.
@@ -113,7 +118,7 @@ def modifierArticle(request):
     if request.method == "GET":
         if id:
             form = forms.ArticleForm()
-            article = get_object_or_404(models.Article, pk = id)
+            article = get_object_or_404(models.Articles, pk = id)
             return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", informations=article, form=form))
 
         else:
@@ -121,14 +126,15 @@ def modifierArticle(request):
 
     elif request.method == "POST":
         #Recupération de l'article choisi
-        article = get_object_or_404(models.Article, pk=id)
+        article = get_object_or_404(models.Articles, pk=id)
         form = forms.ArticleForm(request.POST, request.FILES, instance=article)
 
         if form.is_valid():
             form.save()
 
             #On modifie la dernière personne l'ayant modifié
-            article.last_edit_by = request.user
+            article.user_last_modif = request.user
+
             article.save()
 
             messages.success(request, "Article modifié avec succés !")
@@ -138,14 +144,14 @@ def modifierArticle(request):
             createErrorMessages(request, form)
             return render(request, "WebServer/Articles/modifier.html", exInfos("Modifier un article", form=form, informations=article))
 
-@permission_required('ApiServer.delete_article')
+@permission_required('ApiServer.delete_articles')
 def supprimerArticle(request):
     '''
         Fonction appelé quand on veut supprimer un article
     '''
     id = request.GET.get("id", False)
     if id:
-        articles = get_object_or_404(models.Article, pk = id)
+        articles = get_object_or_404(models.Articles, pk = id)
         #To-do Verification du groupe
         articles.delete()
         messages.success(request, "Supprimé avec succès !")
@@ -154,20 +160,23 @@ def supprimerArticle(request):
         raise Http404
     return redirect("/articles")
 
-@permission_required('ApiServer.change_article')
+@permission_required('ApiServer.change_articles')
 def toggleVisibiliteArticle(request):
     #Vérification du groupe pour savoir si on peut modifier ou non
     id = request.GET.get("id", False)
     if id:
-        article = get_object_or_404(models.Article, pk = id)
+        article = get_object_or_404(models.Articles, pk = id)
         if article.is_shown:
             article.is_shown = False
 
         else:
-            if article.expiration_date < datetime.date.today():
-                article.expiration_date = changeEndingDate()
+            if article.date_end < datetime.date.today():
+                article.date_end = changeEndingDate()
 
             article.is_shown = True
+
+        #On modifie la dernière personne l'ayant modifié
+        article.user_last_modif = request.user
 
         article.save()
         messages.success(request, "Modifié avec succés")
@@ -181,7 +190,7 @@ def toggleVisibiliteArticle(request):
 """
     Section gérant tout ce qui touche à la gestion de l'affichage
 """
-@permission_required('ApiServer.manage_screen')
+@permission_required('auth.manage_screens')
 def gestionAffichage(request):
     return render(request, 'WebServer/Gestion Affichage/index.html', exInfos("Gestion de l'affichage"))
 
@@ -193,163 +202,163 @@ def gestionAffichage(request):
     Section gérant tout ce qui touche aux sondages
 """
 
-@permission_required('ApiServer.view_sondage')
+@permission_required('ApiServer.view_surveys')
 def sondages(request):
-    sondages = models.Sondage.objects.all().order_by("-est_affiche", "date_creation")
-    return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", informations=sondages))
+    surveys = models.Surveys.objects.all().order_by("-is_shown", "date_creation")
+    return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", informations=surveys))
 
-@permission_required('ApiServer.add_sondage')
+@permission_required('ApiServer.add_surveys')
 def ajouterSondage(request):
     if request.method == "GET":
         return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Ajouter un sondage"))
     
     else:
         #Récupération des valeurs données
-        reponses = request.POST.getlist("reponses")
-        question = request.POST.get("question")
-        date_fin = request.POST.get("date_fin")
-        est_affiche = request.POST.get("est_affiche", False)
+        answers = request.POST.getlist("answers")
+        subject = request.POST.get("subject")
+        date_end = request.POST.get("date_end")
+        is_shown = request.POST.get("is_shown", False)
 
         #Vérification des valeurs
-        if not question or not date_fin:
-            messages.error(request, "Veuillez verifier que toutes les informations sont présentes (Question, Date d'expiration)")
+        if not subject or not date_end:
+            messages.error(request, "Veuillez verifier que toutes les informations sont présentes (Sujet, Date d'expiration)")
             return redirect("/parametres/sondages/ajouter")
 
-        if len(reponses) < 2:
+        if len(answers) < 2:
             messages.error(request, "Veuillez verifier qu'il y ait au moins 2 réponses proposées")
             return redirect("/parametres/sondages/ajouter")
 
         #Vérification qu'il n'y ait pas déjà des sondages affichés
-        if est_affiche:
-            potentielSondageAffiche = models.Sondage.objects.filter(est_affiche=True)
-            if len(potentielSondageAffiche) > 0:
-                potentielSondageAffiche[0].est_affiche = False
-                potentielSondageAffiche[0].save()
+        if is_shown:
+            potentialShownSurvey = models.Surveys.objects.filter(is_shown=True)
+            if len(potentialShownSurvey) > 0:
+                potentialShownSurvey[0].is_shown = False
+                potentialShownSurvey[0].save()
 
         #Création du sondage
-        sondage = models.Sondage()
-        sondage.question = question
-        sondage.date_fin = date_fin
-        sondage.est_affiche = est_affiche
-        sondage.author = request.user
+        survey = models.Surveys()
+        survey.subject = subject
+        survey.date_end = date_end
+        survey.is_shown = is_shown
+        survey.author = request.user
 
-        sondage.save()
+        survey.save()
 
         #Création des réponses associées au sondage
-        for reponse in reponses:
-            reponseModel = models.Reponse()
-            reponseModel.text = reponse
-            reponseModel.sondage = sondage
-            reponseModel.save()
+        for answer in answers:
+            answersModel = models.Answers()
+            answersModel.answer = answer
+            answersModel.survey = survey
+            answersModel.save()
 
         messages.success(request, "Sondage ajouté !")
         return redirect("/parametres/sondages")
 
         
-@permission_required('ApiServer.change_sondage')
+@permission_required('ApiServer.change_surveys')
 def modifierSondage(request):
     if request.method == "GET":
         #Récupération du sondage et des réponses correpondantes
-        sondage = get_object_or_404(models.Sondage, pk=request.GET.get("id"))
-        reponses = models.Reponse.objects.filter(sondage=sondage.id)
+        survey = get_object_or_404(models.Surveys, pk=request.GET.get("id"))
+        answers = models.Answers.objects.filter(survey=survey.id)
         
-        return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Modifier un sondage", informations={"sondage": sondage, "reponses": reponses}))
+        return render(request, 'WebServer/Gestion Affichage/Sondages/modifier.html', exInfos("Modifier un sondage", informations={"survey": survey, "answers": answers}))
 
     elif request.method == "POST":
         #Récupération des valeurs données
         id = request.GET.get("id")
-        reponsesList = request.POST.getlist("reponses")
-        question = request.POST.get("question")
-        date_fin = request.POST.get("date_fin")
-        est_affiche = request.POST.get("est_affiche", False)
+        answersList = request.POST.getlist("answers")
+        subject = request.POST.get("subject")
+        date_end = request.POST.get("date_end")
+        is_shown = request.POST.get("is_shown", False)
 
         #Vérification qu'il n'y ait pas déjà des sondages affichés
-        if est_affiche:
-            potentielSondageAffiche = models.Sondage.objects.filter(est_affiche=True)
-            if len(potentielSondageAffiche) > 0:
-                potentielSondageAffiche[0].est_affiche = False
-                potentielSondageAffiche[0].save()
+        if is_shown:
+            potentialShownSurvey = models.Surveys.objects.filter(is_shown=True)
+            if len(potentialShownSurvey) > 0:
+                potentialShownSurvey[0].is_shown = False
+                potentialShownSurvey[0].save()
 
         #Vérification des valeurs
-        if not question or not date_fin:
+        if not subject or not date_end:
             messages.error(request, "Veuillez verifier que toutes les informations sont présentes (Question, Date d'expiration)")
             return redirect("/parametres/sondages/ajouter")
 
-        if len(reponsesList) < 2:
+        if len(answersList) < 2:
             messages.error(request, "Veuillez verifier qu'il y ait au moins 2 réponses proposées")
             return redirect("/parametres/sondages/ajouter")
 
         #Modification du sondage déjà existant
-        sondage = get_object_or_404(models.Sondage, pk=request.GET.get("id"))
-        sondage.question = question
-        sondage.date_fin = date_fin
-        sondage.est_affiche = est_affiche
-        sondage.save()
+        survey = get_object_or_404(models.Surveys, pk=request.GET.get("id"))
+        survey.subject = subject
+        survey.date_end = date_end
+        survey.is_shown = is_shown
+        survey.save()
 
         #Récuperation des réponses correspondante au sondage dans la bdd
-        reponses = list(models.Reponse.objects.filter(sondage=sondage.id))
+        answers = list(models.Answers.objects.filter(survey=survey.id))
 
         #Suppression des réponses supprimées par l'utilisateur
-        for reponse in reponses:
-            if reponse.text not in reponsesList:
-                reponse.delete()
+        for answer in answers:
+            if answer.answer not in answersList:
+                answer.delete()
 
         #Ajout des réponses restantes si elles ne sont pas déjà ajoutées
-        for reponse in reponsesList:
+        for answer in answersList:
             #Vérification que la reponse n'est pas déjà associée au sondage
-            dejaDansSondage = False
-            for reponsesSondage in reponses:
-                if reponsesSondage.text == reponse:
-                    dejaDansSondage = True
+            alreadyInSurvey = False
+            for answersSurvey in answers:
+                if answersSurvey.answer == answer:
+                    alreadyInSurvey = True
 
             #Si elle ne l'est pas, on l'ajoute
-            if not dejaDansSondage:
-                reponseModel = models.Reponse()
-                reponseModel.text = reponse
-                reponseModel.sondage = sondage
+            if not alreadyInSurvey:
+                answerModel = models.Reponse()
+                answerModel.answer = reponse
+                answerModel.survey = survey
 
-                reponseModel.save()
+                answerModel.save()
 
         messages.success(request, "Sondage modifié !")
         return redirect("/parametres/sondages/modifier?id="+id)
 
 
-@permission_required('ApiServer.delete_sondage')
+@permission_required('ApiServer.delete_surveys')
 def supprimerSondage(request):
     '''
         Fonction appelé quand on veut supprimer un article
     '''
     id = request.GET.get("id", "")
     if id:
-        sondage = get_object_or_404(models.Sondage, pk=id)
-        sondage.delete()
+        survey = get_object_or_404(models.Surveys, pk=id)
+        survey.delete()
         messages.success(request, "Sondage supprimé avec succés !")
 
     else:
         raise Http404
     return redirect("/parametres/sondages")
 
-@permission_required('ApiServer.change_sondage')
+@permission_required('ApiServer.change_surveys')
 def toggleVisibiliteSondage(request):
     id = request.GET.get("id", "")
     if id:
-        sondage = get_object_or_404(models.Sondage, pk=id)
-        if sondage.est_affiche:
-            sondage.est_affiche = False
+        survey = get_object_or_404(models.Surveys, pk=id)
+        if survey.is_shown:
+            survey.is_shown = False
         
         else:
-            if sondage.date_fin < datetime.date.today():
-                sondage.date_fin = changeEndingDate()
+            if survey.date_end < datetime.date.today():
+                survey.date_end = changeEndingDate()
 
             #Vérification qu'il n'y ait pas déjà des sondages affichés
-            potentielSondageAffiche = models.Sondage.objects.filter(est_affiche=True)
-            if len(potentielSondageAffiche) > 0:
-                potentielSondageAffiche[0].est_affiche = False
-                potentielSondageAffiche[0].save()
+            potentialShownSurvey = models.Surveys.objects.filter(is_shown=True)
+            if len(potentialShownSurvey) > 0:
+                potentialShownSurvey[0].is_shown = False
+                potentialShownSurvey[0].save()
 
-            sondage.est_affiche = True
+            survey.is_shown = True
 
-        sondage.save()
+        survey.save()
         
         messages.success(request, "Sondage modifié avec succés")
         return redirect("/parametres/sondages")
@@ -357,15 +366,15 @@ def toggleVisibiliteSondage(request):
     else:
         raise Http404
 
-@permission_required('ApiServer.view_sondage')
+@permission_required('ApiServer.view_surveys')
 def voirResultatsSondage(request):
     id = request.GET.get("id")
 
     if id:
         #Récupération des valeurs
-        sondage = get_object_or_404(models.Sondage, pk=id)
-        reponses = models.Reponse.objects.filter(sondage=sondage.id)
-        votes = models.Vote.objects.filter(sondage=sondage.id)
+        survey = get_object_or_404(models.Surveys, pk=id)
+        answers = models.Answers.objects.filter(survey=survey.id)
+        votes = models.Votes.objects.filter(survey=survey.id)
 
         votesDict = {}
 
@@ -383,30 +392,30 @@ def voirResultatsSondage(request):
             total += 1        
 
 
-        reponsesDict = {}
+        answersDict = {}
 
         #Création du dictionnaire contenant les réponses
         # Reponse : id de la reponse
-        for reponse in reponses:
-            reponsesDict[reponse.text] = reponse.id
+        for answer in answers:
+            answersDict[answer.answer] = answer.id
 
             #Si il n'y a pas de vote pour cette réponse
             #On crée une valeur dans les votes ayant pour id la reponse et
             #comme valeur 0 car il n'y a personne qui a voté pour cette réponse 
-            if reponse.id not in votesDict:
-                votesDict[reponse.id] = 0
+            if answer.id not in votesDict:
+                votesDict[answer.id] = 0
 
         #Création du dictionnaire final
         data = {
-            "sondage": {
-                "id": sondage.id,
-                "date_creation": sondage.date_creation,
-                "date_fin": sondage.date_fin,
-                "question": sondage.question,
-                "est_affiche": sondage.est_affiche,
+            "survey": {
+                "id": survey.id,
+                "date_creation": survey.date_creation,
+                "date_end": survey.date_end,
+                "subject": survey.subject,
+                "is_shown": survey.is_shown,
             },
 
-            "reponses": reponsesDict,
+            "answers": answersDict,
 
             "votes": votesDict,
 
@@ -421,15 +430,15 @@ def voirResultatsSondage(request):
 """
     Section gérant tout ce qui touche aux informations
 """
-@permission_required('ApiServer.view_information')
+@permission_required('ApiServer.view_informations')
 def informations(request):
-    infos = models.Info.objects.all()
+    infos = models.Informations.objects.all()
     return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", informations=infos))
 
-@permission_required('ApiServer.add_information')
+@permission_required('ApiServer.add_informations')
 def ajouterInformation(request):
     if request.method == "GET":
-        infotypes = models.InfoType.objects.all()
+        infotypes = models.InfoTypes.objects.all()
         form = forms.InformationForm()
         return render(request, 'WebServer/Gestion Affichage/Informations/ajouter.html', exInfos("Modifier l'information", form=form, informations={"infotypes": infotypes}))
     
@@ -446,15 +455,15 @@ def ajouterInformation(request):
         return redirect("/parametres/informations/ajouter")
 
 
-@permission_required('ApiServer.change_information')
+@permission_required('ApiServer.change_informations')
 def modifierInformation(request):
     id = request.GET.get("id", "")
     if(id):
-        info = get_object_or_404(models.Info, pk=id)
+        info = get_object_or_404(models.Informations, pk=id)
 
         if request.method == "GET":
             form = forms.InformationForm()
-            infotypes = models.InfoType.objects.all()
+            infotypes = models.InfoTypes.objects.all()
 
             return render(request, 'WebServer/Gestion Affichage/Informations/modifier.html', exInfos("Modifier l'information", form = form, informations={"info": info, "infotypes": infotypes}))
         
@@ -469,7 +478,7 @@ def modifierInformation(request):
 
             else:
                 createErrorMessages(request, form)
-                infotypes = models.InfoType.objects.all()
+                infotypes = models.InfoTypes.objects.all()
                 return render(request, 'WebServer/Gestion Affichage/Informations/modifier.html', exInfos("Modifier l'information", form = form, informations={"info": info, "infotypes": infotypes}))
 
 
@@ -477,11 +486,11 @@ def modifierInformation(request):
         raise Http404
 
 
-@permission_required('ApiServer.delete_information')
+@permission_required('ApiServer.delete_informations')
 def supprimerInformation(request):
     id = request.GET.get('id', '')
     if id:  
-        info = get_object_or_404(models.Info, pk=id)
+        info = get_object_or_404(models.Informations, pk=id)
         info.delete()
         messages.success(request, "Supprimé avec succés")
 
@@ -490,19 +499,19 @@ def supprimerInformation(request):
 
     return redirect("/parametres/informations")
 
-@permission_required('ApiServer.change_information')
+@permission_required('ApiServer.change_informations')
 def toggleVisibiliteInformation(request):
     id = request.GET.get('id', "")
     if(id):
-        info = get_object_or_404(models.Info, pk=id)
+        info = get_object_or_404(models.Informations, pk=id)
 
         if info.is_shown:
             info.is_shown = False
             messages.success(request, "Information cachée !")
 
         else:
-            if info.expiration_date < datetime.date.today():
-                info.expiration_date = changeEndingDate()
+            if info.date_end < datetime.date.today():
+                info.date_end = changeEndingDate()
 
             info.is_shown = True
             messages.success(request, "Information affichée !")
@@ -520,11 +529,11 @@ def toggleVisibiliteInformation(request):
 @login_required
 def comptes(request):
     #Récuperation des articles crée par l'user
-    articles = models.Article.objects.all().filter(author_id = request.user.id)
-    sondages = models.Sondage.objects.all().filter(author_id = request.user.id)
-    return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", informations={"articles": articles, "sondages": sondages}))
+    articles = models.Articles.objects.all().filter(author_id = request.user.id)
+    surveys = models.Surveys.objects.all().filter(author_id = request.user.id)
+    return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", informations={"articles": articles, "surveys": surveys}))
 
-@permission_required('ApiServer.add_user')
+@permission_required('ApiServer.add_users')
 def ajouterCompte(request):
     if request.method == "GET":
         form = forms.UserForm()
@@ -573,22 +582,21 @@ def modifierCompte(request):
         #Verification qu'il a les droits pour visionner le compte
         if id:
             #Si l'utilisateur est trouvé on l'affiche sinon on renvoie un 404
-            user = get_object_or_404(models.User, pk=id)
+            user = get_object_or_404(models.Users, pk=id)
 
-            print(user.id)
-            print(request.user.id)
             if user.id == request.user.id:
                 return redirect("/comptes/modifier")
 
-            articles = models.Article.objects.filter(author=user)
-            sondages = models.Sondage.objects.filter(author=user)
+            articles = models.Articles.objects.filter(author=user)
+            surveys = models.Surveys.objects.filter(author=user)
+            groups = models.GroupsExtend.objects.all()
 
-            if request.user.has_perm('ApiServer.change_user'):
+            if request.user.has_perm('auth.manage_accounts'):
                 canEdit = True
             else:
                 canEdit = False
 
-            return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", informations={"user": user, "articles": articles, "sondages": sondages, "canEdit": canEdit}))
+            return render(request, 'WebServer/Comptes/modifierCompteAutre.html', exInfos("Modifier un compte", informations={"user": user, "articles": articles, "surveys": surveys, "canEdit": canEdit, "groups": groups}))
             
 
         else:   
@@ -597,15 +605,15 @@ def modifierCompte(request):
     else:
         if id:
             #Si l'user veut modifier un compte particulier
-            if request.user.has_perm("ApiServer.change_user"):
-                user = get_object_or_404(models.User, pk=id)
+            if request.user.has_perm("ApiServer.change_users"):
+                user = get_object_or_404(models.Users, pk=id)
                 form = forms.changeOthersAccount(request.POST, request.FILES, instance=user)
 
                 if form.is_valid():
                     form.save()
 
                     messages.success(request, "Compte modifié !")
-                    return render(request, "WebServer/Comptes/modifierCompteAutre.html", exInfos("Modifier un compte", form=form, informations=user))
+                    return redirect("/comptes/modifier?id="+id)
                 
                 else:
                     createErrorMessages(request, form)
@@ -652,8 +660,8 @@ def toggleActive(request):
     id = request.GET.get("id", False)
     #Si l'user desactive un autre compte
     if id:
-        if request.user.has_perm("ApiServer.delete_user"):
-            user = get_object_or_404(models.User, pk = id)
+        if request.user.has_perm("ApiServer.delete_users"):
+            user = get_object_or_404(models.Users, pk = id)
 
             if user.is_active:
                 user.is_active = False
@@ -681,22 +689,22 @@ def deconnection(request):
     logout(request)
     return redirect("/")
 
-@permission_required('ApiServer.view_user')
+@permission_required('ApiServer.view_users')
 def afficherComptes(request):
     #Récupération des comptes
-    users = models.User.objects.all()
+    users = models.Users.objects.all()
 
     #Tri en fonction du nom de famille
     users = users.order_by("last_name", "username")
 
     return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", informations={"users": users}))
 
-@permission_required('ApiServer.change_user')
+@permission_required('ApiServer.change_users')
 def resetPassword(request):
     id = request.GET.get("id", "")
 
     if id:
-        user = get_object_or_404(models.User, pk = id)
+        user = get_object_or_404(models.Users, pk = id)
 
         user.password = ""
 
@@ -710,6 +718,7 @@ def resetPassword(request):
 """
     Section gérant tout ce qui touche aux écrans
 """
+@permission_required("ApiServer.add_screens")
 def ajouterEcran(request):
     if request.method == "GET":
         return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterEcran.html")
@@ -726,7 +735,7 @@ def ajouterEcran(request):
         
     return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterEcran.html")
     
-
+@permission_required("ApiServer.change_screens")
 def modifierEcran(request):
     id = request.GET.get("id", "")
     if id:
@@ -749,11 +758,11 @@ def modifierEcran(request):
     else:
         raise Http404
 
-
+@permission_required("ApiServer.delete_screens")
 def supprimerEcran(request):
     return redirect("/parametres")
 
-
+@permission_required("ApiServer.add_pages")
 def ajouterPage(request):
     if request.method == "GET":
         return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterPage.html")
@@ -770,7 +779,7 @@ def ajouterPage(request):
         
     return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterPage.html")
     
-
+@permission_required("ApiServer.change_pages")
 def modifierPage(request):
     id = request.GET.get("id", "")
     if id:
@@ -793,17 +802,19 @@ def modifierPage(request):
     else:
         raise Http404
 
+@permission_required("ApiServer.delete_pages")
 def supprimerPage(request):
     return redirect("/parametres")
 
+@permission_required("auth.manage_affectation_pages_screens")
 def modifierAffectation(request):
     """
         Fonction s'occupant de renvoyer la page qui permet d'affecter chaque écran à une page
     """
     if request.method == "GET":
-        ecrans = models.Display.objects.all().order_by("name")
-        pages = models.Page.objects.all()
-        return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierLaffectation.html', exInfos("Modification des écrans", informations={"ecrans": ecrans, "pages": pages}))
+        screens = models.Screens.objects.all().order_by("name")
+        pages = models.Pages.objects.all()
+        return render(request, 'WebServer/Gestion Affichage/Ecrans/modifierLaffectation.html', exInfos("Modification des écrans", informations={"screens": screens, "pages": pages}))
     
     elif request.method == "POST":
         #Si l'user fourni une page précise, on le recupère sinon on met la page par defaut (correspondant au -1 pour l'identifiant)
@@ -812,35 +823,37 @@ def modifierAffectation(request):
         #Si l'id fourni est différent de -1 donc que l'user l'a fourni
         if pageId > -1:
             #Recherche de la page correspondante
-            page = models.Page.objects.filter(pk = pageId)
+            page = models.Pages.objects.filter(pk = pageId)[0]
 
         #Si l'user a donné une liste d'écrans à modifier
-        if request.POST.getlist("ecrans", ""):
+        if request.POST.getlist("screens", ""):
 
             #Pour tous les écrans dans cette liste
-            for i in range(len(request.POST.getlist("ecrans"))):
+            for i in range(len(request.POST.getlist("screens"))):
                 #Id de l'écran qu'on modifie dans cette itération
-                ecranId = request.POST.getlist("ecrans")[i]
+                screenId = request.POST.getlist("screens")[i]
 
                 #L'écran correspondant à l'id
-                ecran = models.Display.objects.filter(pk = ecranId)
+                screens = models.Screens.objects.filter(pk = screenId)
 
                 #Si l'écran n'est pas trouvé
-                if len(ecran) < 1:
-                    messages.error(request, "Il y a eu un problème, l'écran avec l'identifiant " + ecranId + " n'a pas pu être mis à jour")
-                
+                if len(screens) < 1:
+                    messages.error(request, "Il y a eu un problème, l'écran avec l'identifiant " + screenId + " n'a pas pu être mis à jour")
+
                 #S'il est trouvé
                 else:
+                    screen = screens[0]
+                    
                     #Si on a pas trouvé la page ou que l'user ne souhaite pas de page en particulier
                     if pageId == -1:
-                        ecran[0].page = None
+                        screen.page = None
 
                     #Si l'user veut une page en particulier qu'on a trouvé
                     else:
-                        ecran[0].page = page[0]
+                        screen.page = page
 
                     #Sauvegarde
-                    ecran[0].save()
+                    screen.save()
 
             messages.success(request, "Les écrans ont bien été mis à jour !")
 

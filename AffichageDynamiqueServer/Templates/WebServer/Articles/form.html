@@ -6,16 +6,16 @@
         <div class="form-group my-3">
             <label for="author">Ecrit par</label>
             <label class="fw-bold"><a href="/comptes/modifier?id={{informations.author.id}}" target="_blank" class="clickable">{{informations.author}}</a></label>
-            <label for="date">le {{informations.creation_date}}</label>
+            <label for="date">le {{informations.date_creation}}</label>
         </div>
         <div class="form-group my-3">
             <label for="lastEdited">Modifié par</label>
-            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.last_edit_by.id}}" target="_blank" class="clickable">{{informations.last_edit_by}}</a></label>
-            <label for="date">le {{informations.modification_date}}</label>
+            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.user_last_modif.id}}" target="_blank" class="clickable">{{informations.user_last_modif}}</a></label>
+            <label for="date">le {{informations.date_last_modif}}</label>
         </div>
     </div>
-    
     {%endif%}
+    
     <form id="formulaire" enctype="multipart/form-data" action="" method="post">
         {% csrf_token %}
         <div class="form-group my-3">
@@ -48,26 +48,26 @@
         <div class="form-group my-3 has_validation">
             <label for="articleContent" class="form-label">Contenu de l'article</label>
             <textarea
-                name="article" 
+                name="content" 
                 id="articleContent" 
-                class="form-control {% if form.article.errors %}is-invalid{% endif %}" 
+                class="form-control {% if form.content.errors %}is-invalid{% endif %}" 
                 data-provide="markdown" 
                 maxlength="700" 
                 placeholder="Entrer le contenu de l'article"
-            >{{informations.article}}</textarea>
+            >{{informations.content}}</textarea>
             <small id="compteurCaractereArticleContenu" class="form-text text-muted">0/700</small>
         </div>
         <div class="form-group my-3 has_validation">
             <label for="dateExpiration">Date d'expiration de l'article : </label>
             <input 
                 type="date" 
-                name="expiration_date"
+                name="date_end"
                 id="dateExpiration"
                 data-bs-toggle="tooltip" 
                 data-bs-html="true" 
                 title="Date du dernier jour où l'article sera affiché sur les écrans"
-                value="{{informations.expiration_date|date:'Y-m-d'}}"
-                class="{% if form.expiration_date.errors %}is-invalid{% endif %}"
+                value="{{informations.date_end|date:'Y-m-d'}}"
+                class="{% if form.date_end.errors %}is-invalid{% endif %}"
             > 
         </div>
         <div class="form-group mt-3">

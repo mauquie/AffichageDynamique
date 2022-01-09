@@ -16,7 +16,7 @@
     </nav>
 </div>
 <div class="row p-3">
-    <div class="border rounded-3 m-3 px-3 mx-2">
+    <div class="border rounded-3 m-3 me-5 px-3 mx-2">
         {%if informations.canEdit%}
         <div class="alert alert-danger mt-2" role="alert">
             Attention, vous avez les droits nécessaires pour modifier ce compte. Ne faites pas n'importe quoi avec !
@@ -80,6 +80,22 @@
                 </div>
                 
             </div>
+            <div class="form-group my-3">
+                <label for="Pseudo" class="form-label">Identifiant :</label>
+                <div class="input-group has-validation">
+                    <input 
+                        id="pseudoInput"
+                        name="username"
+                        type="text" 
+                        placeholder="Identifiant"  
+                        class="form-control {% if form.username.errors %}is-invalid{%endif%}" 
+                        aria-describedby="AideIdentifiant" 
+                        maxlength="45"
+                        value="{{informations.user.username}}"
+                        {% if informations.canEdit == False %}disabled{%endif%}
+                    >
+                </div>
+            </div>
             {%if informations.canEdit %}
             <div class="form-group my-3">
                 <label for="Email" class="form-label">Email</label>
@@ -96,24 +112,14 @@
                     >
                 </div>
             </div>
-            {%endif%}
             <div class="form-group my-3">
-                <label for="Pseudo" class="form-label">Identifiant</label>
-                <div class="input-group has-validation">
-                    <input 
-                        id="pseudoInput"
-                        name="username"
-                        type="text" 
-                        placeholder="Identifiant"  
-                        class="form-control {% if form.username.errors %}is-invalid{%endif%}" 
-                        aria-describedby="AideIdentifiant" 
-                        maxlength="45"
-                        value="{{informations.user.username}}"
-                        {% if informations.canEdit == False %}disabled{%endif%}
-                    >
-                </div>
+                <label for="accountType">Type de compte :</label>
+                <select name="groups" id="userGroup" class="form-select my-2">
+                    {% for group in informations.groups %}
+                    <option value="{{group.id}}" {%if group.name == informations.user|get_group  %}selected{%endif%}>{{group}}</option>
+                    {% endfor %}
+                </select>
             </div>
-            {%if informations.canEdit %}
             <div class="form-group my-3">
                 <div class="row">
                     <div class="col-lg-2 btn-group"> 
@@ -137,46 +143,79 @@
                         </button>
                         {%endif%}
                     </div>
-                    <div class="col-lg-2 btn-group"> 
-                        <button id="resetPassword" type="button" class="btn btn-outline-secondary"
-                            data-bs-toggle="tooltip" data-bs-html="true" title="Reinitialiser le mot de passe du compte, quand l'utilisateur voudra se connecter au compte, le site lui proposera d'en entrer un nouveau."
-                            onclick="window.location = '/resetPassword?id={{informations.user.id}}'">
-                            Réinitialiser le mot de passe
-                        </button>
-                    </div>
                 </div>
             </div>
             {%endif%}
         </form>
     </div>
-    {%if informations.articles %}
-    <div class="border rounded-3 m-3 mb-1 mx-2">
-        <div class="row">
-            <div class="accordion accordion-flush" id="accordion-articles">
-                <div>
-                    <h2 id="flush-headingArticle">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-articles" aria-expanded="false" aria-controls="flush-articles">
-                            <h2>Ses articles :</h2>
-                        </button>
-                    </h2>
-                    <div id="flush-articles" class="accordion-collapse collapse" aria-labelledby="flush-articles" data-bs-parent="#accordion-articles">
-                        <div class="accordion-body">
-                            <div class="row g-2">
+    <div class="row">
+        {%if informations.articles %}
+        <div class="col-12 col-lg-6 px-4 p-3">
+            <div class="row border rounded-3">
+                <div class="accordion accordion-flush" id="accordion-articles">
+                    <div>
+                        <h2 id="flush-headingArticle">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-articles" aria-expanded="false" aria-controls="flush-articles">
+                                <h2>Ses articles :</h2>
+                            </button>
+                        </h2>
+                        <div id="flush-articles" class="accordion-collapse collapse" aria-labelledby="flush-articles" data-bs-parent="#accordion-articles">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Titre</th>
+                                                <th scope="col">Dernier jour à l'affiche</th>
+                                                <th scope="col">Est affiché</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbody-pointer">
+                                            {% for article in informations.articles %}
+                                            <tr class="article-row {% if article.is_shown %}table-warning{% else %}showed{%endif%}" id="{{article.id}}" onclick="window.location = '/articles/modifier?id={{article.id}}'">
+                                                <td scope="row">{{article.title}}</td>
+                                                <td>{{article.expiration_date}}</td>
+                                                <td>{% if article.is_shown %}Oui{%else%}Non{%endif%}</td>
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endif%}
+        {%if informations.surveys %}
+        <div class="col-12 col-lg-6 px-4 p-3">
+            <div class="row border rounded-3">
+                <div class="accordion accordion-flush" id="accordion-sondages">
+                    <div>
+                        <h2 id="flush-headingSondages">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-sondages" aria-expanded="false" aria-controls="flush-sondages">
+                                <h2>Ses sondages :</h2>
+                            </button>
+                        </h2>
+                        <div id="flush-sondages" class="accordion-collapse collapse" aria-labelledby="flush-sondages" data-bs-parent="#accordion-sondages">
+                            <div class="accordion-body">
                                 <table class="table table-hover">
-                                    <thead>
+                                    <thead class="">
                                         <tr>
                                             <th scope="col">Titre</th>
                                             <th scope="col">Dernier jour à l'affiche</th>
                                             <th scope="col">Est affiché</th>
-                                            
                                         </tr>
                                     </thead>
                                     <tbody class="tbody-pointer">
-                                        {% for article in informations.articles %}
-                                        <tr class="article-row {% if article.is_shown %}table-warning{% else %}showed{%endif%}" id="{{article.id}}" onclick="window.location = '/articles/modifier?id={{article.id}}'">
-                                            <td scope="row">{{article.title}}</td>
-                                            <td>{{article.expiration_date}}</td>
-                                            <td>{% if article.is_shown %}Oui{%else%}Non{%endif%}</td>
+                                        {%for survey in informations.surveys%}
+                                        <tr class="sondage-row {%if survey.is_shown%}table-warning{%endif%}" id="{{survey.id}}"
+                                            onclick="window.location = '/parametres/sondages/modifier?id={{survey.id}}'">
+                                            <td scope="row">{{survey.subject}}</td>
+                                            <td>{{survey.date_end}}</td>
+                                            <td>{%if survey.is_shown%}Oui{%else%}Non{%endif%}</td>
                                         </tr>
                                         {%endfor%}
                                     </tbody>
@@ -187,46 +226,9 @@
                 </div>
             </div>
         </div>
+        {%endif%}
     </div>
-    {%endif%}
-    {%if informations.sondages %}
-    <div class="border rounded-3 m-3 mb-1 mx-2">
-        <div class="row">
-            <div class="accordion accordion-flush" id="accordion-sondages">
-                <div>
-                    <h2 id="flush-headingSondages">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-sondages" aria-expanded="false" aria-controls="flush-sondages">
-                            <h2>Ses sondages :</h2>
-                        </button>
-                    </h2>
-                    <div id="flush-sondages" class="accordion-collapse collapse" aria-labelledby="flush-sondages" data-bs-parent="#accordion-sondages">
-                        <div class="accordion-body">
-                            <table class="table table-hover">
-                                <thead class="">
-                                    <tr>
-                                        <th scope="col">Titre</th>
-                                        <th scope="col">Dernier jour à l'affiche</th>
-                                        <th scope="col">Est affiché</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="tbody-pointer">
-                                    {%for sondage in informations.sondages%}
-                                    <tr class="sondage-row {%if sondage.is_shown%}table-warning{%endif%}" id="{{sondage.id}}"
-                                        onclick="window.location = '/parametres/sondages/modifier?id={{sondage.id}}'">
-                                        <td scope="row">{{sondage.description}}</td>
-                                        <td>{{sondage.expiration_date}}</td>
-                                        <td>{%if sondage.is_shown%}Oui{%else%}Non{%endif%}</td>
-                                    </tr>
-                                    {%endfor%}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {%endif%}
+    
 </div>
 {% include '../decoupeur.html' %}
 <script src="{% static 'JS/cropper.js' %}"></script>

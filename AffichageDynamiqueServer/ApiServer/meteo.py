@@ -19,7 +19,7 @@ class MeteoGetter:
         self.apiKey = "ad46a56c32405526362b69fed3971632"
         self.lastData = {}
 
-        self._fetchMeteo() #Récupération des données pour éviter d'attendre 55mn
+        self.didFirstFetch = False
 
         self.lastQuery = datetime.datetime.now()
         self.lastQuery = self.lastQuery.timestamp() - (self.lastQuery.minute * 60)
@@ -54,7 +54,8 @@ class MeteoGetter:
     
     def getMeteoData(self):
         #Méthode s'occupant de renvoyer les données qd elles sont demandées par les écrans
-        if self._canQuery():
+        if self._canQuery() or not self.didFirstFetch:
+            self.didFirstFetch = True
             self._fetchMeteo()
 
         return self.lastData	

@@ -24,12 +24,9 @@ sys.path.insert(0, PROJECT_DIR)
 from environ import getEnv
 dotenv = getEnv("../.env")
 
-
 import os
 import ldap
 from django_auth_ldap.config import LDAPSearch
-
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -147,8 +144,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'ApiServer.User'
-AUTH_GROUP_MODEL = 'Apiserver.GroupExtend'
+AUTH_USER_MODEL = 'ApiServer.Users'
+AUTH_GROUP_MODEL = 'Apiserver.GroupsExtend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

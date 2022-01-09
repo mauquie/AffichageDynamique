@@ -35,6 +35,7 @@ async function getTweets(){
         })
         .catch(err => {
             console.error(err)
+            console.error("Here")
         })
 }
 
@@ -139,9 +140,12 @@ setInterval(()=>{
     getTweets().then(() => {
         //Suppression des anciens tweets affichés
         let tweetList = document.getElementById("tweets")
-        for (let i = 1; i < tweetList.children.length; i++){
-            tweetList.removeChild(tweetList.children[i])
+        if (tweetList.children.length > {{max_tweets}} + 1){
+            for (let i = 1; i < tweetList.children.length; i++){
+                tweetList.removeChild(tweetList.children[i])
+            }
         }
+        
     })
 
     

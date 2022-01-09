@@ -4,86 +4,97 @@ from django.contrib.auth.models import AbstractUser, Group
 
 # Les modèles nécéssaires pour la base de données. Les modèles pour l'administration sont créées en dessous.
 
-class GroupExtend(Group):
+class GroupsExtend(Group):
     level = models.IntegerField()
 
-class User(AbstractUser):
-    profile_picture = models.ImageField(upload_to="User/profile_picture/")
+class Users(AbstractUser):
+    profile_picture = models.ImageField(upload_to="Users/profile_pictures/", null=True, default="")
 
-class Article(models.Model):
+    def __str__(self):
+        return self.username
+
+class Articles(models.Model):
     title = models.CharField(max_length=100)
-    article = models.CharField(max_length=4000)
+    content = models.CharField(max_length=700)
     image = models.ImageField(upload_to="Articles/", blank=True)
-    creation_date = models.DateField(auto_now_add=True)
-    expiration_date = models.DateField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author', auto_created=True)
-    modification_date = models.DateField(auto_now_add=True)
-    last_edit_by = models.ForeignKey(User, on_delete=models.CASCADE, auto_created=True)
-    perm_group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True)
-    is_shown = models.BooleanField(default=True)
+    date_creation = models.DateField(auto_now_add=True)
+    date_end = models.DateField()
+    author = models.ForeignKey(Users, on_delete=models.CASCADE, related_name='author', auto_created=True)
+    date_last_modif = models.DateField(auto_created=True, auto_now=True)
+    user_last_modif = models.ForeignKey(Users, on_delete=models.CASCADE, auto_created=True)
+    is_shown = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
 
-class Page(models.Model):
-    filename = models.CharField(max_length=100,null=True)
+class Pages(models.Model):
+    filename = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
 
     def __str__(self):
         return self.description
 
-class Display(models.Model):
+class Screens(models.Model):
     name = models.CharField(max_length=100)
     code_name = models.CharField(max_length=100, default="")
-    page = models.ForeignKey(Page, on_delete=models.CASCADE, null=True)
+    page = models.ForeignKey(Pages, on_delete=models.CASCADE, null=True)
 
-class InfoType(models.Model):
+    def __str__(self):
+        return self.name
+
+class InfoTypes(models.Model):
     name = models.CharField(max_length=30)
 
     def __str__(self):
         return self.name
 
-class Info(models.Model):
-    type = models.ForeignKey(InfoType, on_delete=models.CASCADE)
+class Informations(models.Model):
+    type = models.ForeignKey(InfoTypes, on_delete=models.CASCADE)
     message = models.CharField(max_length=150)
-    is_shown = models.BooleanField(default=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    creation_date = models.DateField(auto_now_add=True)
-    expiration_date = models.DateField()
+    is_shown = models.BooleanField(default=False)
+    author = models.ForeignKey(Users, on_delete=models.CASCADE)
+    date_creation = models.DateField(auto_now_add=True)
+    date_end = models.DateField()
 
     def __str__(self):
         return self.message
 
 
 # Modèles correpondants à Pronote
-class ProfAbsent(models.Model):
-    teacher = models.CharField(max_length=100)
-    debut = models.DateTimeField()
-    fin = models.DateTimeField()
+class Teachers(models.Model):
+    name = models.CharField(max_length=100)
 
     def __str__(self):
-        return "{}, {} à {}".format(self.teacher, self.debut, self.fin)
+        return self.name
 
-class PartieDuRepas(models.Model):
+class Absents(models.Model):
+    teacher = models.ForeignKey(Teachers, on_delete=models.CASCADE)
+    date_start = models.DateTimeField()
+    date_end = models.DateTimeField()
+
+    def __str__(self):
+        return "{}, {} à {}".format(self.teacher, self.date_start, self.date_end)
+
+class MealParts(models.Model):
     name = models.CharField(max_length=30)
 
     def __str__(self):
         return self.name
 
-class Aliment(models.Model):
+class Foods(models.Model):
     name = models.CharField(max_length=100)
-    partie_du_repas = models.ForeignKey(PartieDuRepas, on_delete=models.DO_NOTHING)
+    meal_part = models.ForeignKey(MealParts, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.name
 
-class Repas(models.Model):
-    repas_midi = models.BooleanField()
+class Meals(models.Model):
+    is_midday = models.BooleanField()
     date = models.DateField()
-    aliments_du_repas = models.ManyToManyField(Aliment)
+    to_eat = models.ManyToManyField(Foods)
 
     def __str__(self):
-        if self.repas_midi:
+        if self.is_midday:
             titre = "{} - Midi".format(self.date)
 
         else:
@@ -91,99 +102,104 @@ class Repas(models.Model):
 
         return titre 
 
-class Sondage(models.Model):
-    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    question = models.CharField(max_length=50)
-    date_creation = models.DateField(auto_created=True, auto_now=True)
-    date_fin = models.DateField()
-    est_affiche = models.BooleanField(default=False)
+class Surveys(models.Model):
+    author = models.ForeignKey(Users, on_delete=models.CASCADE)
+    subject = models.CharField(max_length=50)
+    date_creation = models.DateField(auto_now_add=True)
+    date_end = models.DateField()
+    is_shown = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.question
+        return self.subject
 
-class Reponse(models.Model):
-    sondage = models.ForeignKey(Sondage, on_delete=models.CASCADE)
-    text = models.CharField(max_length=50)
+class Answers(models.Model):
+    survey = models.ForeignKey(Surveys, on_delete=models.CASCADE)
+    answer = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.text
+        return self.answer
 
-class Vote(models.Model):
-    auteur = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    vote = models.ForeignKey(Reponse, on_delete=models.CASCADE)
-    sondage = models.ForeignKey(Sondage, on_delete=models.CASCADE)
+class Votes(models.Model):
+    author = models.ForeignKey(Users, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answers, on_delete=models.CASCADE)
+    survey = models.ForeignKey(Surveys, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.auteur.username + " - " + self.vote.text
 
 # Tous les modèles administrateurs
 
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'username', 'email', 'password', 'last_login', 'date_joined', 'is_active', 'is_staff', 'is_superuser', 'profile_picture')
-    list_filter = ('first_name', 'last_name', 'username', 'is_active', 'is_staff', 'is_superuser')
-    search_fields = ['first_name', 'username', 'is_active', 'is_staff', 'is_superuser']
+class UsersAdmin(admin.ModelAdmin):
+    list_display = ('username', 'first_name', 'last_name', 'email', 'password', 'last_login', 'date_joined', 'is_active', 'is_staff', 'is_superuser', 'profile_picture')
+    list_filter = ('username', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser')
+    search_fields = ['username', 'first_name', 'is_active', 'is_staff', 'is_superuser']
     
-class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'article', 'image', 'creation_date', 'expiration_date', 'author', 'modification_date', 'last_edit_by', 'perm_group')
-    list_filter = ('title', 'author', 'creation_date', 'expiration_date')
-    search_fields = ['title', 'author', 'creation_date']
+class ArticlesAdmin(admin.ModelAdmin):
+    list_display = ('title', 'content', 'image', 'date_creation', 'date_end', 'author', 'date_last_modif', 'user_last_modif')
+    list_filter = ('title', 'author', 'date_creation', 'date_end')
+    search_fields = ['title', 'author', 'date_creation']
 
-class PageAdmin(admin.ModelAdmin):
+class PagesAdmin(admin.ModelAdmin):
     list_display = ('description', 'filename')
     list_filter = ('description', 'filename')
     search_fields = ['filename']
 
-class DisplayAdmin(admin.ModelAdmin):
+class ScreensAdmin(admin.ModelAdmin):
     list_display = ('name', 'code_name', 'page')
     list_filter = ('name', 'page')
     search_fields = ['name', 'code_name']
 
-class SurveyAdmin(admin.ModelAdmin):
-    list_display = ('description', 'link', 'author', 'creation_date', 'expiration_date', 'is_shown')
-    list_filter = ('description', 'author', 'creation_date', 'is_shown')
-    search_fields = ['description', 'author', 'creation_date', 'is_shown']
+class SurveysAdmin(admin.ModelAdmin):
+    list_display = ('subject', 'author', 'date_creation', 'date_end', 'is_shown')
+    list_filter = ('subject', 'author', 'date_creation', 'date_end', 'is_shown')
+    search_fields = ['subject', 'author', 'date_creation', 'date_end']
     
-class InfoTypeAdmin(admin.ModelAdmin):
+class InfoTypesAdmin(admin.ModelAdmin):
     list_display = ('name',)
     list_filter = ('name',)
     search_fields = ['name']
 
-class InfoAdmin(admin.ModelAdmin):
-    list_display = ('message', 'type', 'author', 'creation_date', 'expiration_date', 'is_shown')
-    list_filter = ('message', 'type', 'author', 'creation_date', 'is_shown')
-    search_fields = ['message', 'type', 'author', 'creation_date', 'is_shown']
+class InformationsAdmin(admin.ModelAdmin):
+    list_display = ('type', 'author', 'date_creation', 'date_end', 'is_shown')
+    list_filter = ('type', 'author', 'date_creation', 'date_end')
+    search_fields = ['type', 'author', 'date_creation', 'date_end']
 
-class RepasAdmin(admin.ModelAdmin):
-    list_display = ('repas_midi', 'date')
-    list_filter = ('repas_midi', 'date', 'aliments_du_repas')
-    search_fields = ['repas_midi', 'date', 'aliments_du_repas']
+class MealsAdmin(admin.ModelAdmin):
+    list_display = ('is_midday', 'date')
+    list_filter = ('is_midday', 'date', 'to_eat')
+    search_fields = ['is_midday', 'date', 'to_eat']
 
-class AlimentRepas(admin.ModelAdmin):
-    list_display = ('name', 'partie_du_repas')
-    list_filter = ('name', 'partie_du_repas')
-    search_fields = ['name', 'partie_du_repas']
+class FoodsAdmin(admin.ModelAdmin):
+    list_display = ('name', 'meal_part')
+    list_filter = ('name', 'meal_part')
+    search_fields = ['name', 'meal_part']
 
-class PartieDuRepasAdmin(admin.ModelAdmin):
+class MealPartsAdmin(admin.ModelAdmin):
     list_display = ('name',)
     list_filter = ('name', )
     search_fields = ['name']
 
-class ProfAbsentAdmin(admin.ModelAdmin):
-    list_display = ('teacher', 'debut', 'fin')
-    list_filter = ('teacher', 'debut', 'fin')
-    search_fields = ['teacher']
+class TeachersAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    list_filter = ('name',)
+    search_fields = ['name']
 
-class SondageAdmin(admin.ModelAdmin):
-    list_display = ("question", "author")
-    list_filter = ('question', "author", "date_creation", "date_fin", "est_affiche")
-    search_fields = ['question', 'author']
+class AbsentsAdmin(admin.ModelAdmin):
+    list_display = ('teacher', 'date_start', 'date_end')
+    list_filter = ('teacher', 'date_start', 'date_end')
+    search_fields = ['teacher', 'date_start', 'date_end']
 
-class ReponseAdmin(admin.ModelAdmin):
-    list_display = ("sondage", "text")
-    list_filter = ("sondage", "text")
-    search_fields = ['sondage', "text"]
+class SurveysAdmin(admin.ModelAdmin):
+    list_display = ("subject", "author", "date_creation", "date_end", "is_shown")
+    list_filter = ('subject', "author", "date_creation", "date_end", "is_shown")
+    search_fields = ['subject', 'author', "date_creation", "date_end",]
 
-class VoteAdmin(admin.ModelAdmin):
-    list_display = ("auteur", "vote", "sondage")
-    list_filter = ("auteur", "vote", "sondage")
-    search_fields = ['auteur', "vote", "sondage"]
+class AnswersAdmin(admin.ModelAdmin):
+    list_display = ("survey", "answer")
+    list_filter = ("survey", "answer")
+    search_fields = ['survey', "answer"]
+
+class VotesAdmin(admin.ModelAdmin):
+    list_display = ("author", "answer", "survey")
+    list_filter = ("author", "answer", "survey")
+    search_fields = ['author', "answer", "survey"]

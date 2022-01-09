@@ -16,14 +16,14 @@
 
 </div>
 <div class="row">
-    {% if perms.ApiServer.view_information or perms.ApiServer.add_information %}
+    {% if perms.ApiServer.view_informations or perms.ApiServer.add_informations %}
     <div class="col-lg-6 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Informations :</h2>
             </div>
             <div class="row g-2">
-                {% if perms.ApiServer.view_information %}
+                {% if perms.ApiServer.view_informations %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/informations" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -32,7 +32,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if perms.Apiserver.add_information %}
+                {% if perms.ApiServer.add_informations %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/informations/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -45,14 +45,14 @@
         </div>
     </div>
     {% endif %}
-    {% if perms.ApiServer.add_sondage or perms.ApiServer.view_sondage %}
+    {% if perms.ApiServer.add_surveys or perms.ApiServer.view_surveys %}
     <div class="col-lg-5 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Sondages :</h2>
             </div>
             <div class="row g-2">
-                {% if perms.ApiServer.add_survey %}
+                {% if perms.ApiServer.add_surveys %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/sondages/ajouter" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -61,11 +61,11 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if perms.ApiServer.view_survey %}
+                {% if perms.ApiServer.view_surveys %}
                 <div class="col-lg-6 col-12">
                     <a href="parametres/sondages" class="clickable" >
                         <div class="p-3 border rounded-1">
-                            <h5>Voir tout les sondages</h5>
+                            <h5>Voir tous les sondages</h5>
                         </div>
                     </a>
                 </div>
@@ -74,12 +74,14 @@
         </div>
     </div>
     {% endif %}
+    {% if perms.auth.manage_affectation_pages_screens or perms.ApiServer.add_screens or perms.ApiServer.add_pages%}
     <div class="col-lg-6 col-11 m-3">
         <div class="p-4 border rounded-3">
             <div class="row">
                 <h2>Ecrans :</h2>
             </div>
             <div class="row g-2">
+                {% if perms.auth.manage_affectation_pages_screens %}
                 <div class="col-lg-6 col-12">
                     <a href="/parametres/modifierPageEcran" class="clickable" >
                         <div class="p-3 border rounded-1">
@@ -87,6 +89,8 @@
                         </div>
                     </a>
                 </div>
+                {% endif %}
+                {% if perms.ApiServer.add_screens %}
                 <div class="col-lg-6 col-12">
                     <a href="/parametres/ecrans/ajouter" class="clickable">
                         <div class="p-3 border rounded-1">
@@ -94,6 +98,8 @@
                         </div>
                     </a>
                 </div>
+                {%endif%}
+                {% if perms.ApiServer.add_pages %}
                 <div class="col-lg-6 col-12">
                     <a href="/parametres/pages/ajouter" class="clickable">
                         <div class="p-3 border rounded-1">
@@ -101,8 +107,10 @@
                         </div>
                     </a>
                 </div>
+                {%endif%}
             </div>  
         </div>
     </div>  
+    {%endif%}
 </div>
 {% endblock content %}

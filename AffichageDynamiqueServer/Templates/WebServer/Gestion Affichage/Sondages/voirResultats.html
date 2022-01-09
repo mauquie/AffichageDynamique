@@ -19,11 +19,11 @@
         <canvas width="400" height="400" id="monGraph"></canvas>
     </div>
     <div class="col-12 col-lg-7">
-        <h3>Sondage : {{informations.sondage.question}}</h3>
-        <small class="text-muted">Date : du {{informations.sondage.date_creation}} au {{informations.sondage.date_fin}}</small>
+        <h3>Sondage : {{informations.survey.subject}}</h3>
+        <small class="text-muted">Date : du {{informations.survey.date_creation}} au {{informations.survey.date_end}}</small>
         <p class="mt-5 fs-5">Nombre de vote <span class="fst-italic">Total</span> : <span class="fw-bold">{{informations.totalVotes}} votes</span></p>
-        {%for reponse, idReponse in informations.reponses.items%}
-        <p>Nombre de vote <span class="fst-italic">{{reponse}}</span> : <span class="fw-bold">{{informations.votes|get_value:idReponse}} votes</span></p>
+        {%for answer, idAnswer in informations.answers.items%}
+        <p>Nombre de vote <span class="fst-italic">{{answer}}</span> : <span class="fw-bold">{{informations.votes|get_value:idAnswer}} votes</span></p>
         {%endfor%}
     </div>
 </div>
@@ -32,8 +32,8 @@
     //Données pour le graph
     const data = {
         labels: [
-            {%for reponse in informations.reponses%}
-            "{{reponse}}",
+            {%for answer in informations.answers%}
+            "{{answer}}",
             {%endfor%}
         ],
         datasets: [{

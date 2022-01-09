@@ -27,12 +27,12 @@
                     </tr>
                 </thead>
                 <tbody class="tbody-pointer">
-                    {%for sondage in informations%}
-                    <tr class="sondage-row {%if sondage.est_affiche%}table-warning{%else%}showned{%endif%}" id="{{sondage.id}}">
-                        <td scope="row" class="text-break">{{sondage.question}}</td>
-                        <td>{{sondage.author}}</td>
-                        <td>{{sondage.date_fin}}</td>
-                        <td class="d-none d-lg-table-cell">{%if sondage.est_affiche%}Oui{%else%}Non{%endif%}</td>
+                    {%for survey in informations%}
+                    <tr class="sondage-row {%if survey.is_shown%}table-warning{%else%}showned{%endif%}" id="{{survey.id}}">
+                        <td scope="row" class="text-break">{{survey.subject}}</td>
+                        <td>{{survey.author}}</td>
+                        <td>{{survey.date_end}}</td>
+                        <td class="d-none d-lg-table-cell">{%if survey.is_shown%}Oui{%else%}Non{%endif%}</td>
                     </tr>
                     {%endfor%}
                 </tbody>

@@ -54,13 +54,13 @@ class WeatherApp{
         }
         //création dictionnaire liant météo et couleur
         this.dictColourMeteo = {
-            "01": "red",
+            "01": "#FF2604",
             "02": "gray",
             "03": "gray",
             "04": "gray",
-            "10": "blue",
-            "09": "dark-blue",
-            "11": "yellow",
+            "10": "rgb(7, 133, 236)",
+            "09": "rgb(4, 55, 110)",
+            "11": "#FF845E",
             "13": "#BDB9B9",
             "50": "gray",
         }

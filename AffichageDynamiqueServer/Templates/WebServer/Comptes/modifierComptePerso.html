@@ -48,7 +48,7 @@
                                 class="form-control mx-2" 
                                 maxlength="30"
                                 value="{{user.last_name}}"
-                                disabled
+                                {% if perm.auth.manage_accounts == False %}disabled{%endif%}
                             >
                         </div>
                         <div class="input-group mt-4">
@@ -59,7 +59,7 @@
                                 class="form-control mx-2" 
                                 maxlength="30"
                                 value="{{user.first_name}}"
-                                disabled
+                                {% if perm.auth.manage_accounts == False %}disabled{%endif%}
                             >
                         </div>
                     </div>
@@ -94,31 +94,6 @@
                         aria-describedby="AideIdentifiant" 
                         maxlength="45"
                         value="{{user.get_username}}"
-                    >
-                </div>
-            </div>
-            <div class="form-group my-3">
-                <label for="Pseudo" class="form-label">Changer mon mot de passe</label>
-                <div class="input-group">
-                    <input 
-                        id="passwordInput"
-                        name="password"
-                        type="password" 
-                        placeholder="Mot de passe"  
-                        class="form-control" 
-                        aria-describedby="AideMotDePasse" 
-                        maxlength="50"
-
-                    >
-                    <input 
-                        id="passwordInput"
-                        name="password_confirm"
-                        type="password" 
-                        placeholder="Mot de passe (encore)"  
-                        class="form-control" 
-                        aria-describedby="AideMotDePasse" 
-                        maxlength="50"
-
                     >
                 </div>
             </div>
