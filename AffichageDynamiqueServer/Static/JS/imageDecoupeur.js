@@ -132,31 +132,33 @@ class imageDecoupeur{
         /**
          *  Fonction créant le découpeur et l'initialisant dans la fenêtre Modal
          */
-        console.log("creation")
-        let width = window.innerWidth * 0.5;
-        
-        this.cropper = new Cropper(this.cropImagePreview, { //Options du découpeur
-            dragMode: 'move',
-            minContainerWidth: width,
-            minContainerHeight: width * 9 / 16, //Garde toujours le même ratio
-            aspectRatio: this.ratio.lon / this.ratio.lar,
-            initialAspectRatio: this.ratio.lon / this.ratio.lar,
-            autoCropArea: 1,
-            toggleDragModeOnDblclick: false,
+        setTimeout(() => {
+            let width = this.cropperDiv.offsetWidth;
 
-        }) 
-        
-        //Quand le cropper sera chargé
-        this.cropImagePreview.addEventListener("ready", () => {
-            //Changement du style et cache le logo de chargement
-            document.getElementsByClassName("cropper-container")[0].style.margin = "auto"
-            let loadingSpiner = document.getElementById("loadingSpiner")
-            loadingSpiner.hidden = true
+            this.cropper = new Cropper(this.cropImagePreview, { //Options du découpeur
+                dragMode: 'move',
+                minContainerWidth: width,
+                minContainerHeight: width * 9 / 16, //Garde toujours le même ratio
+                aspectRatio: this.ratio.lon / this.ratio.lar,
+                initialAspectRatio: this.ratio.lon / this.ratio.lar,
+                autoCropArea: 1,
+                toggleDragModeOnDblclick: false,
 
-            //Crée une première version déjà coupée au cas ou l'utilisateur ne fait pas de 
-            //modification
-            this.saveImage()
-        })
+            }) 
+            
+            //Quand le cropper sera chargé
+            this.cropImagePreview.addEventListener("ready", () => {
+                //Changement du style et cache le logo de chargement
+                document.getElementsByClassName("cropper-container")[0].style.margin = "auto"
+                let loadingSpiner = document.getElementById("loadingSpiner")
+                loadingSpiner.hidden = true
+
+                //Crée une première version déjà coupée au cas ou l'utilisateur ne fait pas de 
+                //modification
+                this.saveImage()
+            })
+        }, 2000)
+        
     }
 
     saveImage(cropper = this.cropper){
