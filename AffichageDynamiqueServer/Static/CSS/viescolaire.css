@@ -70,6 +70,11 @@
     overflow: scroll;
 }
 
+.image-article{
+    height: 24vh;
+    width: 38vh;
+}
+
 .prof-list {
     font-size: 2.5vh;
     height: 24vh;
