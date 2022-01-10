@@ -88,13 +88,20 @@ function animeSortieArticle(domElement) {
     return animationArticle
 }
 
-function scrollingArticleHandler()
+//s'occupe de la gestion du scrolling
+function scrollingArticleHandler(reverse)
 {
     article = document.getElementById("article-content")
-    if (article.scrollHeight * 0.9 >= article.clientHeight)
+    if (article.scrollHeight * 0.9 >= article.clientHeight && !reverse)
     {
         setTimeout(() => {
             scrollingArticle(article.scrollHeight*0.95 - article.clientHeight, 0)
+        }, 5000)
+    }
+    else if (reverse)
+    {
+        setTimeout(() => {
+            scrollingArticle(-(article.scrollHeight*0.95 - article.clientHeight), 0)
         }, 5000)
     }
 }
@@ -176,7 +183,7 @@ function getArticles() {
                     animeEntreeArticle(DOMarticle)//et on affiche le nouveau.
                     DOMarticle.hidden = false
                     changeBullePage()
-                    scrollingArticleHandler()
+                    scrollingArticleHandler(false)
                 }) //event listener pour regarder la taille de l'article
                 //que quand l'image est chargée
             }
@@ -186,8 +193,12 @@ function getArticles() {
                     changeArticle()
                     animeEntreeArticle(domElemArticle)
                     changeBullePage()
-                    scrollingArticleHandler()
+                    scrollingArticleHandler(false)
                 })
+            }
+            else if (contentArticle == articles[indexArticles].article)
+            {
+                scrollingArticleHandler(true)
             }
         }
     })
