@@ -26,7 +26,7 @@
             {% csrf_token %}
             <div class="form-group my-3">
                 <div class="row">
-                    <div class="col-lg-2 mb-3 mb-lg-0">
+                    <div class="col-12 col-lg-1 mb-3 mb-lg-0">
                         <div class="border rounded-circle d-flex align-items-center justify-content-center profilePic" id="imageUploadBox" {% if informations.canEdit%}data-bs-toggle="" data-bs-target="#staticBackdrop" {%else%} style="background-color: rgba(0, 0, 0, 0.2);"{%endif%}>
                             <svg id="svgImage" xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
                                 <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
@@ -46,34 +46,27 @@
                             >
                         </div>
                     </div>
-                    <div class="col-lg-10">
-                        <label for="Nom" class="form-label">Nom :</label>
-                        <div class="input-group has_validation">
+                    <div class="col-12 col-lg-11">
+                        <div class="input-group">
                             <input 
                                 id="nomInput"
-                                name="last_name"
                                 type="text" 
                                 placeholder="Nom"
-                                class="form-control mx-2 {% if form.last_name.errors %}is-invalid{%endif%}" 
-                                aria-describedby="AideNom" 
+                                class="form-control mx-2" 
                                 maxlength="30"
-                                value="{{informations.user.last_name}}"
-                                {% if informations.canEdit == False %}disabled{%endif%}
+                                value="{{user.last_name}}"
+                                {% if perm.auth.manage_accounts == False %}disabled{%endif%}
                             >
                         </div>
-                        <label for="Prenom" class="form-label">Prenom :</label>
-                        <div class="input-group has-validation">
+                        <div class="input-group mt-4">
                             <input 
                                 id="prenomInput"
-                                name="first_name"
                                 type="text" 
                                 placeholder="Prenom"
-                                class="form-control mx-2 {% if form.first_name.errors %}is-invalid{%endif%}" 
-                                aria-describedby="AidePrenom" 
+                                class="form-control mx-2" 
                                 maxlength="30"
-                                value="{{informations.user.first_name}}"
-                                {% if informations.canEdit == False %}disabled{%endif%}
-
+                                value="{{user.first_name}}"
+                                {% if perm.auth.manage_accounts == False %}disabled{%endif%}
                             >
                         </div>
                     </div>
