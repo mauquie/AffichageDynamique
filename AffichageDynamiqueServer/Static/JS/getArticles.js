@@ -1,6 +1,7 @@
 DOMarticle = document.getElementById("article")
 DOMPasArticle = document.getElementById("pasArticle")
 contentArticle = null
+time = 1000 * 10
 
 days = {
     0 : "dimanche",
@@ -25,6 +26,35 @@ months = {
     9 : "octobre",
     10 : "novembre",
     11 : "décembre",
+}
+
+function scrollingArticle(len, occurencesNumber)
+{ 
+    document.getElementById("article-content").scrollBy(0, len/Math.abs(len))
+    occurencesNumber++
+    if (occurencesNumber >= Math.abs(len))
+    {
+        return
+    }
+    delay = setTimeout(() => {
+        scrollingArticle(len, occurencesNumber)
+    }, 10)
+}
+
+function changeBullePage()
+{
+    DOMpageNumber = document.getElementById("pageNumber")
+    Nheight = DOMpageNumber.clientHeight
+    Nwidth = DOMpageNumber.clientWidth
+    tallest = Math.max(Nheight, Nwidth) //on regarde quelle dimension du cercle est la plus grande
+    if (Nheight < tallest)
+    {
+        DOMpageNumber.style.height = tallest + "px"
+    }
+    else if (Nwidth < tallest)
+    {
+        DOMpageNumber.style.width = tallest + "px"
+    }
 }
 
 //fade in de l'article
@@ -58,20 +88,25 @@ function animeSortieArticle(domElement) {
     return animationArticle
 }
 
-//fonction remettant les tailles par défaut du texte de l'article et du nombre de page
-function resetHeights()
+function scrollingArticleHandler()
 {
-    document.getElementById("contenuArticle").style.fontSize = "2.5vh"
-    document.getElementById("pageNumber").style.fontSize = "2vh"
+    article = document.getElementById("article-content")
+    if (article.scrollHeight * 0.9 >= article.clientHeight)
+    {
+        setTimeout(() => {
+            scrollingArticle(article.scrollHeight*0.95 - article.clientHeight, 0)
+        }, 5000)
+    }
 }
 
 function checkHeightArticle()
 {
+    DOMimageArticle = document.getElementById("imageArticle")
     //si l'article dépasse 53% de l'écran...
     DOMarticle = document.getElementById("article")
     if ((DOMarticle.clientHeight/window.innerHeight) > 0.50)
     {   
-        domContenu = document.getElementById("contenuArticle")//on récupère le texte de l'article,
+        domContenu = document.getElementById("textArticle")//on récupère le texte de l'article,
         DOMpageNumber = document.getElementById("pageNumber")//et le nombre de sa page,
         fontSizeContent = domContenu.style.fontSize//on récupère leur font size
         fontSizeNumber = DOMpageNumber.style.fontSize 
@@ -88,7 +123,7 @@ function checkHeightArticle()
 //fonction changeant l'article, et affichant/masquant l'image selon s'il y en a une ou non
 function changeArticle() {
     domTitre = document.getElementById("titreArticle")
-    domContenu = document.getElementById("contenuArticle")
+    domContenu = document.getElementById("textArticle")
     domImage = document.getElementById("imageArticle")
     toutArticle = articles[indexArticles]
     domTitre.innerText = toutArticle.title
@@ -102,9 +137,8 @@ function changeArticle() {
         domImage.hidden = false
         domImage.src = "/Medias/" + toutArticle.image
     }
-    DOMpageNumber = document.getElementById("pageNumber")
+    DOMpageNumber = document.getElementById("pageNumber")//on change le nombre de la page actuelle
     DOMpageNumber.innerText = String(indexArticles+1) + "/" + String(articles.length)
-    resetHeights()//on reset les tailles aux tailles maximales
 }
 
 //fonction main gérant le fetch des données, et appelant les diverses fontions.
@@ -131,7 +165,8 @@ function getArticles() {
                 indexArticles = -1
             }
             indexArticles++
-            domContenu = document.getElementById("contenuArticle")
+            domContenu = document.getElementById("textArticle")
+            domElemArticle = [document.getElementById("titreArticle"), document.getElementById("imageArticle"), document.getElementById("textArticle")]
             //si aucun article n'était affiché
             if (DOMarticle.hidden) {
                 indexArticles = 0 //on réinitialise l'index
@@ -140,17 +175,18 @@ function getArticles() {
                     changeArticle() //on change l'article,
                     animeEntreeArticle(DOMarticle)//et on affiche le nouveau.
                     DOMarticle.hidden = false
-                    setTimeout(() => {
-                        checkHeightArticle() //timeOut pour laisser à l'article le temps de se charger, afin qu'il ait une taille
-                    }, 100);                
-                })
+                    changeBullePage()
+                    scrollingArticleHandler()
+                }) //event listener pour regarder la taille de l'article
+                //que quand l'image est chargée
             }
             else if (contentArticle != articles[indexArticles].article) //si l'article à afficher est
             { //différent de l'article affiché, on le change
-                animeSortieArticle(DOMarticle).finished.then(() => {
+                animeSortieArticle(domElemArticle).finished.then(() => {
                     changeArticle()
-                    animeEntreeArticle(DOMarticle)
-                    checkHeightArticle()
+                    animeEntreeArticle(domElemArticle)
+                    changeBullePage()
+                    scrollingArticleHandler()
                 })
             }
         }
@@ -161,4 +197,4 @@ function getArticles() {
 
 indexArticles = 0
 getArticles()
-setInterval(() => getArticles(), 1000 * 15)
+setInterval(() => getArticles(), time)
