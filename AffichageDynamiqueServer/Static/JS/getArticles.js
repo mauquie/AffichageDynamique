@@ -2,6 +2,7 @@ DOMarticle = document.getElementById("article")
 DOMPasArticle = document.getElementById("pasArticle")
 contentArticle = null
 time = 1000 * 10
+scrollingDirection = "up"
 
 days = {
     0 : "dimanche",
@@ -97,12 +98,14 @@ function scrollingArticleHandler(reverse)
         setTimeout(() => {
             scrollingArticle(article.scrollHeight*0.95 - article.clientHeight, 0)
         }, 5000)
+        scrolledDirection = "down"
     }
     else if (reverse)
     {
         setTimeout(() => {
             scrollingArticle(-(article.scrollHeight*0.95 - article.clientHeight), 0)
         }, 5000)
+        scrolledDirection = "up"
     }
 }
 
@@ -189,16 +192,25 @@ function getArticles() {
             }
             else if (contentArticle != articles[indexArticles].article) //si l'article à afficher est
             { //différent de l'article affiché, on le change
-                animeSortieArticle(domElemArticle).finished.then(() => {
-                    changeArticle()
-                    animeEntreeArticle(domElemArticle)
-                    changeBullePage()
-                    scrollingArticleHandler(false)
+                animeSortieArticle(domElemArticle).finished.then(() => { //on sort l'article actuel
+                    changeArticle() //on met le nouveau
+                    animeEntreeArticle(domElemArticle) //on anime son entrée
+                    changeBullePage() //on change la taille de la bulle de comptage de page
+                    scrollingArticleHandler(false) //et on scroll si nécessaire vers le bas
                 })
             }
             else if (contentArticle == articles[indexArticles].article)
-            {
-                scrollingArticleHandler(true)
+            { //si on reste sur le même article, il faut alternativement scroll vers le haut / bas
+                if (scrolledDirection == "down")
+                {
+                    alert("down")
+                    scrollingArticleHandler(true)
+                }
+                else if (scrolledDirection == "up")
+                {
+                    alert("lol")
+                    scrollingArticleHandler(false)
+                }
             }
         }
     })
