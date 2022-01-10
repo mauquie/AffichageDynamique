@@ -203,12 +203,10 @@ function getArticles() {
             { //si on reste sur le même article, il faut alternativement scroll vers le haut / bas
                 if (scrolledDirection == "down")
                 {
-                    alert("down")
                     scrollingArticleHandler(true)
                 }
                 else if (scrolledDirection == "up")
                 {
-                    alert("lol")
                     scrollingArticleHandler(false)
                 }
             }
