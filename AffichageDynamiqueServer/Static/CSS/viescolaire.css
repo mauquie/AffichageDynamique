@@ -40,6 +40,17 @@
     color: #000000;
 }
 
+.circled{
+    width: 5vh;
+    height: 5vh;
+    border-radius: 50%;
+    line-height: 4.5vh;
+    text-align: center;
+    font-size: 2vh;
+    border: black 2px solid;
+    float: right;
+}
+
 .pageNumber{
     font-weight: 700;
     font-family: 'DM Sans';

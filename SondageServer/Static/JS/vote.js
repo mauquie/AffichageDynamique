@@ -38,10 +38,10 @@ else
 {
     document.getElementById("no-survey").hidden = true
     document.getElementById("my-card").hidden = false
-    DOMquestion.innerText = data[0].question
-    for (i=0; i < data[0].questions.length; i++)
+    DOMquestion.innerText = data[0].subject
+    for (i=0; i < data[0].answers.length; i++)
     {
-        createButton(data[0].questions[i].text, data[0].questions[i].id, i)
+        createButton(data[0].answers[i].text, data[0].answers[i].id, i)
     }
     div = document.createElement("div")
     div.style.height = "50px"
