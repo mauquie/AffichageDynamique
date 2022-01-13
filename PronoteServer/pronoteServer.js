@@ -49,8 +49,9 @@ async function getEdt(session, date = new Date()) {
         @return
         list - Retourne la liste des cours de la date demandée
     */
-    date.setDate(date.getDate() - 1)
-    return await session.timetable(from = date)
+    let today = new Date()
+    today.setDate(date.getDate() - 1)
+    return await session.timetable(from = today, to = date)
 }
 
 function gestionServeur(req, res, session) {

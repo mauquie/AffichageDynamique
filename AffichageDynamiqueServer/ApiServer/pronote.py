@@ -121,8 +121,7 @@ def ajoutProfsAbsents(edt):
             # Recherche d'une absence déjà notée possible (pour éviter les doublons)
             queryProfAbs = Absents.objects.filter(teacher = teacher.id, date_start = start, date_end = end)
 
-            # Si l'absence n'est pas déjàdans la bdd
-            print(queryProfAbs)
+            # Si l'absence n'est pas déjà dans la bdd
             if len(queryProfAbs) == 0:
                 # On l'ajoute
                 absence = Absents()

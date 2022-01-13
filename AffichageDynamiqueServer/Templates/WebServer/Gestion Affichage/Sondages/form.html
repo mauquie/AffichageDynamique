@@ -94,12 +94,20 @@
     </form>
 </div>
 <script>
+    (window.addEventListener("DOMContentLoaded",() => {
+        //Définition de la valeur par défaut du selectionneur de date (par defaut un sondage reste en ligne 15 jours)
+        if(document.getElementById('dateExpiration').defaultValue == ""){
+            let date = new Date() 
+            date.setDate(date.getDate() + 15)
+            document.getElementById('dateExpiration').valueAsDate = date;
+        }
+    }))
+
     let reponsesDOM = document.getElementById("reponses")
     let createButtonDOM = document.getElementById("createReponseButton")
     let sendButton = document.getElementById("send")
     let formDOM = document.getElementById("formulaire")
     let reponsesContainer = document.getElementById("reponsesContainer")
-
 
     formDOM.addEventListener("submit", sendForm)
 

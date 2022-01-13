@@ -26,7 +26,7 @@
                         <th scope="col">Type</th>
                         <th scope="col">Affiché sur les écrans</th>
                         <th scope="col" class="d-none d-lg-table-cell">Dernier jour à l'affiche</th>
-                        <th scope="col">Auteur</th>
+                        <th scope="col" class="d-none d-lg-table-cell">Auteur</th>
                     </tr>
                 </thead>
                 <tbody class="tbody-pointer">
@@ -36,7 +36,7 @@
                         <td>{{info.type.name}}</td>
                         <td>{% if info.is_shown %}Oui{%else%}Non{%endif%}</td>
                         <td class="d-none d-lg-table-cell">{{info.date_end}}</td>
-                        <td>{{info.author}}</td>
+                        <td class="d-none d-lg-table-cell">{{info.author}}</td>
                     </tr>
                     {%endfor%}
                 </tbody>

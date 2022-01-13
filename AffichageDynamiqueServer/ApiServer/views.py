@@ -187,14 +187,14 @@ def getProfsAbs(request):
 
     # Calcul des dates d'aujourd'hui et demain
     dateToday = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
-    dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc).replace(hour = 0, minute = 0, second = 0)
-    dateTomorrow = datetime.datetime(day=1, month=1, year=2022)
+    dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc)
 
-    dateTomorrow = datetime.datetime.utcfromtimestamp(dateTomorrow.timestamp() + offset) 
+    dateTomorrow = datetime.datetime.utcfromtimestamp(dateTomorrow.timestamp() + offset).replace(hour = 0, minute = 0, second = 0, tzinfo=datetime.timezone.utc)
 
     # On récupère tous les profs absents depuis aujourd'hui ou avant et jusqu'à minimum aujourd'hui ou plus
-    query = Absents.objects.filter(date_start__lte=dateToday, date_end__gte=dateTomorrow)
-
+    peretty = Absents.objects.filter(teacher=1)
+    query = Absents.objects.filter(date_start__lte=dateTomorrow, date_end__gte=dateToday)
+    print(query)
     infoList = []
 
     # Poru chaque prof

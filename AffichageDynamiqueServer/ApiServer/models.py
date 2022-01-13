@@ -125,7 +125,7 @@ class Votes(models.Model):
     survey = models.ForeignKey(Surveys, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.auteur.username + " - " + self.vote.text
+        return self.author.username + " - " + self.answer.answer
 
 # Tous les modèles administrateurs
 

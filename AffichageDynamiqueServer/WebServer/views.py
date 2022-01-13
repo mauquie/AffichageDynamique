@@ -382,12 +382,12 @@ def voirResultatsSondage(request):
         #Ajout des votes sous forme de dictionnaire
         # Id de la reponse : Nb de vote
         for vote in votes:
-            if vote.vote.id not in votesDict:
-                votesDict[vote.vote.id] = 1
+            if vote.answer.id not in votesDict:
+                votesDict[vote.answer.id] = 1
                 
             
             else:
-                votesDict[vote.vote.id] += 1
+                votesDict[vote.answer.id] += 1
 
             total += 1        
 
