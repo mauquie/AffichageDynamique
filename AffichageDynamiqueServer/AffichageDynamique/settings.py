@@ -77,9 +77,9 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-AUTH_LDAP_SERVER_URI = dotenv["AUTH_LDAP_SERVER_URI"]
-AUTH_LDAP_BIND_DN = dotenv["AUTH_LDAP_BIND_DN"]
-AUTH_LDAP_BIND_PASSWORD = dotenv["AUTH_LDAP_BIND_PASSWORD"]
+AUTH_LDAP_SERVER_URI = dotenv.get("AUTH_LDAP_SERVER_URI")
+AUTH_LDAP_BIND_DN = dotenv.get("AUTH_LDAP_BIND_DN")
+AUTH_LDAP_BIND_PASSWORD = dotenv.get("AUTH_LDAP_BIND_PASSWORD")
 AUTH_LDAP_USER_SEARCH = LDAPSearch(
     "ou=people,dc=nodomain", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
 )
@@ -117,11 +117,11 @@ APPEND_SLASH = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': dotenv["DB_NAME"],
-        'HOST': dotenv["DB_HOST"],
-        'USER': dotenv["DB_USER"],
-        'PASSWORD': dotenv["DB_PASSWORD"],
-        'PORT': dotenv["DB_PORT"],
+        'NAME': dotenv.get("DB_NAME"),
+        'HOST': dotenv.get("DB_HOST"),
+        'USER': dotenv.get("DB_USER"),
+        'PASSWORD': dotenv.get("DB_PASSWORD"),
+        'PORT': dotenv.get("DB_PORT"),
     }
 }
 
@@ -172,5 +172,5 @@ STATICFILES_DIRS = [
 MEDIA_URL = "Medias/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "Medias")
 
-TWITTER_BEARER_TOKEN = dotenv["TWITTER_BEARER_TOKEN"]
-METEO_TOKEN = dotenv["METEO_TOKEN"]
+TWITTER_BEARER_TOKEN = dotenv.get("TWITTER_BEARER_TOKEN")
+METEO_TOKEN = dotenv.get("METEO_TOKEN")
