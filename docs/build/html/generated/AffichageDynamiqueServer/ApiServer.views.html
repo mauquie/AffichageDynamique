@@ -1,0 +1,654 @@
+<!doctype html>
+<html class="no-js" lang="fr">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Recherche" href="../../search.html" /><link rel="next" title="WebServer" href="WebServer.html" /><link rel="prev" title="ApiServer.twitter module" href="ApiServer.twitter.html" />
+
+    <meta name="generator" content="sphinx-4.4.0, furo 2022.01.02"/>
+        <title>ApiServer.views module - Documentation Affichage Dynamique 0.1</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=df49af52631e7917044a9c21a57f7b83170a6dd0" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-toolbox-code.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=fade93df149f7c5fedb3ff897f799dc7d283b420" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  body[data-theme="dark"] {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+</style></head>
+  <body>
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" />
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Documentation Affichage Dynamique 0.1</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Documentation Affichage Dynamique 0.1</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder=Recherche name="q" aria-label="Recherche">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Table des matieres:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../servers.html">Les différents serveurs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API End Points</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">AffichageDynamiqueServer</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="Affichage.html">Affichage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="Affichage.views.html">Affichage.views module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="ApiServer.html">ApiServer</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ApiServer.meteo.html">ApiServer.meteo module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ApiServer.pronote.html">ApiServer.pronote module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ApiServer.twitter.html">ApiServer.twitter module</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">ApiServer.views module</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="WebServer.html">WebServer</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="WebServer.views.html">WebServer.views module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../SondageServer/modules.html">SondageServer</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../SondageServer/votes.html">votes</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../SondageServer/votes.views.html">votes.views module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../pronoteServer.html">PronoteServer</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../pronoteServerApi.html">Pronote Server API End points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../pronoteServerFunctions.html">Pronote Server Fonctions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../bestPractices.html">Autres</a></li>
+</ul>
+
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <div class="section" id="module-ApiServer.views">
+<span id="apiserver-views-module"></span><h1>ApiServer.views module<a class="headerlink" href="#module-ApiServer.views" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Gère toutes les vues correspondantes à l’api utilisée par les écrans pour
+rafraichir les informations à afficher</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getArticles">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getArticles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getArticles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getArticles" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère les articles visibles et retourne la requête en JSONResponse</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mon bel article"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"article"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lorem ipsum blabla il est joli l'article pas vrai"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Articles/IMG_5532_rTKf30T.png"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"date_creation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-17"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"author"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Elo"</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rap"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"date_last_modif"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-07"</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getDisplays">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getDisplays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getDisplays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getDisplays" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère l’écran et la page associée au paramètre code_name dans l’url
+de la requêtes et retourne les infos sous format JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p></li>
+<li><p><strong>code_name</strong> (<em>str</em>) – Paramètre passé à la requête, codename de l’écran que l’user
+veut obtenir les infos</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"code_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"viescolaire"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Vie scolaire Bat C"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"page"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Article + Profs abs + Agenda + Twitter"</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getInfos">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getInfos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getInfos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getInfos" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère les informations visibles et les retourne sous format JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Internat fermé jusque nouvel ordre !"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Important"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"date_creation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-22"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"author"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Elo"</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rap"</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getMeals">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getMeals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getMeals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getMeals" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère le menu correpondant au paramètre date et retourne ses infos sous
+format JSON</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p></li>
+<li><p><strong>date</strong> (<em>str</em>) – Paramètre passé à la requête, il faut qu’elle est la forme
+2022-01-19</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-19"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"is_midday"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"meal"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Pâté en croûte "</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Salade verte oignons frits"</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"2"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Poisson pané "</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Côte d'agneau"</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"3"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Légumes grillés "</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Gratin dauphinois"</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"4"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"eau"</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"5"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Fromage"</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Yaourt"</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"6"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Fruit de saison"</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Mousse chocolat "</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="s2">"Ananas chantilly"</span><span class="w"></span>
+<span class="w">        </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getMeteo">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getMeteo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getMeteo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getMeteo" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie la météo du jour avec les prévisions sur 2 jours sour format JSON</p>
+<p>Voir <a class="reference external" href="https://openweathermap.org/api/one-call-api">l’api de OpenWeatherMap</a>
+pour plus d’infos sur la data renvoyée</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<dl>
+<dt>Example</dt><dd><p>Une partie des informations sont omises, seules les informations les plus importantes
+sont dans cet exemple.</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"hourly"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"dt"</span><span class="p">:</span><span class="w"> </span><span class="mi">1642878000</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"temp"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.47</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"feels_like"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.47</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"weather"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"main"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Clear"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"clear sky"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"icon"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01n"</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"today"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"dt"</span><span class="p">:</span><span class="w"> </span><span class="mi">1642852800</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"temp"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"day"</span><span class="p">:</span><span class="w"> </span><span class="mf">5.78</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"min"</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.33</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"max"</span><span class="p">:</span><span class="w"> </span><span class="mf">6.83</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"night"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.47</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"eve"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.33</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"morn"</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.33</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"feels_like"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"day"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.4</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"night"</span><span class="p">:</span><span class="w"> </span><span class="mf">2.47</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"eve"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.33</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"morn"</span><span class="p">:</span><span class="w"> </span><span class="mf">-0.33</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"weather"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">        </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"main"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Clear"</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"clear sky"</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"icon"</span><span class="p">:</span><span class="w"> </span><span class="s2">"01d"</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getProfsAbs">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getProfsAbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getProfsAbs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getProfsAbs" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère les profs absent correpondant à la date d’aujourd’hui et retourne
+les infos sous format JSON</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"prof"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JESUS R."</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"debut"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-19T21:15:25Z"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"fin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-19T23:15:35Z"</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getSurveys">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getSurveys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getSurveys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getSurveys" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Récupère les sondages visibles, avec les réponses associées et les retourne
+sous format JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"author"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"subject"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Combat de MMA entre le proviseur et les AED"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"date_creation"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-22"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"date_end"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-02-06"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"answers"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Pour"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Contre"</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.getTweets">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">getTweets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#getTweets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.getTweets" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Renvoie les 5 derniers tweets postés du compte LycéeBourdelle</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ERASMUS avec les collèges @Col_Despeyrous ..."</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-21T09:47:27Z"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ERASMUS+ LP BOURDELLE: signatures des con ..."</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-13T10:26:51Z"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"09/11/21 Les Term STL @LyceeBourdelle au m..."</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-01-11T08:13:50Z"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ORIENTATION AMBITIEUSE @LyceeBourdelle : p..."</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-12-17T16:36:49Z"</span><span class="w"></span>
+<span class="w">    </span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ERASMUS +@LyceeBourdelle : voyage préparat..."</span><span class="p">,</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-12-17T16:11:51Z"</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">],</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"oldest_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1471875800865689601"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"newest_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1484462637899526147"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"result_count"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.hideExpiredObjects">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">hideExpiredObjects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.db.models.query.QuerySet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ApiServer/views.html#hideExpiredObjects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.hideExpiredObjects" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Depuis une liste d’objets Django quelconque venant de la DB avec les
+colonnes date_end et shown, la fonction cache tous les objets ayant
+un date_end plus petite que la date d’aujourd’hui</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>QuerySet</em>) – Liste d’objets Django à traiter</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="ApiServer.views.postVote">
+<span class="sig-prename descclassname"><span class="pre">ApiServer.views.</span></span><span class="sig-name descname"><span class="pre">postVote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">django.core.handlers.wsgi.WSGIRequest</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">django.http.response.JsonResponse</span></span></span><a class="reference internal" href="../../_modules/ApiServer/views.html#postVote"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ApiServer.views.postVote" title="Lien permanent vers cette définition">¶</a></dt>
+<dd><p>Poste le vote d’un utilisateur dans la DB à l’aide de l’username du password
+et de l’id du vote (respectivement les paramètres username, password, vote)
+Retourne le status de la requête, si tout s’est bien passé ou non</p>
+<dl class="field-list simple">
+<dt class="field-odd">Paramètres</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>WSGIRequest</em>) – Requête Django</p></li>
+<li><p><strong>username</strong> (<em>str</em>) – Paramètre passé à la requête, nom d’utilisateur du votant</p></li>
+<li><p><strong>password</strong> (<em>str</em>) – Paramètre passé à la requête, mot de passe du votant</p></li>
+<li><p><strong>vote</strong> (<em>int</em>) – Paramètre passé à la requête, id de la réponse du votant</p></li>
+</ul>
+</dd>
+<dt class="field-even">Renvoie</dt>
+<dd class="field-even"><p>Requête Django correspondante au renvoie d’un fichier JSON</p>
+</dd>
+<dt class="field-odd">Type renvoyé</dt>
+<dd class="field-odd"><p>JSONResponse</p>
+</dd>
+</dl>
+<p class="rubric">Exemple</p>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"code"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="WebServer.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">WebServer</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="ApiServer.twitter.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">ApiServer.twitter module</div>
+                
+              </div>
+            </a>
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2022, Elowarp / RaptorJesus |
+          Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+          <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            | <a class="muted-link" href="../../_sources/generated/AffichageDynamiqueServer/ApiServer.views.rst.txt"
+               rel="nofollow">
+              Montrer le code source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/scripts/furo.js"></script>
+    <script src="../../_static/translations.js"></script>
+    </body>
+</html>

@@ -22,7 +22,7 @@ import sys
 sys.path.insert(0, PROJECT_DIR)
 
 from environ import getEnv
-dotenv = getEnv("../.env")
+dotenv = getEnv(PROJECT_DIR + "/.env")
 
 import os
 import ldap
@@ -173,3 +173,4 @@ MEDIA_URL = "Medias/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "Medias")
 
 TWITTER_BEARER_TOKEN = dotenv["TWITTER_BEARER_TOKEN"]
+METEO_TOKEN = dotenv["METEO_TOKEN"]

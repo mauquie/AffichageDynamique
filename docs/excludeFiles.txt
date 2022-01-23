@@ -1,0 +1,36 @@
+# Tous les fichiers du dossier ApiServer à ne pas render
+../AffichageDynamiqueServer/ApiServer/admin.py
+../AffichageDynamiqueServer/ApiServer/apps.py
+../AffichageDynamiqueServer/ApiServer/keys.py
+../AffichageDynamiqueServer/ApiServer/tests.py
+../AffichageDynamiqueServer/ApiServer/models.py
+../AffichageDynamiqueServer/ApiServer/urlsApiServer.py
+../AffichageDynamiqueServer/ApiServer/migrations/*
+
+../AffichageDynamiqueServer/manage.py
+../AffichageDynamiqueServer/AffichageDynamique/*
+
+# Tous les fichiers du dossier WebServer à ne pas render
+../AffichageDynamiqueServer/WebServer/admin.py
+../AffichageDynamiqueServer/WebServer/apps.py
+../AffichageDynamiqueServer/WebServer/keys.py
+../AffichageDynamiqueServer/WebServer/tests.py
+../AffichageDynamiqueServer/WebServer/models.py
+../AffichageDynamiqueServer/WebServer/forms.py
+../AffichageDynamiqueServer/WebServer/urlsWebServ.py
+../AffichageDynamiqueServer/WebServer/migrations/*
+
+../AffichageDynamiqueServer/Affichage/admin.py
+../AffichageDynamiqueServer/Affichage/apps.py
+../AffichageDynamiqueServer/Affichage/tests.py
+../AffichageDynamiqueServer/Affichage/models.py
+../AffichageDynamiqueServer/Affichage/urlsAffichage.py
+
+../SondageServer/SondageServer/*
+../SondageServer/manage.py
+../SondageServer/votes/migrations/*
+../SondageServer/votes/admin.py
+../SondageServer/votes/apps.py
+../SondageServer/votes/keys.py
+../SondageServer/votes/tests.py
+../SondageServer/votes/models.py

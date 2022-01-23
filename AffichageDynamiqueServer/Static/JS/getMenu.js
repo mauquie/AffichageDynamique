@@ -6,7 +6,7 @@ function getMenus() {
     date = dateTime.getFullYear() + "-" + (dateTime.getMonth() + 1) + "-" + dateTime.getDate()
 
     //Requete vers le serveur
-    fetch("/api/menus?date=" + date).then((response) => {
+    fetch("/api/meals?date=" + date).then((response) => {
         return response.json()
 
     }).then((data) => {
@@ -15,8 +15,8 @@ function getMenus() {
             toggleMenu(true, false)
         } else {
             for (let i = 0; i < data.length; i++){
-                toggleMenu(false, data[i].midi)
-                setMenu(data[i].midi, data[i].repas)
+                toggleMenu(false, data[i].is_midday)
+                setMenu(data[i].is_midday, data[i].meal)
 
             }
         }
@@ -64,19 +64,6 @@ function setMenu(isMidi, repas){
     }
 
     menuDOM.appendChild(ulDOM)
-}
-
-function setCorrectMenu() {
-    /*
-        Affiche le bon texte de presentation du menu, avec l'heure il choisi d'afficher soit "Midi" soit "Soir"
-    */
-    hour = dateTime.getHours()
-    if (hour < 15) {
-        DOMRepasType.innerText = "Pour ce midi,"
-
-    } else {
-        DOMRepasType.innerText = "Pour ce soir,"
-    }
 }
 
 //Interval de 1mn (1000ms * 60)

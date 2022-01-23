@@ -1,3 +1,9 @@
+"""
+Gère la partie "pronote" du serveur :ref:`AffichageDynamique<affichagedynamique>`. C'est 
+à dire rafraichir notre base de données avec de nouvelles informations
+provenantes du server `pronoteServer` comme les menus du jours et les profs absents
+"""
+
 import requests
 from .models import Meals, Foods, MealParts, Absents, Teachers
 import datetime
@@ -5,7 +11,7 @@ import pytz
 
 def refreshMenus():
     """
-        Fonction s'occupant de rafraichir les données du menu du jour dans la base de données au cas ou il ait changé
+    Rafraichi les données du menu du jour dans la base de données au cas ou ils aient changé
     """
     # Requete à pronote
     try:
@@ -23,7 +29,7 @@ def refreshMenus():
 
 def refreshProfs():
     """
-        Fonction s'occupant de rafraichir les données des profs absents du jour dans la base de données au cas ou ils aient changé
+    Rafraichi les données des profs absents du jour dans la base de données au cas ou ils aient changé
     """
     # Requete à pronote
     try:
@@ -42,7 +48,10 @@ def refreshProfs():
 
 def ajoutMenus(meals):
     """
-        Fonction ajoutant les menus passés en paramètre à la bdd 
+    Ajoute les menus passés en paramètre à la bdd 
+
+    Args:
+        meals (list): Liste des menus d'un jour
     """
     # Pour chaque menu d'aujourd'hui
     for IDMeal in range(len(meals[0]["meals"])):
@@ -103,8 +112,10 @@ def ajoutMenus(meals):
         
 def ajoutProfsAbsents(edt):
     """
-        Fonction ajoutant les profs absents dans la base de donnée à partir 
-        d'une liste de cours
+    Ajoute les profs absents dans la base de donnée à partir d'une liste de cours
+
+    Args:
+        edt (list): Liste des cours d'une journée
     """
     # Pour chaque cours
     for cours in edt:
@@ -132,7 +143,13 @@ def ajoutProfsAbsents(edt):
 
 def convertionDatePronoteVersDatetime(dateG):
     """
-        Converti un string sous la forme "2021-10-05T09:25:00.000Z" en une date compréhensible par python et la bdd
+    Converti un string sous la forme "2021-10-05T09:25:00.000Z" en une date compréhensible par python et la bdd
+
+    Args:
+        dateG (str): Date fournie par pronote (Exemple: 2021-10-05T09:25:00.000Z)
+
+    Returns:
+        datetime: Date compréhensible par Python et la base de données
     """
     # Récupération du décalage horaire en secondes 
     offset = int(datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%z')[2])*3600

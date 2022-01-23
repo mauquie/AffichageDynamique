@@ -1,13 +1,26 @@
+"""
+Gère toutes les vues correspondantes à l'affichage sur les écrans
+"""
+
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.http import JsonResponse
 from ApiServer.models import Screens
-from datetime import date
-# Create your views here.
+from django.core.handlers.wsgi import WSGIRequest
 
-def index(request):
-    return JsonResponse({})
+def affichageEcran(request: WSGIRequest) -> HttpResponse:
+    """
+    Rédirige l'user à l'écran demandé via le paramètre name
 
-def affichageEcran(request):
+    Args:
+        request (WSGIRequest): Requête Django
+        name (str): Paramètre passé à la requête, nom de code de l'écran voulu,
+            si trouvé alors il renvoie l'écran, si non alors il renvoie l'écran
+            ``base``, celui par défaut.
+
+    Returns:
+        HttpResponse: Ecran correspondant à la demande
+    """
+
     #Lien vers l'écran en cas d'erreurs
     path = "Affichage/base.html"
     context = {"description": "Base"}

@@ -1,4 +1,10 @@
+"""
+Gère toutes les vues correspondantes au serveur web de gestion des écrans
+"""
+
+from django.http import HttpResponse
 from django.http.response import Http404
+from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required, permission_required
@@ -11,29 +17,66 @@ from django.contrib import messages
 import datetime
 
 from django.template.defaulttags import register
-...
+
 @register.filter
-def get_value(dictionary, key):
+def get_value(dictionary: dict, key: str):
+    """
+    Template function, trouve la valeur d'une clé dans un
+    dictionnaire depuis un template ``Django``
+
+    Args:
+        dictionary (dict): Dictionnaire où l'on veut chercher la valeur
+        key (str): Clé de la valeur
+
+    Returns:
+        Any: Valeur correspondante à la clé
+    """
     return dictionary.get(key)
 
 @register.filter(name="get_group")
-def get_group(user):
-    print(user.groups.values_list('name', flat=True))
+def get_group(user: models.Users) -> str:
+    """
+    Template function, récupère le groupe d'un utilisateur et le renvoie
+
+    Args:
+        user (models.Users): Utilisateur où l'on veut récupérer le groupe
+
+    Returns:
+        string: Le nom du groupe de l'utilisateur
+    """
     return list(user.groups.values_list('name', flat=True))[0]
 
 @login_required
-def index(request):
-    ''' 
-        Fonction appelée quand on veut la page initiale où l'on retrouve les actions rapides, et un lien
-        vers le reste des actions possibles sur le site.
-    '''
+def index(request: WSGIRequest) -> HttpResponse:
+    """
+    Renvoie la page d'accueil
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page d'accueil
+    """
     return render(request, 'WebServer/index.html', exInfos("Accueil"))
 
 
 def loginView(request):
-    '''
-        Fonction gérant la connexion des utilisateurs
-    '''
+    """
+    Gère la connexion des utilisateurs
+
+    Si la methode de la requête est ``GET`` alors on renvoit la page de connexion
+
+    Si la methode de la requête est ``POST`` on essaye de l'enregistrer avec les 
+    informations que l'utilisateur nous donne, c'est à dire son username et son 
+    password
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de connexion (si pas connecté)
+        HttpResponse: Redirection vers la page (si connecté)
+    """
 
     if request.method == "GET":
         if request.user.is_authenticated:
@@ -71,20 +114,40 @@ def loginView(request):
 """
 
 @permission_required('ApiServer.view_articles')
-def articles(request):
-    '''
-        Fonction appelée quand on veut intéragir d'une quelconque façon avec les articles (ajouter, modifier, supprimer)
-        Elle contient une liste des 5 derniers articles postés avec des boutons pour modifier et supprimer un article
-        et un autre lien pour créer un article.
-    '''
+def articles(request: WSGIRequest) -> HttpResponse:
+    """
+    Renvoie la page de management des articles, là ou tu peux intéragir avec eux 
+    de toutes les facons possibles (ajouter, modifier, supprimer). Elle contient 
+    une liste de tous les articles postés depuis toujours sur le site.
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des articles
+    """
+
     articles = models.Articles.objects.all().order_by("-is_shown", "-date_last_modif")
     return render(request, 'WebServer/Articles/index.html', exInfos("Articles", informations=articles))
 
 @permission_required('ApiServer.add_articles')
-def ajouterArticle(request):
-    '''
-        Fonction appelé quand on veut écrire un article.
-    '''
+def ajouterArticle(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la création d'article
+
+    Si la methode de la requête est ``GET`` alors on envoit la page de création de 
+    l'article
+
+    Si la methode de la requête est ``POST`` alors on vérifie que les données envoyées
+    sont conformes au formulaire et si oui on ajoute l'article dans la bdd, si non
+    on envoit un message d'erreur
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page d'ajout d'un article
+    """
     if request.method == "GET":
         form = forms.ArticleForm()
         return render(request, 'WebServer/Articles/ajouter.html', exInfos("Ajouter un article"))
@@ -99,7 +162,6 @@ def ajouterArticle(request):
             
             record.save()
 
-
             messages.success(request, "Article bien ajouté !")
             return redirect("/articles/ajouter")
 
@@ -108,11 +170,28 @@ def ajouterArticle(request):
             return render(request, "WebServer/Articles/ajouter.html", exInfos("Ajouter un article", form=form))
 
 @permission_required('ApiServer.change_articles')
-def modifierArticle(request):
-    '''
-        Fonction appelé quand on veut modifier un article.
-    '''
-    #To-do : Verification du groupe / utilisateur pour voir sil a le droit de modifier l'article
+def modifierArticle(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la modification d'un article
+
+    Si la methode de la requête est ``GET``, que le paramètre ``id`` dans l'url est là 
+    et qu'il correspond bien à un article alors on envoit la page de modification de 
+    l'article sinon on envoie une erreur ``404``
+
+    Si la methode de la requête est ``POST`` alors on vérifie que les données envoyées
+    sont conformes au formulaire et si oui on modifie l'article, si non
+    on envoit un message d'erreur
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de modification d'un article
+
+    Todo:
+        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
+        trop importante auquelles il ne devrait pas avoir accès
+    """
     id = request.GET.get("id", False)
 
     if request.method == "GET":
@@ -145,14 +224,26 @@ def modifierArticle(request):
             return render(request, "WebServer/Articles/modifier.html", exInfos("Modifier un article", form=form, informations=article))
 
 @permission_required('ApiServer.delete_articles')
-def supprimerArticle(request):
-    '''
-        Fonction appelé quand on veut supprimer un article
-    '''
+def supprimerArticle(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la suppression d'un article
+
+    Si le paramètre ``id`` est présent et qu'il correspond à un article alors
+    on le supprime, sinon on envoit une erreur ``404``
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des articles
+
+    Todo:
+        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
+        trop importante auquelles il ne devrait pas avoir accès
+    """
     id = request.GET.get("id", False)
     if id:
         articles = get_object_or_404(models.Articles, pk = id)
-        #To-do Verification du groupe
         articles.delete()
         messages.success(request, "Supprimé avec succès !")
 
@@ -161,7 +252,30 @@ def supprimerArticle(request):
     return redirect("/articles")
 
 @permission_required('ApiServer.change_articles')
-def toggleVisibiliteArticle(request):
+def toggleVisibiliteArticle(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la visibilité d'un article
+
+    Si le paramètre ``id`` est présent et qu'il correspond à un article alors
+    on le modifie la visibilité, sinon on envoit une erreur ``404``.
+
+    Note:
+        Lorsque que la visibilité est modifiée, cela veut dire qu'on le met dans 
+        l'état inverse où il est, s'il est montré de base alors on le cache et
+        inversement. De plus, lors de cette modification, si on l'affiche et que 
+        la date de fin est passée, alors on lui rajoute 1 semaine à partir du
+        moment où l'on change la visibilité. . 
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des articles
+
+    Todo:
+        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
+        trop importante auquelles il ne devrait pas avoir accès
+    """
     #Vérification du groupe pour savoir si on peut modifier ou non
     id = request.GET.get("id", False)
     if id:
@@ -187,28 +301,65 @@ def toggleVisibiliteArticle(request):
     return redirect("/articles")
 
 
+
 """
     Section gérant tout ce qui touche à la gestion de l'affichage
 """
 @permission_required('auth.manage_screens')
-def gestionAffichage(request):
+def gestionAffichage(request: WSGIRequest) -> HttpResponse:
+    """
+    Renvoie la page de management des "paramètres" du serveur, c'est à dire
+    le fait de pouvoir changer les informations, les sondages et les pages
+    associées aux écrans.
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des paramètres du serveur
+    """
     return render(request, 'WebServer/Gestion Affichage/index.html', exInfos("Gestion de l'affichage"))
-
-
 
 
 
 """
     Section gérant tout ce qui touche aux sondages
 """
-
 @permission_required('ApiServer.view_surveys')
-def sondages(request):
+def sondages(request: WSGIRequest) -> HttpResponse:
+    """
+    Renvoie la page de management des sondages, là ou tu peux intéragir avec eux 
+    de toutes les facons possibles (ajouter, modifier, supprimer). Elle contient 
+    une liste de tous les sondages postés depuis toujours sur le site.
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des sondages
+    """
     surveys = models.Surveys.objects.all().order_by("-is_shown", "date_creation")
     return render(request, 'WebServer/Gestion Affichage/Sondages/index.html', exInfos("Sondages", informations=surveys))
 
 @permission_required('ApiServer.add_surveys')
-def ajouterSondage(request):
+def ajouterSondage(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la création de sondages
+
+    Si la methode de la requête est ``GET`` alors on envoit la page de création de 
+    sondages
+
+    Si la methode de la requête est ``POST`` alors on vérifie que les données envoyées
+    sont conformes(un sujet, un date de fin, l'état affiché/caché, au moins 2 réponses 
+    possibles) et si oui on ajoute le sondage dans la bdd, si non
+    on envoit un message d'erreur
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page d'ajout d'un sondage
+    """
     if request.method == "GET":
         return render(request, 'WebServer/Gestion Affichage/Sondages/ajouter.html', exInfos("Ajouter un sondage"))
     
@@ -256,7 +407,25 @@ def ajouterSondage(request):
 
         
 @permission_required('ApiServer.change_surveys')
-def modifierSondage(request):
+def modifierSondage(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la modification d'un sondage
+
+    Si la methode de la requête est ``GET``, que le paramètre ``id`` dans l'url est là 
+    et qu'il correspond bien à un sondage alors on envoit la page de modification du sondage
+    sinon on envoie une erreur ``404``
+
+    Si la methode de la requête est ``POST`` alors on vérifie que les données envoyées
+    sont conformes(un sujet, un date de fin, l'état affiché/caché, au moins 2 réponses 
+    possibles) et si oui on modifie le sondage, si non on envoit un message d'erreur
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de modification d'un sondage
+
+    """
     if request.method == "GET":
         #Récupération du sondage et des réponses correpondantes
         survey = get_object_or_404(models.Surveys, pk=request.GET.get("id"))
@@ -324,10 +493,20 @@ def modifierSondage(request):
 
 
 @permission_required('ApiServer.delete_surveys')
-def supprimerSondage(request):
-    '''
-        Fonction appelé quand on veut supprimer un article
-    '''
+def supprimerSondage(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la suppression d'un sondage
+
+    Si le paramètre ``id`` est présent et qu'il correspond à un sondage alors
+    on le supprime, sinon on envoit une erreur ``404``
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des sondages
+
+    """
     id = request.GET.get("id", "")
     if id:
         survey = get_object_or_404(models.Surveys, pk=id)
@@ -339,7 +518,27 @@ def supprimerSondage(request):
     return redirect("/parametres/sondages")
 
 @permission_required('ApiServer.change_surveys')
-def toggleVisibiliteSondage(request):
+def toggleVisibiliteSondage(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la visibilité d'un sondage
+
+    Si le paramètre ``id`` est présent et qu'il correspond à un sondage alors
+    on le modifie la visibilité, sinon on envoit une erreur ``404``.
+
+    Note:
+        Lorsque que la visibilité est modifiée, cela veut dire qu'on le met dans 
+        l'état inverse où il est, s'il est montré de base alors on le cache et
+        inversement. De plus, lors de cette modification, si on l'affiche et que 
+        la date de fin est passée, alors on lui rajoute 1 semaine à partir du
+        moment où l'on change la visibilité. . 
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des sondages
+
+    """
     id = request.GET.get("id", "")
     if id:
         survey = get_object_or_404(models.Surveys, pk=id)
@@ -367,7 +566,21 @@ def toggleVisibiliteSondage(request):
         raise Http404
 
 @permission_required('ApiServer.view_surveys')
-def voirResultatsSondage(request):
+def voirResultatsSondage(request: WSGIRequest) -> HttpResponse:
+    """
+    Renvoit la page où les résultats d'un sondage sont affichés
+
+    Si le paramètre ``id`` est passé à l'url et qu'il correspond 
+    à un sondage alors on envoit la page, sinon on envoit une erreur
+    ``404``
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des articles
+
+    """
     id = request.GET.get("id")
 
     if id:
@@ -431,12 +644,39 @@ def voirResultatsSondage(request):
     Section gérant tout ce qui touche aux informations
 """
 @permission_required('ApiServer.view_informations')
-def informations(request):
+def informations(request: WSGIRequest) -> HttpResponse:
+    """
+    Renvoie la page de management des informations, là ou tu peux intéragir avec elles 
+    de toutes les facons possibles (ajouter, modifier, supprimer). Elle contient 
+    une liste de toutes les informations postées depuis toujours sur le site.
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des informations
+    """
     infos = models.Informations.objects.all()
     return render(request, 'WebServer/Gestion Affichage/Informations/index.html', exInfos("Informations", informations=infos))
 
 @permission_required('ApiServer.add_informations')
-def ajouterInformation(request):
+def ajouterInformation(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la création d'information
+
+    Si la methode de la requête est ``GET`` alors on envoit la page de création d'une
+    information
+
+    Si la methode de la requête est ``POST`` alors on vérifie que les données envoyées
+    sont conformes au formulaire et si oui on ajoute l'info dans la bdd, si non
+    on envoit un message d'erreur
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page d'ajout d'une info
+    """
     if request.method == "GET":
         infotypes = models.InfoTypes.objects.all()
         form = forms.InformationForm()
@@ -456,7 +696,28 @@ def ajouterInformation(request):
 
 
 @permission_required('ApiServer.change_informations')
-def modifierInformation(request):
+def modifierInformation(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la modification d'une information
+
+    Si la methode de la requête est ``GET``, que le paramètre ``id`` dans l'url est là 
+    et qu'il correspond bien à une info alors on envoit la page de modification de 
+    l'information sinon on envoie une erreur ``404``
+
+    Si la methode de la requête est ``POST`` alors on vérifie que les données envoyées
+    sont conformes au formulaire et si oui on modifie l'info, si non
+    on envoit un message d'erreur
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de modification d'une information
+
+    Todo:
+        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
+        trop importante auquelles il ne devrait pas avoir accès
+    """
     id = request.GET.get("id", "")
     if(id):
         info = get_object_or_404(models.Informations, pk=id)
@@ -487,7 +748,23 @@ def modifierInformation(request):
 
 
 @permission_required('ApiServer.delete_informations')
-def supprimerInformation(request):
+def supprimerInformation(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la suppression d'une information
+
+    Si le paramètre ``id`` est présent et qu'il correspond à une info alors
+    on la supprime, sinon on envoit une erreur ``404``
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des informations
+
+    Todo:
+        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
+        trop importante auquelles il ne devrait pas avoir accès
+    """
     id = request.GET.get('id', '')
     if id:  
         info = get_object_or_404(models.Informations, pk=id)
@@ -500,7 +777,30 @@ def supprimerInformation(request):
     return redirect("/parametres/informations")
 
 @permission_required('ApiServer.change_informations')
-def toggleVisibiliteInformation(request):
+def toggleVisibiliteInformation(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la visibilité d'une information
+
+    Si le paramètre ``id`` est présent et qu'il correspond à une info alors
+    on le modifie la visibilité, sinon on envoit une erreur ``404``.
+
+    Note:
+        Lorsque que la visibilité est modifiée, cela veut dire qu'on le met dans 
+        l'état inverse où il est, s'il est montré de base alors on le cache et
+        inversement. De plus, lors de cette modification, si on l'affiche et que 
+        la date de fin est passée, alors on lui rajoute 1 semaine à partir du
+        moment où l'on change la visibilité. 
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de management des informations
+
+    Todo:
+        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
+        trop importante auquelles il ne devrait pas avoir accès
+    """
     id = request.GET.get('id', "")
     if(id):
         info = get_object_or_404(models.Informations, pk=id)
@@ -527,55 +827,43 @@ def toggleVisibiliteInformation(request):
     Section gérant tout ce qui touche aux comptes
 """
 @login_required
-def comptes(request):
+def comptes(request: WSGIRequest) -> HttpResponse:
+    """
+    Renvoit la page de gestion des comptes
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de gestion des comptes
+    """
     #Récuperation des articles crée par l'user
     articles = models.Articles.objects.all().filter(author_id = request.user.id)
     surveys = models.Surveys.objects.all().filter(author_id = request.user.id)
     return render(request, 'WebServer/Comptes/index.html', exInfos("Gestion du compte", informations={"articles": articles, "surveys": surveys}))
 
-@permission_required('ApiServer.add_users')
-def ajouterCompte(request):
-    if request.method == "GET":
-        form = forms.UserForm()
-        return render(request, 'WebServer/Comptes/ajouter.html', exInfos("Ajouter un compte", form=form))
-
-    elif request.method == "POST":
-        form = forms.UserForm(request.POST)
-
-        #Vérification du formulaire
-        if form.is_valid():
-            #Sauvegarde dans la DB
-            form.save()
-            
-            #Ajout de l'utilisateur dans le groupe choisi
-            user = models.User.objects.get(username=request.POST.get("username"))
-            group = Group.objects.get(id=request.POST.get("groups"))
-            user.groups.add(group)
-
-            #Retour du status
-            informations = exInfos(
-                pageTitle = "Ajouter un compte",
-                form = form,
-            )
-
-            messages.success(request, "Utilisateur crée avec succés")
-            return render(request, 'WebServer/Comptes/ajouter.html', informations)
-            
-
-        else:
-            #Recuperation des erreurs
-            createErrorMessages(request, form)
-
-            #Renvoie du formulaire et des erreurs
-            informations = exInfos(
-                pageTitle = "Ajouter un compte",
-                form = form,
-            )
-
-            return render(request, 'WebServer/Comptes/ajouter.html', informations)
-
 @login_required
-def modifierCompte(request):
+def modifierCompte(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la modification de compte
+
+    Si la methode de la requête est ``GET``, et qu'il n'y a pas ``id`` alors
+    on envoit la page de modification de son propre compte, mais s'il y a l'id
+    et qu'il correspond à un compte alors on renvoit la page pour modifier le 
+    compte en question (s'il n'a pas les droits il ne pourra pas le modifier mais
+    seulement voir une partie des informations)
+
+    Si la methode de la requête est ``POST``, et que les informations transmises
+    correspondes au formulaire adequat alors on modifie le compte, sinon on envoie
+    une erreur.
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de modification de compte (son propre compte ou celui d'un
+            autre)
+    """
     #Si l'user veut modifier un compte particulier
     id = request.GET.get('id', False)
     if request.method == "GET":
@@ -656,7 +944,21 @@ def modifierCompte(request):
                 return render(request, "WebServer/Comptes/modifierComptePerso.html", exInfos("Modifier mon compte", form=form))
 
 @login_required
-def toggleActive(request):
+def toggleActive(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère l'activité d'un compte
+
+    Si un compte est actif alors il peut utiliser le site mais s'il n'est pas
+    actif alors il lui est impossible d'acceder au site comme si il n'avait plus 
+    de compte OR on garde quand même toutes ses informations et on peut réactiver 
+    le compte à tout moment
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de gestion des comptes
+    """
     id = request.GET.get("id", False)
     #Si l'user desactive un autre compte
     if id:
@@ -685,12 +987,34 @@ def toggleActive(request):
 
     return redirect("/comptes/voir")
 
-def deconnection(request):
+def deconnection(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la deconnection
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de connexion
+    """
     logout(request)
     return redirect("/")
 
 @permission_required('ApiServer.view_users')
-def afficherComptes(request):
+def afficherComptes(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère les comptes de tous les utilisateurs
+
+    Affiche une liste avec tous les utilisateurs enregistrés sur le site
+    avec toutes les actions possibles (modifier le compte, le supprimer, le
+    désactiver)
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de gestion de tous les utilisateurs
+    """
     #Récupération des comptes
     users = models.Users.objects.all()
 
@@ -699,27 +1023,25 @@ def afficherComptes(request):
 
     return render(request, 'WebServer/Comptes/voirToutComptes.html', exInfos("Utilisateurs", informations={"users": users}))
 
-@permission_required('ApiServer.change_users')
-def resetPassword(request):
-    id = request.GET.get("id", "")
-
-    if id:
-        user = get_object_or_404(models.Users, pk = id)
-
-        user.password = ""
-
-        user.save()
-
-        messages.success(request, "Mot de passe réinitialisé avec succés")
-
-    return redirect("/comptes/voir")
-
 
 """
     Section gérant tout ce qui touche aux écrans
 """
 @permission_required("ApiServer.add_screens")
-def ajouterEcran(request):
+def ajouterEcran(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère l'ajout de nouveaux écrans
+
+    Si la methode de la requête est ``GET`` alors on envoie la page d'ajout
+    sinon on compare les informations données au formulaire et si elles sont
+    conformes on ajoute l'écran à la BDD
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page d'ajout des écrans
+    """
     if request.method == "GET":
         return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterEcran.html")
 
@@ -736,7 +1058,23 @@ def ajouterEcran(request):
     return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterEcran.html")
     
 @permission_required("ApiServer.change_screens")
-def modifierEcran(request):
+def modifierEcran(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la modification des écrans
+
+    Si la methode de la requête est ``GET`` et qu'il y a le paramètre ``id``
+    alors on envoie la page de modification sinon on compare les informations 
+    données au formulaire et si elles sont conformes on modifie l'écran 
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de modification des écrans
+
+    Todo:
+        La page qui liste tous les écrans et un lien vers la page de modif des écrans
+    """
     id = request.GET.get("id", "")
     if id:
         if request.method == "GET":
@@ -759,11 +1097,36 @@ def modifierEcran(request):
         raise Http404
 
 @permission_required("ApiServer.delete_screens")
-def supprimerEcran(request):
+def supprimerEcran(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la suppresion d'un écran
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de suppression des écrans
+
+    Todo:
+        Code à faire et fonction à implémenter dans des pages
+    """
     return redirect("/parametres")
 
 @permission_required("ApiServer.add_pages")
-def ajouterPage(request):
+def ajouterPage(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère l'ajout de nouvelles pages
+
+    Si la methode de la requête est ``GET`` alors on envoie la page d'ajout
+    sinon on compare les informations données au formulaire et si elles sont
+    conformes on ajoute la page à la BDD
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page d'ajout des pages
+    """
     if request.method == "GET":
         return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterPage.html")
 
@@ -780,7 +1143,23 @@ def ajouterPage(request):
     return render(request, "WebServer/Gestion Affichage/Ecrans/ajouterPage.html")
     
 @permission_required("ApiServer.change_pages")
-def modifierPage(request):
+def modifierPage(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la modification des pages
+
+    Si la methode de la requête est ``GET`` et qu'il y a le paramètre ``id``
+    alors on envoie la page de modification sinon on compare les informations 
+    données au formulaire et si elles sont conformes on modifie la page 
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de modification des pages
+
+    Todo:
+        La page qui liste toutes les pages et un lien vers la page de modif des pages
+    """
     id = request.GET.get("id", "")
     if id:
         if request.method == "GET":
@@ -803,13 +1182,37 @@ def modifierPage(request):
         raise Http404
 
 @permission_required("ApiServer.delete_pages")
-def supprimerPage(request):
+def supprimerPage(request: WSGIRequest) -> HttpResponse:
+    """
+    Gère la suppresion d'une page
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de suppression des pages
+
+    Todo:
+        Code à faire et fonction à implémenter dans des pages
+    """
     return redirect("/parametres")
 
 @permission_required("auth.manage_affectation_pages_screens")
-def modifierAffectation(request):
+def modifierAffectation(request: WSGIRequest) -> HttpResponse:
     """
-        Fonction s'occupant de renvoyer la page qui permet d'affecter chaque écran à une page
+    Gère l'affection de page aux écrans
+
+    Si la methode de la requête est ``GET`` alors on envoit la page de modification
+    de l'affection page <-> écran
+
+    Si la methode de la requête est ``POST``, qu'il y a bien une page donnée et au moins
+    un écran selectionné alors on modifie l'affection dans la base de données
+
+    Args:
+        request (WSGIRequest): Requête Django
+
+    Returns:
+        HttpResponse: Page de modification de l'affection page <-> écran
     """
     if request.method == "GET":
         screens = models.Screens.objects.all().order_by("name")
@@ -865,18 +1268,18 @@ def modifierAffectation(request):
     Section contenant les fonctions qui servent pour les views mais que n'en retourne pas
 """
 def exInfos(pageTitle, informations={}, form={}):
-    '''
-        Fonction appelé quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
-        de l'utilisateur ou un message d'information sur une action effectuée
-
-        @Params :
-            pageTitle {string}     - Nom de la page
-            ?informations {dict}   - Informations complètes à passer à la page (Ex: les données d'un article)
-            ?form {ModelForm}      - Formulaire à donner au Template
-           
-        @Return :
-            dict : Informations complémentaires
-    '''
+    """
+    Fonction appelée quand on veut envoyer des données complémentaires aux Templates comme par exemple le groupe 
+    de l'utilisateur ou un message d'information sur une action effectuée
+    
+    Args:
+        pageTitle (string): Nom de la page
+        informations (dict, optionnel): Informations complètes à passer à la page (Ex: les données d'un article)
+        form (ModelForm, optionnel): Formulaire à donner au Template
+       
+    Returns:
+        dict: Informations complémentaires
+    """
     return {
         "pageTitle": pageTitle,
         "informations": informations,
@@ -884,19 +1287,24 @@ def exInfos(pageTitle, informations={}, form={}):
     }
 
 def createErrorMessages(request, form):
-    '''
-        Fonction créeant depuis un formulaire, une liste de message d'erreur prête à être passée aux Templates pour les
-        afficher à l'utilisateur.
+    """
+    Créer depuis un formulaire, une liste de message d'erreur prête à être passée aux Templates pour les
+    afficher à l'utilisateur.
 
-        @Params :
-            form {ModelForm}     - Formulaire non valide
+    Args:
+        form (ModelForm): Formulaire non valide
 
-    '''
-    print(form.errors)
+    """
     errors = form.errors.as_data().values()
     for value in errors:
         messages.error(request, value[0].message)
 
 def changeEndingDate():
+    """
+    Renvoie la date correspondant au jour une semaine après l'exécution de cette fonction
+    
+    Returns:
+        datetime - Date aujourd'hui + 7 jours
+    """
     date = datetime.date.today() + datetime.timedelta(days=7)
     return date

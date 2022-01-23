@@ -1,3 +1,8 @@
+/**
+ * Fichier créant et connectant ce serveur au serveur de pronote et qui
+ * renvoie les informations quand on demande à l'api
+ */
+
 const pronote = require('@dorian-eydoux/pronote-api');
 const http = require("http")
 const dotenv = require("dotenv").config({path: "../.env"})
@@ -27,26 +32,26 @@ async function getMenus(session, date = new Date()) {
     /**
         Fonction recupérant les menus à une date donnée 
 
-        @param
-        session - Le session pronote actuelle
-        ?date - la date à laquelle on veut récupérer les données
+        @params
+        session - La session pronote actuelle
+        ?date - La date à laquelle on veut récupérer les données
 
-        @return
+        @returns
         list - Retourne la liste des menus à la date demandée
     */
     date.setDate(date.getDate() - 1)
     return await session.menu(from = date)
 }
 
-async function getEdt(session, date = new Date()) {
+async function getEdt(session, date = new Date(2022, 0, 20)) {
     /**
         Fonction recupérant l'emploi du temps à une date donnée 
 
-        @param
+        @params
         session - Le session pronote actuelle
         ?date - la date à laquelle on veut récupérer les données
 
-        @return
+        @returns
         list - Retourne la liste des cours de la date demandée
     */
     let today = new Date()
@@ -58,6 +63,11 @@ function gestionServeur(req, res, session) {
     /**
      * Fonction gérant les requetes sur le serveur, elle s'occupe de renvoyer les menus sous forme
      * JSON quand on demande l'url /menus par exemple
+     * 
+     * @params
+     * req: requête initiale
+     * res: reponse à envoyer au serveur
+     * session: session pronote
      */
 
     //Si on veut les menus
@@ -109,6 +119,13 @@ function gestionServeur(req, res, session) {
 }
 
 function generateDate(){
+    /**
+     * Génère un string contenant la date et l'heure au moment précis où
+     * la fonction est exécutée
+     * 
+     * @returns
+     * string - Date sous format [AAAA:MM:JJ HH:MM:SS]
+     */
     let ts = Date.now()
 
     let date_ob = new Date(ts);
@@ -125,6 +142,11 @@ function generateDate(){
 }
 
 function gestionError(err, res){
+    /**
+     * Gère les erreurs quand elle arrive, c'est à dire les notifie dans la
+     * console, redémarre la connexion avec pronote si nécessaire et renvoie 
+     * une liste vide de donnée
+     */
     console.error(generateDate() + "Error from pronote")
     console.error(err)
 
@@ -145,6 +167,9 @@ function gestionError(err, res){
 }
 
 function loadSession(){
+    /**
+     * Charge le serveur sur le port 5000 une fois la connexion avec pronote réussi
+     */
     if (server !== undefined){
         server.close()
     }

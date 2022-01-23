@@ -3,6 +3,9 @@ from ApiServer import models
 from django.contrib.auth.models import Group
 
 class UserForm(forms.ModelForm):
+    """
+    Classe contenant le formulaire pour la création d'un compte
+    """
     class Meta:
         model = models.Users
         fields = ["first_name", "last_name", "username"]
@@ -12,7 +15,7 @@ class UserForm(forms.ModelForm):
 class changeOwnAccount(forms.ModelForm):
     class Meta:
         model = models.Users
-        fields = ["username", "email", "profile_picture"]
+        fields = ["username", "email", "profile_picture", "first_name", "last_name"]
 
     email = forms.CharField(required=False)
     profile_picture = forms.ImageField(required=False)

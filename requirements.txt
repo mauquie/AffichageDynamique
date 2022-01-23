@@ -1,0 +1,12 @@
+# Pour l'environnement 
+sphinx==4.4.0
+furo==2022.1.2
+Django==4.0.1
+python-ldap==3.4.0
+django-auth-ldap==4.0.0
+django-cors-headers==3.11.0
+psycopg2==2.9.3
+tweepy==4.4.0
+pillow==9.0.0
+wheel==0.37.1
+sphinx-toolbox==2.16.1

@@ -1,17 +1,17 @@
 def getEnv(location = ".env"):
     """
-        Lit le fichier .env dans le repertoire choisi et renvoie un dictionnaire
-        avec les valeurs
+    Lit le fichier .env dans le repertoire choisi et renvoie un dictionnaire
+    avec les valeurs
 
-        @param:
-            ?location(string) - Localisation du .env
-
-        @return
-            dict - Dictionnaire avec les valeurs
+    Args:
+        location (str, optionnel): Localisation du .env
+        
+    Returns:
+        dict: Dictionnaire avec les valeurs
     """
     #Ouverture du fichier
     env = open(location)
-
+    
     #Lecture des lignes => Liste des lignes
     envListBase = env.readlines()
 

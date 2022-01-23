@@ -8,7 +8,7 @@ urlpatterns = [
     path('infos', views.getInfos),
     path('sondages', views.getSurveys),
     path('displays', views.getDisplays),
-    path('menus', views.getMenus),
+    path('meals', views.getMeals),
     path('profsAbs', views.getProfsAbs),
     path('postVote', views.postVote),
     path('tweets', views.getTweets),
