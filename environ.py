@@ -12,7 +12,7 @@ def getEnv(location = ".env"):
     #Ouverture du fichier
     try:
     	env = open(location)
-    
+
     except FileNotFoundError:
     	return {}
     	
@@ -32,9 +32,12 @@ def getEnv(location = ".env"):
                 #On separe la ligne en deux au niveau de =
                 line = line.split("=")
 
-            #On affecte le nom de la variable à la valeur
-            # De : DB_PORT = 5432
-            # A : {"DB_PORT": 5432}
-            envDict[line[0]] = line[1]
+                #On affecte le nom de la variable à la valeur
+                # De : DB_PORT = 5432
+                # A : {"DB_PORT": 5432}
+                envDict[line[0]] = line[1]
 
         return envDict
+
+if __name__ == "__main__":
+    print(getEnv())
