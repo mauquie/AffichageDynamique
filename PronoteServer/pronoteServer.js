@@ -43,7 +43,7 @@ async function getMenus(session, date = new Date()) {
     return await session.menu(from = date)
 }
 
-async function getEdt(session, date = new Date(2022, 0, 20)) {
+async function getEdt(session, date = new Date()) {
     /**
         Fonction recupérant l'emploi du temps à une date donnée 
 
@@ -54,9 +54,7 @@ async function getEdt(session, date = new Date(2022, 0, 20)) {
         @returns
         list - Retourne la liste des cours de la date demandée
     */
-    let today = new Date()
-    today.setDate(date.getDate() - 1)
-    return await session.timetable(from = today, to = date)
+    return await session.timetable(from = date)
 }
 
 function gestionServeur(req, res, session) {
