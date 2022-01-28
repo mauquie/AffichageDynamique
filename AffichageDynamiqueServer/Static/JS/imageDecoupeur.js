@@ -26,6 +26,7 @@ class imageDecoupeur{
         this.cropper;
 
         if (!this.imageInput.disabled){
+            console.log("here")
             this._setEvents() //Attributions des fonctions pour les événements adéquats
         }
         this._assignDefaultImage() //Association de l'image par defaut si elle est spécifiée

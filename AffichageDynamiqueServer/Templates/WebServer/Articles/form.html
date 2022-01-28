@@ -3,24 +3,20 @@
 <div class="border rounded-3 m-3 mb-5 p-4 ">
     {% if informations %}
     <div class="alert alert-secondary">
-        <div class="form-group my-3">
-            <label for="author">Ecrit par</label>
-            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.author.id}}" target="_blank" class="clickable">{{informations.author}}</a></label>
-            <label for="date">le {{informations.date_creation}}</label>
+        <div class="my-3">
+            <span>Ecrit par <a href="/comptes/modifier?id={{informations.author.id}}" target="_blank" class="clickable fw-bold">{{informations.author}}</a> le {{informations.date_creation}}</span>
         </div>
-        <div class="form-group my-3">
-            <label for="lastEdited">Modifié par</label>
-            <label class="fw-bold"><a href="/comptes/modifier?id={{informations.user_last_modif.id}}" target="_blank" class="clickable">{{informations.user_last_modif}}</a></label>
-            <label for="date">le {{informations.date_last_modif}}</label>
+        <div class="my-3">
+            <span>Dernière modification par <a href="/comptes/modifier?id={{informations.user_last_modif.id}}" target="_blank" class="clickable fw-bold">{{informations.user_last_modif}}</a> le {{informations.date_last_modif}}</span>
         </div>
     </div>
     {%endif%}
-    
+
     <form id="formulaire" enctype="multipart/form-data" action="" method="post">
         {% csrf_token %}
         <div class="form-group my-3">
             <label class="form-label" {% if form.image.errors %}style="color: red"{% endif %}>Image de l'article</label>
-            <div class="border rounded-3 d-flex align-items-center justify-content-center imageUploadBox has_validation" id="imageUploadBox" data-bs-toggle="" data-bs-target="#staticBackdrop">
+            <div class="border rounded-3 d-flex align-items-center justify-content-center imageUploadBox has_validation" id="imageUploadBox" data-bs-toggle="">
                 <svg id="svgImage" xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
                     <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                     <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
@@ -72,7 +68,7 @@
         </div>
         <div class="form-group mt-3">
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" name="is_shown" {%if informations.is_shown %}checked{%endif%}>
+                <input class="form-check-input" type="checkbox" name="is_shown" {%if informations.is_shown %}checked{%endif%} >
                 <label class="form-check-label"">Montrer l'article dès la mise en ligne</label>
             </div>
         </div>

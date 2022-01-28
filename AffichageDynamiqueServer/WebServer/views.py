@@ -2,7 +2,7 @@
 Gère toutes les vues correspondantes au serveur web de gestion des écrans
 """
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.http.response import Http404
 from django.core.handlers.wsgi import WSGIRequest
 from django.shortcuts import get_object_or_404, render, redirect
@@ -45,6 +45,35 @@ def get_group(user: models.Users) -> str:
         string: Le nom du groupe de l'utilisateur
     """
     return list(user.groups.values_list('name', flat=True))[0]
+
+def canEdit(user: models.Users, author: models.Users) -> bool:
+    """
+    Vérifie qu'un utilisateur peut modifier un objet(Ex: un article) en 
+    fonction du niveau (level) de son groupe et du groupe de l'auteur. 
+
+    Si l'auteur à un level plus fort (plus petit) que 
+    l'utilisateur alors il ne peut pas modifier l'objet et la fonction 
+    retourne False.
+
+    Sinon si l'auteur à un level plus faible ou égal(plus grand ou égal) que l'utilisateur alors
+    il peut modifier l'objet et la fonction retourne True
+
+    Args:
+        user (models.Users): Utilisateur voulant modifier l'objet
+        author (models.Users): Auteur de l'objet
+
+    Returns:
+        bool: Autorisation (ou non) de modifier l'objet
+    """
+    #Récupération des groupes
+    userLevel = list(user.groups.values_list('groupsextend', flat=True))[0]
+    authorLevel = list(author.groups.values_list('groupsextend', flat=True))[0]
+
+    if authorLevel < userLevel:
+        return False
+
+    else:
+        return True
 
 @login_required
 def index(request: WSGIRequest) -> HttpResponse:
@@ -187,41 +216,44 @@ def modifierArticle(request: WSGIRequest) -> HttpResponse:
 
     Returns:
         HttpResponse: Page de modification d'un article
-
-    Todo:
-        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
-        trop importante auquelles il ne devrait pas avoir accès
     """
     id = request.GET.get("id", False)
 
-    if request.method == "GET":
-        if id:
+    if id:
+        article = get_object_or_404(models.Articles, pk = id)
+
+        # Vérification que l'utilisateur peut modifier l'article
+        if not canEdit(request.user, article.author):
+            messages.error(request, "Vous n'êtes pas autorisé à modifier cet article.")
+            return redirect("/articles")
+
+        if request.method == "GET":
             form = forms.ArticleForm()
-            article = get_object_or_404(models.Articles, pk = id)
-            return render(request, 'WebServer/Articles/modifier.html', exInfos("Modifier un article", informations=article, form=form))
 
-        else:
-            raise  Http404
+            return render(request, 'WebServer/Articles/modifier.html', 
+                exInfos("Modifier un article", informations=article, form=form))
 
-    elif request.method == "POST":
-        #Recupération de l'article choisi
-        article = get_object_or_404(models.Articles, pk=id)
-        form = forms.ArticleForm(request.POST, request.FILES, instance=article)
+        elif request.method == "POST":
+            form = forms.ArticleForm(request.POST, request.FILES, instance=article)
 
-        if form.is_valid():
-            form.save()
+            if form.is_valid():
+                form.save()
 
-            #On modifie la dernière personne l'ayant modifié
-            article.user_last_modif = request.user
+                # On modifie la dernière personne l'ayant modifié
+                article.user_last_modif = request.user
 
-            article.save()
+                article.save()
 
-            messages.success(request, "Article modifié avec succés !")
-            return redirect("/articles/modifier?id="+id)
+                messages.success(request, "Article modifié avec succés !")
+                return redirect("/articles/modifier?id="+id)
 
-        else: #Il y a eu un problème
-            createErrorMessages(request, form)
-            return render(request, "WebServer/Articles/modifier.html", exInfos("Modifier un article", form=form, informations=article))
+            else: # Il y a eu un problème
+                createErrorMessages(request, form)
+                return render(request, "WebServer/Articles/modifier.html", exInfos("Modifier un article", form=form, informations=article))
+
+    else:
+        raise Http404
+
 
 @permission_required('ApiServer.delete_articles')
 def supprimerArticle(request: WSGIRequest) -> HttpResponse:
@@ -236,16 +268,17 @@ def supprimerArticle(request: WSGIRequest) -> HttpResponse:
 
     Returns:
         HttpResponse: Page de management des articles
-
-    Todo:
-        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
-        trop importante auquelles il ne devrait pas avoir accès
     """
     id = request.GET.get("id", False)
     if id:
-        articles = get_object_or_404(models.Articles, pk = id)
-        articles.delete()
-        messages.success(request, "Supprimé avec succès !")
+        article = get_object_or_404(models.Articles, pk = id)
+
+        if canEdit(request.user, article.author):
+            article.delete()
+            messages.success(request, "Supprimé avec succès !")
+
+        else:
+            messages.error(request, "Vous n'êtes pas autorisé à supprimer cet article.")
 
     else:
         raise Http404
@@ -271,29 +304,30 @@ def toggleVisibiliteArticle(request: WSGIRequest) -> HttpResponse:
 
     Returns:
         HttpResponse: Page de management des articles
-
-    Todo:
-        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
-        trop importante auquelles il ne devrait pas avoir accès
     """
     #Vérification du groupe pour savoir si on peut modifier ou non
     id = request.GET.get("id", False)
     if id:
         article = get_object_or_404(models.Articles, pk = id)
-        if article.is_shown:
-            article.is_shown = False
+
+        if canEdit(request.user, article.author):
+            if article.is_shown:
+                article.is_shown = False
+
+            else:
+                if article.date_end < datetime.date.today():
+                    article.date_end = changeEndingDate()
+
+                article.is_shown = True
+
+            #On modifie la dernière personne l'ayant modifié
+            article.user_last_modif = request.user
+
+            article.save()
+            messages.success(request, "Modifié avec succés")
 
         else:
-            if article.date_end < datetime.date.today():
-                article.date_end = changeEndingDate()
-
-            article.is_shown = True
-
-        #On modifie la dernière personne l'ayant modifié
-        article.user_last_modif = request.user
-
-        article.save()
-        messages.success(request, "Modifié avec succés")
+            messages.error(request, "Vous n'êtes pas autorisé à modifier cet article.")
 
     else:
         raise Http404
@@ -713,14 +747,14 @@ def modifierInformation(request: WSGIRequest) -> HttpResponse:
 
     Returns:
         HttpResponse: Page de modification d'une information
-
-    Todo:
-        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
-        trop importante auquelles il ne devrait pas avoir accès
     """
     id = request.GET.get("id", "")
     if(id):
         info = get_object_or_404(models.Informations, pk=id)
+
+        if not canEdit(request.user, info.author):
+            messages.error(request, "Vous n'êtes pas autorisé à modifier cette information.")
+            return redirect("/parametres/informations")
 
         if request.method == "GET":
             form = forms.InformationForm()
@@ -760,17 +794,18 @@ def supprimerInformation(request: WSGIRequest) -> HttpResponse:
 
     Returns:
         HttpResponse: Page de management des informations
-
-    Todo:
-        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
-        trop importante auquelles il ne devrait pas avoir accès
     """
     id = request.GET.get('id', '')
     if id:  
         info = get_object_or_404(models.Informations, pk=id)
-        info.delete()
-        messages.success(request, "Supprimé avec succés")
 
+        if canEdit(request.user, info.author):
+            info.delete()
+            messages.success(request, "Supprimé avec succés")
+            
+        else:
+            messages.error(request, "Vous n'êtes pas autorisé à supprimer cette information.")
+            
     else:
         raise Http404
 
@@ -796,14 +831,14 @@ def toggleVisibiliteInformation(request: WSGIRequest) -> HttpResponse:
 
     Returns:
         HttpResponse: Page de management des informations
-
-    Todo:
-        Vérification de la supériorité du groupe de l'utilisateur pour ne pas qu'il modifie des informations 
-        trop importante auquelles il ne devrait pas avoir accès
     """
     id = request.GET.get('id', "")
     if(id):
         info = get_object_or_404(models.Informations, pk=id)
+
+        if not canEdit(request.user, info.author):
+            messages.error(request, "Vous n'êtes pas autorisé à modifier cette information.")
+            return redirect("/parametres/informations")
 
         if info.is_shown:
             info.is_shown = False
