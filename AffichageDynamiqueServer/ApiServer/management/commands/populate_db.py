@@ -6,13 +6,73 @@
 #
 
 from django.core.management.base import BaseCommand
-from ApiServer.models import InfoTypes, MealParts, GroupsExtend
+from ApiServer.models import Absents, InfoTypes, Informations, MealParts, GroupsExtend, Teachers, Users, Articles
 from django.contrib.auth.models import Permission, ContentType
 import json 
+import datetime
 
 class Command(BaseCommand):
-    args = '<foo bar ...>'
+    args = ''
     help = 'Ajout des valeurs de base pour le bon fonctionnement du serveur'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "-a",
+            "--add_additionals",
+            action="store_true",
+            help="Ajoute les valeurs additionnels pour faciliter le debug"    
+        )
+
+    def _add_additionals(self):
+        # Vérification qu'au moins 1 user existe
+        users = Users.objects.all()
+        if len(users) < 1:
+            print("Il faut créer au moins un utilisateur avec d'utiliser cette commande")
+            return
+
+        # Chargement des données
+        f = open('../data.json')
+        data = json.load(f)
+    
+        # Utilisation du premier user en tant que auteur des objets crées apres
+        user = users.filter(pk=1)[0]
+
+        # Ajout des informations
+        for info in data["informations"]:
+            information = Informations.objects.get_or_create(
+                message=info["message"],
+                is_shown=info["is_shown"],
+                author=user,
+                date_end=datetime.datetime.now(),
+                type=InfoTypes.objects.filter(name=info["type"])[0]
+            )[0]
+            information.save()
+
+        # Ajout des articles
+        for articleData in data["articles"]:
+            article = Articles.objects.get_or_create(
+                title=articleData["title"],
+                content=articleData["content"],
+                date_end=datetime.datetime.now(),
+                author=user,
+                date_last_modif=datetime.datetime.now(),
+                user_last_modif=user,
+                is_shown=articleData["is_shown"]
+            )[0]
+
+            article.save()
+
+        # Ajout des profs absents
+        for abs in data["absents"]:
+            teacher = Teachers.objects.get_or_create(name=abs["teacher"])[0]
+            teacher.save()
+
+            absent = Absents.objects.get_or_create(
+                teacher=teacher,
+                date_start=datetime.datetime.now(tz=datetime.timezone.utc),
+                date_end=datetime.datetime.now(tz=datetime.timezone.utc).replace(hour=datetime.datetime.now(tz=datetime.timezone.utc).hour - 23)
+            )[0]
+            absent.save()
 
     def _create_tags(self):
         print("Ajout des valeurs par défaut à la base de données")
@@ -29,7 +89,6 @@ class Command(BaseCommand):
         for part in data["mealparts"]:
             mealPart = MealParts.objects.get_or_create(name=part)[0]
             mealPart.save()
-
         
         # Ajout des différentes permissions données
         for perm in data["perms"]:
@@ -60,7 +119,7 @@ class Command(BaseCommand):
                     # Vérification que la permission qu'on ajoute ne fait pas 
                     # partie des permissions créees haut dessus, si c'est le cas, la permission n'a pas
                     # d'action elle se suffit à elle même
-                    #  Ex : manage_screens (Existe, on vient de la créer)
+                    # Ex : manage_screens (Existe, on vient de la créer)
                     #       add_manage_screens (N'existe pas)
                     for permDict in data["perms"]:
                         if (perm == permDict["codename"]):
@@ -77,4 +136,8 @@ class Command(BaseCommand):
         print("Fait")
 
     def handle(self, *args, **options):
-        self._create_tags()
+        if(options['add_additionals']):
+            self._add_additionals()
+
+        else:
+            self._create_tags()
