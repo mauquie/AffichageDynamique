@@ -574,9 +574,6 @@ def getMeteo(request: WSGIRequest) -> JsonResponse:
         JSONResponse: Requête Django correspondante au renvoie d'un fichier JSON
 
     Example
-        Une partie des informations sont omises, seules les informations les plus importantes
-        sont dans cet exemple.
-
         .. code-block:: JSON
 
             {

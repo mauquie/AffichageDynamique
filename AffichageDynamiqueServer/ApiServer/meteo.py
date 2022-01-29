@@ -64,10 +64,31 @@ class MeteoGetter:
         print("Getting weather's data")
         meteoRes = requests.get("http://api.openweathermap.org/data/2.5/onecall?lat=44.0833&lon=1.5&exclude=current,minutely&units=metric&appid=" + self._apiKey)
         
+        #Traitement des données pour seulement garder celles nécessaires
+        hoursData = meteoRes.json()["hourly"]
+        hourly = [
+            {
+                "dt": hour["dt"],
+                "temp": hour["temp"],
+                "feels_like": hour["feels_like"],
+                "weather": hour["weather"],
+                
+            }
+            for hour in hoursData
+        ]
+
+        todayData = meteoRes.json()["daily"][0]
+        today = {
+            "dt": todayData["dt"],
+            "temp": todayData["temp"],
+            "feels_like": todayData["feels_like"],
+            "weather": todayData["weather"],
+        }
+
         #Mise à jour des données de la classe
         self.lastData = {
-            "hourly": meteoRes.json()["hourly"],
-            "today": meteoRes.json()["daily"][0]
+            "hourly": hourly,
+            "today": today
         }
     
     def getMeteoData(self):
