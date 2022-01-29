@@ -51,10 +51,11 @@
                             <input 
                                 id="nomInput"
                                 type="text" 
-                                placeholder="last_name"
+                                name="last_name"
+                                placeholder="Nom de famille"
                                 class="form-control mx-2" 
                                 maxlength="30"
-                                value="{{user.last_name}}"
+                                value="{{informations.user.last_name}}"
                                 {% if perm.auth.manage_accounts == False %}disabled{%endif%}
                             >
                         </div>
@@ -62,10 +63,11 @@
                             <input 
                                 id="prenomInput"
                                 type="text" 
-                                placeholder="first_name"
+                                name="first_name"
+                                placeholder="Prénom"
                                 class="form-control mx-2" 
                                 maxlength="30"
-                                value="{{user.first_name}}"
+                                value="{{informations.user.first_name}}"
                                 {% if perm.auth.manage_accounts == False %}disabled{%endif%}
                             >
                         </div>
