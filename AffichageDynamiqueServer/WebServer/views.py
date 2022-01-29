@@ -119,7 +119,7 @@ def loginView(request):
 
         user = authenticate(request, username=username, password=password)
         #Si l'utilisateur est bien reconnu
-        if user is not None:
+        if user is not None and user.is_active == True:
             login(request, user)
             
             return redirect('/')
