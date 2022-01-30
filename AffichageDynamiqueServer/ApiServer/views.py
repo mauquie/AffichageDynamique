@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate
 import datetime
 from .pronote import refreshMenus, refreshProfs
 import pytz
+from AffichageDynamique import settings
 
 meteoGetter = MeteoGetter()
 
@@ -363,6 +364,9 @@ def getProfsAbs(request: WSGIRequest) -> JsonResponse:
     Récupère les profs absent correpondant à la date d'aujourd'hui et retourne 
     les infos sous format JSON
 
+    Si on est en mode DEBUG=True, alors il prendra 10 profs abs au hasard pour les
+    test
+
     Args:
         request (WSGIRequest): Requête Django
 
@@ -383,25 +387,31 @@ def getProfsAbs(request: WSGIRequest) -> JsonResponse:
 
     refreshProfs()
 
-    offset = datetime.datetime.now(pytz.timezone('Europe/Paris'))
-    offset = offset.strftime('%z')[2]
-    offset = int(offset)*3600*24
+    query = None
 
-    # Calcul des dates d'aujourd'hui et demain
-    dateToday = datetime.datetime.now(tz = datetime.timezone.utc)
-    dateToday.replace(hour = 0, minute = 0, second = 0)
+    if settings.DEBUG:
+        query = Absents.objects.all()[:10]
+    else:
+        offset = datetime.datetime.now(pytz.timezone('Europe/Paris'))
+        offset = offset.strftime('%z')[2]
+        offset = int(offset)*3600*24
 
-    dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc).timestamp()
-    dateTomorrow = datetime.datetime.utcfromtimestamp(dateTomorrow + offset)
-    dateTomorrow = dateTomorrow.replace(hour = 0, minute = 0, second = 0, 
-        tzinfo=datetime.timezone.utc)
+        # Calcul des dates d'aujourd'hui et demain
+        dateToday = datetime.datetime.now(tz = datetime.timezone.utc)
+        dateToday.replace(hour = 0, minute = 0, second = 0)
 
-    # On récupère tous les profs absents depuis aujourd'hui ou avant et jusqu'à 
-    # minimum aujourd'hui ou plus
-    query = Absents.objects.filter(date_start__lte=dateTomorrow, date_end__gte=dateToday)
+        dateTomorrow = datetime.datetime.now(tz = datetime.timezone.utc).timestamp()
+        dateTomorrow = datetime.datetime.utcfromtimestamp(dateTomorrow + offset)
+        dateTomorrow = dateTomorrow.replace(hour = 0, minute = 0, second = 0, 
+            tzinfo=datetime.timezone.utc)
+
+        # On récupère tous les profs absents depuis aujourd'hui ou avant et jusqu'à 
+        # minimum aujourd'hui ou plus
+        query = Absents.objects.filter(date_start__lte=dateTomorrow, date_end__gte=dateToday)
+    
     infoList = []
 
-    # Poru chaque prof
+    # Pour chaque prof
     for entry in query:
         json = {
             "prof" : entry.teacher.name,
