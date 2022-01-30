@@ -25,9 +25,11 @@ class imageDecoupeur{
         this.imageUploaded;
         this.cropper;
 
-        if (!this.imageInput.disabled){
-            console.log("here")
+        this.eventSet = false
+
+        if (!this.imageInput.disabled && !this.eventSet){
             this._setEvents() //Attributions des fonctions pour les événements adéquats
+            this.eventSet = true
         }
         this._assignDefaultImage() //Association de l'image par defaut si elle est spécifiée
     }
@@ -37,9 +39,9 @@ class imageDecoupeur{
         *   Attributions des évenements aux différentes actions de l'utilisateur sur le contenu de la page
         */
         this.imageInput.addEventListener("change", (e) => {
-            if(this.cropper === undefined){
-                this._createCropper()
-            }
+            // if(this.cropper === undefined){
+            //     this._createCropper()
+            // }
             //Récupération des images depuis l'input
             let image = imageInput.files
 
@@ -133,6 +135,7 @@ class imageDecoupeur{
         /**
          *  Fonction créant le découpeur et l'initialisant dans la fenêtre Modal
          */
+        console.log("here")
         setTimeout(() => {
             let width = this.cropperDiv.offsetWidth;
 
@@ -168,8 +171,8 @@ class imageDecoupeur{
          */
         if (cropper.ready){
             let croppedCanva = cropper.getCroppedCanvas() //Récupération des données du découpage
-
-            if(croppedCanva !== null){ //Si il y a bien des données
+            console.log(croppedCanva)
+            if(croppedCanva !== null ){ //Si il y a bien des données
 
                 //Exportation
 
@@ -236,14 +239,25 @@ class imageDecoupeur{
         /**
          *  Fonction s'occupant de supprimer toutes les traces de l'image en cours de modification
          */
+        this.cropper.clear()
         this.cropper.destroy()
         this.saveImage()
+
+        let croppers = document.getElementsByClassName("cropper-container")
+        for(let i =0; i < croppers.length; i++){
+            croppers[i].remove()
+        }
 
         this.svgImage.removeAttribute("hidden")
         this.imagePreview.style.backgroundImage = ""
         this.imageUploadBox.dataset.bsToggle = ""
         this.imagePreview.hidden = true
         this.isImageLoaded = false
+
+        this.cropper = undefined;
+
+        document.getElementById("loadingSpiner").hidden = false
+
     }
 
     _assignDefaultImage() {
