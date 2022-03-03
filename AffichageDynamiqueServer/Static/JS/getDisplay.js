@@ -7,8 +7,12 @@ const code_name = urlParams.get("name")
 const page_description = document.title
 
 function getDisplay() {
+    // Récupération de la clé unique de l'écran
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
     //Récupération des informations sur l'écran actuel
-    fetch('/api/displays?code_name=' + code_name)
+    fetch('/api/displays?code_name=' + code_name + "&k=" + urlParams.get('k'))
         .then((response) => {
             return response.json()
         })

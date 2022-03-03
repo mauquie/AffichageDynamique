@@ -25,8 +25,8 @@ from environ import getEnv
 dotenv = getEnv(PROJECT_DIR + "/.env")
 
 import os
-import ldap
-from django_auth_ldap.config import LDAPSearch
+#import ldap
+#from django_auth_ldap.config import LDAPSearch
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -73,21 +73,21 @@ DEFAULT_AUTO_FIELD='django.db.models.BigAutoField'
 ROOT_URLCONF = 'AffichageDynamique.urls'
 
 AUTHENTICATION_BACKENDS = [
-    "django_auth_ldap.backend.LDAPBackend",
+    #"django_auth_ldap.backend.LDAPBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
 AUTH_LDAP_SERVER_URI = dotenv.get("AUTH_LDAP_SERVER_URI")
 AUTH_LDAP_BIND_DN = dotenv.get("AUTH_LDAP_BIND_DN")
 AUTH_LDAP_BIND_PASSWORD = dotenv.get("AUTH_LDAP_BIND_PASSWORD")
-AUTH_LDAP_USER_SEARCH = LDAPSearch(
+"""AUTH_LDAP_USER_SEARCH = LDAPSearch(
     "ou=people,dc=nodomain", ldap.SCOPE_SUBTREE, "(uid=%(user)s)"
 )
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
     "last_name": "sn",
     "email": "mail",
-}
+}"""
 
 TEMPLATES = [
     {
@@ -168,6 +168,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'Static/',
 ]
+STATIC_ROOT = "AffichageDynamiqueServer/collectstatic/"
 
 MEDIA_URL = "Medias/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "Medias")

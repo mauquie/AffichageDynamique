@@ -2,9 +2,12 @@ indexInformations=0
 domInfoContainer = document.getElementById("infoContainer")
 domInfo = document.getElementById("information")
 
-function getInformations() 
-{
-    fetch("/api/infos").then(response => {
+function getInformations() {
+    // Récupération de la clé unique de l'écran
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    fetch("/api/infos?k="+urlParams.get('k')).then(response => {
         return response.json();
 
     }).then(data => {

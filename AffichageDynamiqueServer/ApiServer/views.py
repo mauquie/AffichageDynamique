@@ -40,6 +40,25 @@ def hideExpiredObjects(query: QuerySet):
         entry.is_shown = False
         entry.save()
 
+def checkUuid(request):
+    """
+    Depuis un requête Django, on vérifie que la requête est authentifié pour 
+    récupérer les infos. 
+    
+    Returns:
+        bool: Requete autorisée
+    """
+
+    if settings.DEBUG:
+        return True
+
+    key = request.GET.get("k", "")
+
+    if key != "" and len(Screens.objects.filter(uuid=key)) > 0:
+        return True
+
+    return False
+
 def getArticles(request: WSGIRequest) -> JsonResponse:
     """
     Récupère les articles visibles et retourne la requête en JSONResponse
@@ -68,6 +87,10 @@ def getArticles(request: WSGIRequest) -> JsonResponse:
             ]
         
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
+
     # Récupération de tous les articles
     query = Articles.objects.all()
     
@@ -126,6 +149,10 @@ def getInfos(request: WSGIRequest) -> JsonResponse:
             ]
             
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
+
     # Récupération de toutes les informations
     query = Informations.objects.all()
 
@@ -192,6 +219,9 @@ def getSurveys(request: WSGIRequest) -> JsonResponse:
                 }
             ]      
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
     
     # Récupération de tous les sondages
     query = Surveys.objects.all()
@@ -250,6 +280,10 @@ def getDisplays(request: WSGIRequest) -> JsonResponse:
             ]
             
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
+
     # Récupération de l'ecran aillant le code_name égal au parametre de la 
     # requete
     query = Screens.objects.filter(code_name=request.GET.get("code_name"))
@@ -323,6 +357,10 @@ def getMeals(request: WSGIRequest) -> JsonResponse:
                 },
             ]
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
+
     refreshMenus()
 
     # Récupération du repas dans la bdd à la date donnée
@@ -384,6 +422,9 @@ def getProfsAbs(request: WSGIRequest) -> JsonResponse:
                 }
             ]
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
 
     refreshProfs()
 
@@ -566,6 +607,10 @@ def getTweets(request: WSGIRequest) -> JsonResponse:
                 }
             }
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
+
     tweets = getLastTweets()
 
     return JsonResponse(tweets)
@@ -629,6 +674,10 @@ def getMeteo(request: WSGIRequest) -> JsonResponse:
                 }
             }
     """
+    # Vérification que la requête a le droit d'être faite
+    if not checkUuid(request):
+        return JsonResponse({"message": "Unauthorized"})
+        
     meteo = meteoGetter.getMeteoData()
 
     return JsonResponse(meteo)

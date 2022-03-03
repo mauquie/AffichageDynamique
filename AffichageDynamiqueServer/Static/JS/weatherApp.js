@@ -116,7 +116,11 @@ class WeatherApp{
         /**
          * Fonction asynchrone récupérant les données depuis notre api
          */
-        await fetch("/api/meteo")
+        // Récupération de la clé unique de l'écran
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+
+        await fetch("/api/meteo?k="+urlParams.get("k"))
             .then(response => {
                 return response.json();
             })

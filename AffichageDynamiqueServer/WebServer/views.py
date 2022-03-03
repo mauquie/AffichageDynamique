@@ -2,6 +2,7 @@
 Gère toutes les vues correspondantes au serveur web de gestion des écrans
 """
 
+from uuid import uuid4
 from django.http import HttpResponse, HttpResponseForbidden
 from django.http.response import Http404
 from django.core.handlers.wsgi import WSGIRequest
@@ -1069,7 +1070,7 @@ def ajouterEcran(request: WSGIRequest) -> HttpResponse:
 
     Si la methode de la requête est ``GET`` alors on envoie la page d'ajout
     sinon on compare les informations données au formulaire et si elles sont
-    conformes on ajoute l'écran à la BDD
+    conformes, on lui attribue un uuid unique et on ajoute l'écran à la BDD
 
     Args:
         request (WSGIRequest): Requête Django
@@ -1084,7 +1085,13 @@ def ajouterEcran(request: WSGIRequest) -> HttpResponse:
         form = forms.ScreenForm(request.POST)
         
         if form.is_valid():
-            form.save()
+            name = form.cleaned_data["name"]
+            code_name = form.cleaned_data["code_name"]
+            uuid = uuid4()
+            
+            screen = models.Screens(name=name, code_name=code_name, uuid=uuid)
+            screen.save()
+
             messages.success(request, "Ajouté avec succés")
         
         else:

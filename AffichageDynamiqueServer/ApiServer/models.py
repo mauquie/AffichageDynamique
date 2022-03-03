@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import AbstractUser, Group
@@ -38,6 +39,7 @@ class Screens(models.Model):
     name = models.CharField(max_length=100)
     code_name = models.CharField(max_length=100, default="")
     page = models.ForeignKey(Pages, on_delete=models.CASCADE, null=True)
+    uuid = models.CharField(max_length=100, default=uuid4())
 
     def __str__(self):
         return self.name

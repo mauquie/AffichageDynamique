@@ -153,7 +153,11 @@ function changeArticle() {
 
 //fonction main gérant le fetch des données, et appelant les diverses fontions.
 function getArticles() {
-    fetch("/api/articles").then((reponse) => reponse.json()).then((data) => {
+    // Récupération de la clé unique de l'écran
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    fetch("/api/articles?k="+urlParams.get('k')).then((reponse) => reponse.json()).then((data) => {
         articles = data
         //on cache la DOM de l'article s'il n'y a pas d'article
         if (articles.length == 0 && !DOMarticle.hidden) {

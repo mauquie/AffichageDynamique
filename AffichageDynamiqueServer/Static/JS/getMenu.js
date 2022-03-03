@@ -5,8 +5,12 @@ function getMenus() {
     //Formatage de la date pour la requete vers le serveur (AAAA-MM-JJ)
     date = dateTime.getFullYear() + "-" + (dateTime.getMonth() + 1) + "-" + dateTime.getDate()
 
+    // Récupération de la clé unique de l'écran
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
     //Requete vers le serveur
-    fetch("/api/meals?date=" + date).then((response) => {
+    fetch("/api/meals?date=" + date + "&k=" + urlParams.get('k')).then((response) => {
         return response.json()
 
     }).then((data) => {
