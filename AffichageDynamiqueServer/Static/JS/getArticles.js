@@ -42,21 +42,6 @@ function scrollingArticle(len, occurencesNumber)
     }, 10)
 }
 
-function changeBullePage()
-{
-    DOMpageNumber = document.getElementById("pageNumber")
-    Nheight = DOMpageNumber.clientHeight
-    Nwidth = DOMpageNumber.clientWidth
-    tallest = Math.max(Nheight, Nwidth) //on regarde quelle dimension du cercle est la plus grande
-    if (Nheight < tallest)
-    {
-        DOMpageNumber.style.height = tallest + "px"
-    }
-    else if (Nwidth < tallest)
-    {
-        DOMpageNumber.style.width = tallest + "px"
-    }
-}
 
 //fade in de l'article
 function animeEntreeArticle(domElement) {
@@ -98,17 +83,17 @@ function scrollingArticleHandler(reverse)
         setTimeout(() => {
             scrollingArticle(article.scrollHeight*0.95 - article.clientHeight, 0)
         }, 5000)
-        scrolledDirection = "down"
+        scrollingDirection = "down"
     }
     else if (reverse)
     {
         setTimeout(() => {
             scrollingArticle(-(article.scrollHeight*0.95 - article.clientHeight), 0)
         }, 5000)
-        scrolledDirection = "up"
+        scrollingDirection = "up"
     }
 }
-
+/* Obsolète.
 function checkHeightArticle()
 {
     DOMimageArticle = document.getElementById("imageArticle")
@@ -129,6 +114,7 @@ function checkHeightArticle()
         checkHeightArticle()//on vérifie si le texte rentre désormais.
     }
 }
+*/
 
 //fonction changeant l'article, et affichant/masquant l'image selon s'il y en a une ou non
 function changeArticle() {
@@ -189,30 +175,31 @@ function getArticles() {
                     changeArticle() //on change l'article,
                     animeEntreeArticle(DOMarticle)//et on affiche le nouveau.
                     DOMarticle.hidden = false
-                    changeBullePage()
                     scrollingArticleHandler(false)
                 }) //event listener pour regarder la taille de l'article
                 //que quand l'image est chargée
             }
             else if (contentArticle != articles[indexArticles].article) //si l'article à afficher est
             { //différent de l'article affiché, on le change
-                animeSortieArticle(domElemArticle).finished.then(() => { //on sort l'article actuel
+                    animeSortieArticle(domElemArticle).finished.then(() => { //on sort l'article actuel
                     changeArticle() //on met le nouveau
                     animeEntreeArticle(domElemArticle) //on anime son entrée
-                    changeBullePage() //on change la taille de la bulle de comptage de page
                     scrollingArticleHandler(false) //et on scroll si nécessaire vers le bas
                 })
             }
             else if (contentArticle == articles[indexArticles].article)
             { //si on reste sur le même article, il faut alternativement scroll vers le haut / bas
-                if (scrolledDirection == "down")
+              //et on affiche "1/1" dans la bulle
+                if (scrollingDirection == "down")
                 {
                     scrollingArticleHandler(true)
                 }
-                else if (scrolledDirection == "up")
+                else if (scrollingDirection == "up")
                 {
                     scrollingArticleHandler(false)
                 }
+                DOMpageNumber = document.getElementById("pageNumber")//on change le nombre de la page actuelle
+                DOMpageNumber.innerText = String(1) + "/" + String(1)
             }
         }
     })

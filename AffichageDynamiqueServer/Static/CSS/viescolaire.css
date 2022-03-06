@@ -41,13 +41,13 @@
 }
 
 .circled{
-    width:fit-content;
-    height:fit-content;
     border-radius: 50%;
-    line-height: 4.5vh;
+    height: 6vh;
+    width: 6vh;
+    border: 2px solid black;
     text-align: center;
+    line-height: 6vh;
     font-size: 2vh;
-    border: black 2px solid;
     float: right;
     font-family: 'DM Sans';
     font-weight: 700;
@@ -58,7 +58,7 @@
     font-family: 'DM Sans';
     font-size: 2vh;
     margin: 0;
-    padding: 0.2vh;
+    line-height: 6vh;
     float: right;
 }
 
@@ -69,6 +69,11 @@
     scrollbar-width: none;  /* Firefox */
     overflow: scroll;
 }
+
+::-webkit-scrollbar {
+    display: none;
+}
+
 
 .image-article{
     height: 24vh;
