@@ -109,7 +109,7 @@ function getProfsAbs()
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
-    fetch("/api/profsAbs.k=" + urlParams.get("k")).then(response => {
+    fetch("/api/profsAbs?k=" + urlParams.get("k")).then(response => {
         return response.json()
     }).then(data => {
         if (data.length == 0)

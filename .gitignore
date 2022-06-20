@@ -6,3 +6,4 @@ Medias/**
 .vscode/
 .venv/*
 data.json
+**/collectstatic
